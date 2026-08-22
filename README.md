@@ -4,9 +4,23 @@
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://sanguine6660.github.io/yakuake-skin-generator/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A modern, full-featured web application to create custom Yakuake terminal skins
-with all possible configuration options. Built with Preact, TypeScript, and
-Tailwind CSS.
+🎨 A modern, full-featured web application to create custom Yakuake terminal
+skins with all possible configuration options. Built with Preact, TypeScript,
+and Tailwind CSS.
+
+<p align="center">
+  <img src="./public/logo.svg" alt="Yakuake Skin Generator Logo" width="120" />
+</p>
+
+---
+
+## Preview
+
+<p align="center">
+  <img src="./assets/generator_preview.png" alt="Generator Preview" width="800" />
+</p>
+
+---
 
 ## Features
 
