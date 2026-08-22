@@ -1,0 +1,68 @@
+import * as Lu from 'react-icons/lu'
+import * as Fa from 'react-icons/fa'
+import * as Fa6 from 'react-icons/fa6'
+import * as Io from 'react-icons/io'
+import * as Io5 from 'react-icons/io5'
+import * as Md from 'react-icons/md'
+import * as Ti from 'react-icons/ti'
+import * as Go from 'react-icons/go'
+import * as Fi from 'react-icons/fi'
+import * as Gi from 'react-icons/gi'
+import * as Wi from 'react-icons/wi'
+import * as Di from 'react-icons/di'
+import * as Ai from 'react-icons/ai'
+import * as Bs from 'react-icons/bs'
+import * as Ri from 'react-icons/ri'
+import * as Fc from 'react-icons/fc'
+import * as Gr from 'react-icons/gr'
+import * as Hi from 'react-icons/hi'
+import * as Hi2 from 'react-icons/hi2'
+import * as Si from 'react-icons/si'
+import * as Sl from 'react-icons/sl'
+import * as Im from 'react-icons/im'
+import * as Bi from 'react-icons/bi'
+import * as Cg from 'react-icons/cg'
+import * as Vsc from 'react-icons/vsc'
+import * as Tb from 'react-icons/tb'
+import * as Tfi from 'react-icons/tfi'
+import * as Pi from 'react-icons/pi'
+
+import type { SkinConfig, IconLibrary } from '../types'
+
+export const libraries: Record<IconLibrary, any> = {
+    lucide: Lu,
+    fa: Fa,
+    fa6: Fa6,
+    io: Io,
+    io5: Io5,
+    md: Md,
+    ti: Ti,
+    go: Go,
+    fi: Fi,
+    gi: Gi,
+    wi: Wi,
+    di: Di,
+    ai: Ai,
+    bs: Bs,
+    ri: Ri,
+    fc: Fc,
+    gr: Gr,
+    hi: Hi,
+    hi2: Hi2,
+    si: Si,
+    sl: Sl,
+    im: Im,
+    bi: Bi,
+    cg: Cg,
+    vsc: Vsc,
+    tb: Tb,
+    tfi: Tfi,
+    pi: Pi,
+}
+
+export const renderIcon = (config: SkinConfig, iconName: string, size = 16, color?: string) => {
+    const lib = libraries[config.global.iconLibrary] || Lu
+    const IconComponent = lib[iconName] || lib[Object.keys(lib)[0]]
+    if (!IconComponent) return null
+    return <IconComponent size={size} color={color || config.global.colors.text} />
+}

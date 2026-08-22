@@ -1,0 +1,207 @@
+import type { SkinConfig } from '../types'
+import { getIconPath } from './iconPaths'
+
+export const generateBackgroundCenter = (
+    color: string,
+    height = 28,
+    translucent = false
+): string => {
+    const opacity = translucent ? ' opacity="0.85"' : ''
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1" height="${height}"${opacity}><rect width="1" height="${height}" fill="${color}"/></svg>`
+}
+
+export const generateBackgroundLeft = (
+    color: string,
+    height = 28,
+    radius = 4,
+    translucent = false
+): string => {
+    const opacity = translucent ? ' opacity="0.85"' : ''
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><path d="M8,0 v${height} H${8 - radius} A${radius},${radius} 0 0,1 0,${height - radius} V${radius} A${radius},${radius} 0 0,1 ${8 - radius},0 Z" fill="${color}"/></svg>`
+}
+
+export const generateBackgroundRight = (
+    color: string,
+    height = 28,
+    radius = 4,
+    translucent = false
+): string => {
+    const opacity = translucent ? ' opacity="0.85"' : ''
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><path d="M0,0 h${radius} a${radius},${radius} 0 0,1 ${radius},${radius} v${height - radius * 2} a${radius},${radius} 0 0,1 -${radius},${radius} H0 Z" fill="${color}"/></svg>`
+}
+
+export const generateButtonSvg = (
+    iconName: string,
+    bgColor: string,
+    iconColor: string,
+    size = 20,
+    iconSize = 14,
+    isCircle = true
+): string => {
+    const iconPath = getIconPath(iconName as keyof typeof import('./iconPaths').ICON_SVG_PATHS)
+    const scale = iconSize / 24
+    const translate = (size - 24 * scale) / 2
+    const shape = isCircle
+        ? `<circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 1}" fill="${bgColor}"/>`
+        : `<rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/>`
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${shape}<g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
+}
+
+export const generateTabSelected = (config: SkinConfig, width = 120): string => {
+    const { selected } = config.global.colors
+    const radius = config.global.borderRadius
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="28"><rect width="${width}" height="28" rx="${radius}" ry="${radius}" fill="${selected}"/></svg>`
+}
+
+export const generateTabUnselected = (config: SkinConfig, width = 120): string => {
+    const { dim } = config.global.colors
+    const radius = config.global.borderRadius
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="28"><rect width="${width}" height="28" rx="${radius}" ry="${radius}" fill="${dim}"/></svg>`
+}
+
+export const generateTabCorner = (
+    color: string,
+    width = 8,
+    height = 28,
+    radius = 4,
+    isLeft = true
+): string => {
+    if (isLeft) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M${width},0 v${height} H${width - radius} A${radius},${radius} 0 0,1 0,${height - radius} V${radius} A${radius},${radius} 0 0,1 ${width - radius},0 Z" fill="${color}"/></svg>`
+    } else {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M0,0 h${radius} a${radius},${radius} 0 0,1 ${radius},${radius} v${height - radius * 2} a${radius},${radius} 0 0,1 -${radius},${radius} H0 Z" fill="${color}"/></svg>`
+    }
+}
+
+export const generateSeparator = (color: string, height = 28): string => {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1" height="${height}"><rect width="1" height="${height}" fill="${color}"/></svg>`
+}
+
+export const generateLockSvg = (config: SkinConfig): string => {
+    const { text } = config.global.colors
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><g transform="scale(0.5)">${getIconPath('lock').replace(/currentColor/g, text)}</g></svg>`
+}
+
+export const generatePlusMinusSvg = (
+    type: 'plus' | 'minus',
+    bgColor: string,
+    iconColor: string,
+    size = 16
+): string => {
+    const iconPath = getIconPath(type)
+    const scale = 0.5
+    const translate = (size - 24 * scale) / 2
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/><g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
+}
+
+export const generateLogo = (config: SkinConfig): string => {
+    const { bg, text } = config.global.colors
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="${bg}" stroke="${text}" stroke-width="2"/>
+  <path d="M12 24 L20 32 L36 16" stroke="${text}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="24" cy="24" r="5" fill="${text}"/>
+</svg>`
+}
+
+export const generateTitleBackgrounds = (config: SkinConfig) => {
+    const { bg } = config.global.colors
+    const radius = config.global.borderRadius
+    const translucent = config.title.bgTranslucent || false
+
+    return {
+        center: generateBackgroundCenter(bg, 28, translucent),
+        left: generateBackgroundLeft(bg, 28, radius, translucent),
+        right: generateBackgroundRight(bg, 28, radius, translucent),
+    }
+}
+
+export const generateTabsBackgrounds = (config: SkinConfig) => {
+    const { bg } = config.global.colors
+    const radius = config.global.borderRadius
+    const translucent = config.tabs.bgTranslucent || false
+
+    return {
+        center: generateBackgroundCenter(bg, 28, translucent),
+        left: generateBackgroundLeft(bg, 28, radius, translucent),
+        right: generateBackgroundRight(bg, 28, radius, translucent),
+    }
+}
+
+export const generateAllTitleButtons = (config: SkinConfig) => {
+    const { bg, selected, dim, text } = config.global.colors
+
+    return {
+        config_up: generateButtonSvg('settings', bg, text, 20, 14),
+        config_over: generateButtonSvg('settings', selected, text, 20, 14),
+        config_down: generateButtonSvg('settings', dim, text, 20, 14),
+        focus_up: generateButtonSvg('square', bg, text, 20, 14),
+        focus_over: generateButtonSvg('square', selected, text, 20, 14),
+        focus_down: generateButtonSvg('square', dim, text, 20, 14),
+        quit_up: generateButtonSvg('x', bg, text, 20, 14),
+        quit_over: generateButtonSvg('x', '#bf616a', '#fff', 20, 14),
+        quit_down: generateButtonSvg('x', '#a3be8c', '#fff', 20, 14),
+    }
+}
+
+export const generateAllTabsButtons = (config: SkinConfig) => {
+    const { bg, selected, dim, text } = config.global.colors
+
+    return {
+        plus_up: generatePlusMinusSvg('plus', dim, text, 16),
+        plus_over: generatePlusMinusSvg('plus', selected, text, 16),
+        plus_down: generatePlusMinusSvg('plus', text, bg, 16),
+        minus_up: generatePlusMinusSvg('minus', dim, text, 16),
+        minus_over: generatePlusMinusSvg('minus', selected, text, 16),
+        minus_down: generatePlusMinusSvg('minus', text, bg, 16),
+    }
+}
+
+export const generateAllTabsAssets = (config: SkinConfig) => {
+    const { selected, dim } = config.global.colors
+    const radius = config.global.borderRadius
+
+    return {
+        tab_selected: generateTabSelected(config),
+        tab_unselected: generateTabUnselected(config),
+        selected_left: generateTabCorner(selected, 8, 28, radius, true),
+        selected_right: generateTabCorner(selected, 8, 28, radius, false),
+        unselected_left: generateTabCorner(dim, 8, 28, radius, true),
+        unselected_right: generateTabCorner(dim, 8, 28, radius, false),
+        separator: generateSeparator(config.global.colors.text, 28),
+        lock: generateLockSvg(config),
+    }
+}
+
+export const generateAllAssets = (config: SkinConfig) => {
+    const assets: Record<string, string> = {}
+
+    assets['logo.svg'] = generateLogo(config)
+
+    const titleBg = generateTitleBackgrounds(config)
+    assets['title/background_center.svg'] = titleBg.center
+    assets['title/background_left.svg'] = titleBg.left
+    assets['title/background_right.svg'] = titleBg.right
+
+    const titleBtns = generateAllTitleButtons(config)
+    Object.entries(titleBtns).forEach(([key, value]) => {
+        assets[`title/${key}.svg`] = value
+    })
+
+    const tabsBg = generateTabsBackgrounds(config)
+    assets['tabs/background_center.svg'] = tabsBg.center
+    assets['tabs/background_left.svg'] = tabsBg.left
+    assets['tabs/background_right.svg'] = tabsBg.right
+
+    const tabsBtns = generateAllTabsButtons(config)
+    Object.entries(tabsBtns).forEach(([key, value]) => {
+        assets[`tabs/${key}.svg`] = value
+    })
+
+    const tabsAssets = generateAllTabsAssets(config)
+    Object.entries(tabsAssets).forEach(([key, value]) => {
+        assets[`tabs/${key}.svg`] = value
+    })
+
+    return assets
+}

@@ -1,0 +1,6 @@
+node_modules
+dist
+build
+.output
+package-lock.json
+*.local

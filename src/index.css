@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+/* Custom scrollbar styles */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #3b4252 #090d16;
+}
+
+/* Webkit-based browsers (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #090d16;
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #3b4252;
+    border-radius: 4px;
+    border: 2px solid #090d16;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #4c566a;
+}
+
+*::-webkit-scrollbar-thumb:active {
+    background: #5e81ac;
+}
+
+*::-webkit-scrollbar-corner {
+    background: #090d16;
+}
+
+/* Firefox-specific scrollbar (additional) */
+@supports (scrollbar-width: thin) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #3b4252 #090d16;
+    }
+}
+
+/* Thin scrollbar variant for smaller elements */
+.thin-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+    background: #4c566a;
+}
+
+/* Custom scrollbar for code blocks and pre */
+pre::-webkit-scrollbar {
+    height: 6px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: #121824;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background: #3b4252;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
