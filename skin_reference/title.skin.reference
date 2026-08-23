@@ -1,0 +1,81 @@
+[Description]
+Skin=MyCustomSkin
+Author=John Doe
+Email=john.doe@example.com
+Icon=icon.png
+
+[Background]
+# Main background image for the title bar. 
+# Note: The physical height of this image determines the total height of the title bar!
+back_image=title_background.png
+
+# Image file for the rounded or styled left corner of the title bar
+left_corner=title_left_corner.png
+
+# Image file for the rounded or styled right corner of the title bar
+right_corner=title_right_corner.png
+
+[Border]
+# Thickness of the outer border surrounding the entire terminal window in pixels (0 = no border)
+width=1
+
+# Color of the outer border defined in RGB format (Red, Green, Blue)
+color=50,50,50
+
+[Text]
+# X coordinate (horizontal offset) for the window title text relative to the title bar
+x=30
+
+# Y coordinate (vertical offset) for the window title text relative to the title bar
+y=5
+
+# Text color of the window title defined in RGB format
+color=200,200,200
+
+[FocusButton]
+# X coordinate for the focus/keep-open toggle button
+x=10
+
+# Y coordinate for the focus/keep-open toggle button
+y=5
+
+# Image when the button is in its normal, unpressed state
+up_image=focus_up.png
+
+# Image when the mouse cursor hovers over the button
+over_image=focus_over.png
+
+# Image when the button is actively being clicked
+down_image=focus_down.png
+
+[ConfigButton]
+# X coordinate for the settings/configuration button
+x=60
+
+# Y coordinate for the settings/configuration button
+y=5
+
+# Normal state image for the configuration button
+up_image=config_up.png
+
+# Hover state image for the configuration button
+over_image=config_over.png
+
+# Clicked state image for the configuration button
+down_image=config_down.png
+
+[QuitButton]
+# X coordinate for the close/quit button
+x=85
+
+# Y coordinate for the close/quit button
+y=5
+
+# Normal state image for the quit button
+up_image=quit_up.png
+
+# Hover state image for the quit button
+over_image=quit_over.png
+
+# Clicked state image for the quit button
+down_image=quit_down.png
