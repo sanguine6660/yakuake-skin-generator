@@ -35,6 +35,7 @@ import { Preview } from './components/preview/Preview'
 import { ColorPreview } from './components/preview/ColorPreview'
 import { StatsPreview } from './components/preview/StatsPreview'
 import { Navbar } from './components/ui/Navbar'
+import { Footer } from './components/ui/Footer'
 import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
 import { SkinSavesManager } from './components/forms/SkinSavesManager'
@@ -601,6 +602,8 @@ export function App() {
                         />
                     </div>
                 </div>
+
+                <Footer config={config} />
             </div>
         </div>
     )
