@@ -83,8 +83,7 @@ export const generateTitleSkin = (config: SkinConfig): string => {
 
 export const generateTabsSkin = (config: SkinConfig): string => {
     const { meta, tabs } = config
-    const selectedColor = tabs.selectedColor
-    const unselectedColor = tabs.unselectedColor
+    const textColor = tabs.selectedColor
 
     const lines = [
         '[Description]',
@@ -97,26 +96,27 @@ export const generateTabsSkin = (config: SkinConfig): string => {
         '[Tabs]',
         `x=${tabs.tabsX}`,
         `y=${tabs.tabsY}`,
-        `selected_color=${selectedColor.r},${selectedColor.g},${selectedColor.b}`,
-        `unselected_color=${unselectedColor.r},${unselectedColor.g},${unselectedColor.b}`,
+        `red=${textColor.r}`,
+        `green=${textColor.g}`,
+        `blue=${textColor.b}`,
         tabs.separatorImage ? `separator_image=${tabs.separatorImage}` : '',
-        `selected_left=${tabs.selectedLeft}`,
-        `selected_middle=${tabs.selectedMiddle}`,
-        `selected_right=${tabs.selectedRight}`,
-        `unselected_left=${tabs.unselectedLeft}`,
-        `unselected_middle=${tabs.unselectedMiddle}`,
-        `unselected_right=${tabs.unselectedRight}`,
+        `selected_background=${tabs.selectedMiddle}`,
+        `selected_left_corner=${tabs.selectedLeft}`,
+        `selected_right_corner=${tabs.selectedRight}`,
+        `unselected_background=${tabs.unselectedMiddle}`,
+        `unselected_left_corner=${tabs.unselectedLeft}`,
+        `unselected_right_corner=${tabs.unselectedRight}`,
     ]
 
-    if (tabs.tabsEnabled) {
-        if (tabs.lockEnabled) {
-            lines.push(
-                `prevent_closing_image=${tabs.preventClosingImage}`,
-                `prevent_closing_image_x=${tabs.preventClosingX}`,
-                `prevent_closing_image_y=${tabs.preventClosingY}`
-            )
-        }
+    if (tabs.tabsEnabled && tabs.lockEnabled && tabs.lockBtn.enabled) {
+        lines.push(
+            `prevent_closing_image=${tabs.preventClosingImage}`,
+            `prevent_closing_image_x=${tabs.lockBtn.x}`,
+            `prevent_closing_image_y=${tabs.lockBtn.y}`
+        )
+    }
 
+    if (tabs.tabsEnabled) {
         lines.push(
             '',
             '[Background]',
@@ -133,9 +133,6 @@ export const generateTabsSkin = (config: SkinConfig): string => {
         }
         if (tabs.closeBtn.enabled) {
             lines.push(...writeButtonConfig('Close', tabs.closeBtn))
-        }
-        if (tabs.lockBtn.enabled) {
-            lines.push(...writeButtonConfig('Lock', tabs.lockBtn))
         }
     }
 

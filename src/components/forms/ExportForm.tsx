@@ -68,10 +68,15 @@ export const ExportForm = ({
     ├── tab_selected.svg
     ├── tab_unselected.svg
     ├── tab_selected_left.svg
+    ├── tab_selected_middle.svg
     ├── tab_selected_right.svg
     ├── tab_unselected_left.svg
+    ├── tab_unselected_middle.svg
     ├── tab_unselected_right.svg
     ├── tab_separator.svg
+    ├── close_up.svg
+    ├── close_over.svg
+    ├── close_down.svg
     ├── lock.svg
     ├── plus_up.svg
     ├── plus_over.svg

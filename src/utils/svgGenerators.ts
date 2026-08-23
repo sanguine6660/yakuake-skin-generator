@@ -38,7 +38,11 @@ export const generateBackgroundLeft = (
     translucent = false
 ): string => {
     const opacity = translucent ? ' opacity="0.85"' : ''
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><path d="M8,0 v${height} H${8 - radius} A${radius},${radius} 0 0,1 0,${height - radius} V${radius} A${radius},${radius} 0 0,1 ${8 - radius},0 Z" fill="${color}"/></svg>`
+    const r = Math.min(radius, 8, height / 2)
+    if (r <= 0) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><rect width="8" height="${height}" fill="${color}"/></svg>`
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><path d="M8,0 V${height} H${r} A${r},${r} 0 0,1 0,${height - r} V${r} A${r},${r} 0 0,1 ${r},0 Z" fill="${color}"/></svg>`
 }
 
 export const generateBackgroundRight = (
@@ -48,7 +52,11 @@ export const generateBackgroundRight = (
     translucent = false
 ): string => {
     const opacity = translucent ? ' opacity="0.85"' : ''
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><path d="M0,0 h${radius} a${radius},${radius} 0 0,1 ${radius},${radius} v${height - radius * 2} a${radius},${radius} 0 0,1 -${radius},${radius} H0 Z" fill="${color}"/></svg>`
+    const r = Math.min(radius, 8, height / 2)
+    if (r <= 0) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><rect width="8" height="${height}" fill="${color}"/></svg>`
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}"${opacity}><path d="M0,0 H${8 - r} A${r},${r} 0 0,1 8,${r} V${height - r} A${r},${r} 0 0,1 ${8 - r},${height} H0 Z" fill="${color}"/></svg>`
 }
 
 export const generateButtonSvg = (
@@ -92,11 +100,14 @@ export const generateTabPiece = (
     if (isMiddle) {
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${color}"/></svg>`
     }
-    if (isLeft) {
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M${width},0 v${height} H${width - radius} A${radius},${radius} 0 0,1 0,${height - radius} V${radius} A${radius},${radius} 0 0,1 ${width - radius},0 Z" fill="${color}"/></svg>`
-    } else {
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M0,0 h${radius} a${radius},${radius} 0 0,1 ${radius},${radius} v${height - radius * 2} a${radius},${radius} 0 0,1 -${radius},${radius} H0 Z" fill="${color}"/></svg>`
+    const r = Math.min(radius, width, height / 2)
+    if (r <= 0) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${color}"/></svg>`
     }
+    if (isLeft) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M${width},0 V${height} H${r} A${r},${r} 0 0,1 0,${height - r} V${r} A${r},${r} 0 0,1 ${r},0 Z" fill="${color}"/></svg>`
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M0,0 H${width - r} A${r},${r} 0 0,1 ${width},${r} V${height - r} A${r},${r} 0 0,1 ${width - r},${height} H0 Z" fill="${color}"/></svg>`
 }
 
 export const generateSeparator = (color: string, height = 28): string => {
@@ -241,13 +252,13 @@ export const generateAllTabsAssets = (config: SkinConfig) => {
     return {
         tab_selected: generateTabSelected(config),
         tab_unselected: generateTabUnselected(config),
-        selected_left: generateTabPiece(selected, tabWidth, 28, radius, true, false),
-        selected_middle: generateTabPiece(selected, 104, 28, radius, false, true),
-        selected_right: generateTabPiece(selected, tabWidth, 28, radius, false, false),
-        unselected_left: generateTabPiece(dim, tabWidth, 28, radius, true, false),
-        unselected_middle: generateTabPiece(dim, 104, 28, radius, false, true),
-        unselected_right: generateTabPiece(dim, tabWidth, 28, radius, false, false),
-        separator: generateSeparator(config.global.colors.text, 28),
+        tab_selected_left: generateTabPiece(selected, tabWidth, 28, radius, true, false),
+        tab_selected_middle: generateTabPiece(selected, 104, 28, radius, false, true),
+        tab_selected_right: generateTabPiece(selected, tabWidth, 28, radius, false, false),
+        tab_unselected_left: generateTabPiece(dim, tabWidth, 28, radius, true, false),
+        tab_unselected_middle: generateTabPiece(dim, 104, 28, radius, false, true),
+        tab_unselected_right: generateTabPiece(dim, tabWidth, 28, radius, false, false),
+        tab_separator: generateSeparator(config.global.colors.text, 28),
         lock: generateLockSvg(config),
     }
 }
