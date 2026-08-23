@@ -6,9 +6,11 @@ interface PreviewProps {
 }
 
 export const Preview = ({ config }: PreviewProps) => {
-    const { global, title } = config
+    const { global, title, tabs } = config
     const borderColor = `rgb(${title.borderColor.r}, ${title.borderColor.g}, ${title.borderColor.b})`
     const textColor = `rgb(${title.textColor.r}, ${title.textColor.g}, ${title.textColor.b})`
+    const selectedTextColor = `rgb(${tabs.selectedColor.r}, ${tabs.selectedColor.g}, ${tabs.selectedColor.b})`
+    const unselectedTextColor = `rgb(${tabs.unselectedColor.r}, ${tabs.unselectedColor.g}, ${tabs.unselectedColor.b})`
 
     return (
         <div className="rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
@@ -53,10 +55,17 @@ export const Preview = ({ config }: PreviewProps) => {
                                 borderRadius: `${global.borderRadius}px`,
                             }}
                         >
-                            {renderIcon(config, global.iconSet.lock, 10)}
+                            {tabs.lockEnabled && (
+                                <span
+                                    className="flex h-4 w-4 items-center justify-center"
+                                    title="Locked"
+                                >
+                                    {renderIcon(config, global.iconSet.lock, 8)}
+                                </span>
+                            )}
                             <span
                                 style={{
-                                    color: global.colors.text,
+                                    color: selectedTextColor,
                                     fontSize: '10px',
                                     fontWeight: 500,
                                     fontFamily: 'monospace',
@@ -64,13 +73,18 @@ export const Preview = ({ config }: PreviewProps) => {
                             >
                                 Shell
                             </span>
+                            {tabs.closeBtnEnabled && (
+                                <span className="flex h-4 w-4 items-center justify-center ml-1">
+                                    {renderIcon(config, global.iconSet.close, 8)}
+                                </span>
+                            )}
                         </div>
                         <div
                             className="min-w-[55px] flex-shrink-0 px-3 py-1 font-mono text-[10px]"
                             style={{
                                 backgroundColor: global.colors.dim,
                                 borderRadius: `${global.borderRadius}px`,
-                                color: '#888',
+                                color: unselectedTextColor,
                             }}
                         >
                             htop
@@ -80,7 +94,7 @@ export const Preview = ({ config }: PreviewProps) => {
                             style={{
                                 backgroundColor: global.colors.dim,
                                 borderRadius: `${global.borderRadius}px`,
-                                color: '#888',
+                                color: unselectedTextColor,
                             }}
                         >
                             vim

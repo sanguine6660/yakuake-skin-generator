@@ -318,29 +318,47 @@ export const DEFAULT_TITLE_CONFIG = {
 export const DEFAULT_TABS_CONFIG = {
     tabsX: 36,
     tabsY: 0,
-    tabsTextColor: DEFAULT_RGB_COLORS.text,
-    selectedBg: '/tabs/tab_selected.svg',
-    unselectedBg: '/tabs/tab_unselected.svg',
-    lockImage: '/tabs/lock.svg',
-    lockX: 0,
-    lockY: 8,
+    selectedColor: DEFAULT_RGB_COLORS.text,
+    unselectedColor: { r: 150, g: 150, b: 150 } as RgbColor,
+
+    separatorImage: '/tabs/tab_separator.svg',
+    selectedLeft: '/tabs/tab_selected_left.svg',
+    selectedMiddle: '/tabs/tab_selected_middle.svg',
+    selectedRight: '/tabs/tab_selected_right.svg',
+    unselectedLeft: '/tabs/tab_unselected_left.svg',
+    unselectedMiddle: '/tabs/tab_unselected_middle.svg',
+    unselectedRight: '/tabs/tab_unselected_right.svg',
+
+    preventClosingImage: '/tabs/lock.svg',
+    preventClosingX: 0,
+    preventClosingY: 8,
     lockEnabled: true,
+
     bgCenter: '/tabs/background_center.svg',
     bgLeft: '/tabs/background_left.svg',
     bgRight: '/tabs/background_right.svg',
     bgTranslucent: false,
+
     plusBtnEnabled: true,
     plusBtnX: 2,
     plusBtnY: 6,
     plusBtnUp: '/tabs/plus_up.svg',
     plusBtnOver: '/tabs/plus_over.svg',
     plusBtnDown: '/tabs/plus_down.svg',
+
     minusBtnEnabled: true,
     minusBtnX: 22,
     minusBtnY: 6,
     minusBtnUp: '/tabs/minus_up.svg',
     minusBtnOver: '/tabs/minus_over.svg',
     minusBtnDown: '/tabs/minus_down.svg',
+
+    closeBtnEnabled: true,
+    closeBtnX: 5,
+    closeBtnY: 5,
+    closeBtnUp: '/tabs/close_up.svg',
+    closeBtnOver: '/tabs/close_over.svg',
+    closeBtnDown: '/tabs/close_down.svg',
 }
 
 export const createDefaultSkinConfig = (): SkinConfig => ({

@@ -60,13 +60,17 @@ export const generateTabUnselected = (config: SkinConfig, width = 120): string =
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="28"><rect width="${width}" height="28" rx="${radius}" ry="${radius}" fill="${dim}"/></svg>`
 }
 
-export const generateTabCorner = (
+export const generateTabPiece = (
     color: string,
-    width = 8,
+    width: number,
     height = 28,
     radius = 4,
-    isLeft = true
+    isLeft: boolean,
+    isMiddle: boolean
 ): string => {
+    if (isMiddle) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${color}"/></svg>`
+    }
     if (isLeft) {
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="M${width},0 v${height} H${width - radius} A${radius},${radius} 0 0,1 0,${height - radius} V${radius} A${radius},${radius} 0 0,1 ${width - radius},0 Z" fill="${color}"/></svg>`
     } else {
@@ -81,6 +85,18 @@ export const generateSeparator = (color: string, height = 28): string => {
 export const generateLockSvg = (config: SkinConfig): string => {
     const { text } = config.global.colors
     return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><g transform="scale(0.5)">${getIconPath('lock').replace(/currentColor/g, text)}</g></svg>`
+}
+
+export const generateCloseButtonSvg = (
+    bgColor: string,
+    iconColor: string,
+    size = 16,
+    iconSize = 12
+): string => {
+    const iconPath = getIconPath('x')
+    const scale = iconSize / 24
+    const translate = (size - 24 * scale) / 2
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/><g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
 }
 
 export const generatePlusMinusSvg = (
@@ -154,20 +170,26 @@ export const generateAllTabsButtons = (config: SkinConfig) => {
         minus_up: generatePlusMinusSvg('minus', dim, text, 16),
         minus_over: generatePlusMinusSvg('minus', selected, text, 16),
         minus_down: generatePlusMinusSvg('minus', text, bg, 16),
+        close_up: generateCloseButtonSvg(dim, text, 16, 12),
+        close_over: generateCloseButtonSvg(selected, text, 16, 12),
+        close_down: generateCloseButtonSvg(text, bg, 16, 12),
     }
 }
 
 export const generateAllTabsAssets = (config: SkinConfig) => {
     const { selected, dim } = config.global.colors
     const radius = config.global.borderRadius
+    const tabWidth = 8 // corner piece width
 
     return {
         tab_selected: generateTabSelected(config),
         tab_unselected: generateTabUnselected(config),
-        selected_left: generateTabCorner(selected, 8, 28, radius, true),
-        selected_right: generateTabCorner(selected, 8, 28, radius, false),
-        unselected_left: generateTabCorner(dim, 8, 28, radius, true),
-        unselected_right: generateTabCorner(dim, 8, 28, radius, false),
+        selected_left: generateTabPiece(selected, tabWidth, 28, radius, true, false),
+        selected_middle: generateTabPiece(selected, 104, 28, radius, false, true),
+        selected_right: generateTabPiece(selected, tabWidth, 28, radius, false, false),
+        unselected_left: generateTabPiece(dim, tabWidth, 28, radius, true, false),
+        unselected_middle: generateTabPiece(dim, 104, 28, radius, false, true),
+        unselected_right: generateTabPiece(dim, tabWidth, 28, radius, false, false),
         separator: generateSeparator(config.global.colors.text, 28),
         lock: generateLockSvg(config),
     }

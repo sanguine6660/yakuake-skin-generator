@@ -76,7 +76,8 @@ export const generateTitleSkin = (config: SkinConfig): string => {
 
 export const generateTabsSkin = (config: SkinConfig): string => {
     const { meta, tabs } = config
-    const textColor = tabs.tabsTextColor
+    const selectedColor = tabs.selectedColor
+    const unselectedColor = tabs.unselectedColor
 
     const lines = [
         '[Description]',
@@ -89,23 +90,22 @@ export const generateTabsSkin = (config: SkinConfig): string => {
         '[Tabs]',
         `x=${tabs.tabsX}`,
         `y=${tabs.tabsY}`,
-        `red=${textColor.r}`,
-        `green=${textColor.g}`,
-        `blue=${textColor.b}`,
+        `selected_color=${selectedColor.r},${selectedColor.g},${selectedColor.b}`,
+        `unselected_color=${unselectedColor.r},${unselectedColor.g},${unselectedColor.b}`,
         tabs.separatorImage ? `separator_image=${tabs.separatorImage}` : '',
-        `selected_background=${tabs.selectedBg}`,
-        tabs.selectedLeftCorner ? `selected_left_corner=${tabs.selectedLeftCorner}` : '',
-        tabs.selectedRightCorner ? `selected_right_corner=${tabs.selectedRightCorner}` : '',
-        `unselected_background=${tabs.unselectedBg}`,
-        tabs.unselectedLeftCorner ? `unselected_left_corner=${tabs.unselectedLeftCorner}` : '',
-        tabs.unselectedRightCorner ? `unselected_right_corner=${tabs.unselectedRightCorner}` : '',
+        `selected_left=${tabs.selectedLeft}`,
+        `selected_middle=${tabs.selectedMiddle}`,
+        `selected_right=${tabs.selectedRight}`,
+        `unselected_left=${tabs.unselectedLeft}`,
+        `unselected_middle=${tabs.unselectedMiddle}`,
+        `unselected_right=${tabs.unselectedRight}`,
     ]
 
     if (tabs.lockEnabled) {
         lines.push(
-            `prevent_closing_image=${tabs.lockImage}`,
-            `prevent_closing_image_x=${tabs.lockX}`,
-            `prevent_closing_image_y=${tabs.lockY}`
+            `prevent_closing_image=${tabs.preventClosingImage}`,
+            `prevent_closing_image_x=${tabs.preventClosingX}`,
+            `prevent_closing_image_y=${tabs.preventClosingY}`
         )
     }
 
@@ -138,6 +138,18 @@ export const generateTabsSkin = (config: SkinConfig): string => {
             `up_image=${tabs.minusBtnUp}`,
             `over_image=${tabs.minusBtnOver}`,
             `down_image=${tabs.minusBtnDown}`
+        )
+    }
+
+    if (tabs.closeBtnEnabled) {
+        lines.push(
+            '',
+            '[CloseButton]',
+            `x=${tabs.closeBtnX}`,
+            `y=${tabs.closeBtnY}`,
+            `up_image=${tabs.closeBtnUp}`,
+            `over_image=${tabs.closeBtnOver}`,
+            `down_image=${tabs.closeBtnDown}`
         )
     }
 

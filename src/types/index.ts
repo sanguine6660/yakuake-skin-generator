@@ -97,19 +97,20 @@ export interface TabsConfig {
 
     tabsX: number
     tabsY: number
-    tabsTextColor: RgbColor
+    selectedColor: RgbColor
+    unselectedColor: RgbColor
 
     separatorImage?: string
-    selectedBg: string
-    selectedLeftCorner?: string
-    selectedRightCorner?: string
-    unselectedBg: string
-    unselectedLeftCorner?: string
-    unselectedRightCorner?: string
+    selectedLeft: string
+    selectedMiddle: string
+    selectedRight: string
+    unselectedLeft: string
+    unselectedMiddle: string
+    unselectedRight: string
 
-    lockImage: string
-    lockX: number
-    lockY: number
+    preventClosingImage: string
+    preventClosingX: number
+    preventClosingY: number
     lockEnabled: boolean
 
     bgCenter: string
@@ -130,6 +131,13 @@ export interface TabsConfig {
     minusBtnUp: string
     minusBtnOver: string
     minusBtnDown: string
+
+    closeBtnEnabled: boolean
+    closeBtnX: number
+    closeBtnY: number
+    closeBtnUp: string
+    closeBtnOver: string
+    closeBtnDown: string
 }
 
 export interface SkinConfig {

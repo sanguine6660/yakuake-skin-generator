@@ -29,43 +29,68 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     max={50}
                 />
                 <RgbColorInput
-                    label="Text Color"
-                    value={tabs.tabsTextColor}
-                    onChange={(v) => onRgbColorChange('tabsTextColor', v)}
+                    label="Selected Text Color"
+                    value={tabs.selectedColor}
+                    onChange={(v) => onRgbColorChange('selectedColor', v)}
+                />
+                <RgbColorInput
+                    label="Unselected Text Color"
+                    value={tabs.unselectedColor}
+                    onChange={(v) => onRgbColorChange('unselectedColor', v)}
                 />
             </div>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Advanced Options</h3>
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Tab Styling (3-Piece)</h3>
+            <h4 className="mb-2 text-sm text-gray-400">Selected Tab</h4>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-4">
+                <TextInput
+                    label="Selected Left"
+                    value={tabs.selectedLeft}
+                    onChange={(v) => onChange({ selectedLeft: v })}
+                    placeholder="/tabs/tab_selected_left.svg"
+                />
+                <TextInput
+                    label="Selected Middle"
+                    value={tabs.selectedMiddle}
+                    onChange={(v) => onChange({ selectedMiddle: v })}
+                    placeholder="/tabs/tab_selected_middle.svg"
+                />
+                <TextInput
+                    label="Selected Right"
+                    value={tabs.selectedRight}
+                    onChange={(v) => onChange({ selectedRight: v })}
+                    placeholder="/tabs/tab_selected_right.svg"
+                />
+            </div>
+            <h4 className="mb-2 text-sm text-gray-400">Unselected Tab</h4>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-4">
+                <TextInput
+                    label="Unselected Left"
+                    value={tabs.unselectedLeft}
+                    onChange={(v) => onChange({ unselectedLeft: v })}
+                    placeholder="/tabs/tab_unselected_left.svg"
+                />
+                <TextInput
+                    label="Unselected Middle"
+                    value={tabs.unselectedMiddle}
+                    onChange={(v) => onChange({ unselectedMiddle: v })}
+                    placeholder="/tabs/tab_unselected_middle.svg"
+                />
+                <TextInput
+                    label="Unselected Right"
+                    value={tabs.unselectedRight}
+                    onChange={(v) => onChange({ unselectedRight: v })}
+                    placeholder="/tabs/tab_unselected_right.svg"
+                />
+            </div>
+
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Separator</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <TextInput
                     label="Separator Image (optional)"
                     value={tabs.separatorImage ?? ''}
                     onChange={(v) => onChange({ separatorImage: v || undefined })}
                     placeholder="/tabs/tab_separator.svg"
-                />
-                <TextInput
-                    label="Selected Left Corner (optional)"
-                    value={tabs.selectedLeftCorner ?? ''}
-                    onChange={(v) => onChange({ selectedLeftCorner: v || undefined })}
-                    placeholder="/tabs/tab_selected_left.svg"
-                />
-                <TextInput
-                    label="Selected Right Corner (optional)"
-                    value={tabs.selectedRightCorner ?? ''}
-                    onChange={(v) => onChange({ selectedRightCorner: v || undefined })}
-                    placeholder="/tabs/tab_selected_right.svg"
-                />
-                <TextInput
-                    label="Unselected Left Corner (optional)"
-                    value={tabs.unselectedLeftCorner ?? ''}
-                    onChange={(v) => onChange({ unselectedLeftCorner: v || undefined })}
-                    placeholder="/tabs/tab_unselected_left.svg"
-                />
-                <TextInput
-                    label="Unselected Right Corner (optional)"
-                    value={tabs.unselectedRightCorner ?? ''}
-                    onChange={(v) => onChange({ unselectedRightCorner: v || undefined })}
-                    placeholder="/tabs/tab_unselected_right.svg"
                 />
             </div>
 
@@ -76,28 +101,41 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 onChange={(v) => onChange({ bgTranslucent: v })}
             />
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Lock Icon</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Lock / Prevent Closing</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                 <CheckboxInput
                     label="Show Lock Icon"
                     checked={tabs.lockEnabled ?? true}
                     onChange={(v) => onChange({ lockEnabled: v })}
                 />
+                <TextInput
+                    label="Lock Image"
+                    value={tabs.preventClosingImage}
+                    onChange={(v) => onChange({ preventClosingImage: v })}
+                    placeholder="/tabs/lock.svg"
+                />
                 <NumberInput
                     label="Lock X"
-                    value={tabs.lockX}
-                    onChange={(v) => onChange({ lockX: v })}
+                    value={tabs.preventClosingX}
+                    onChange={(v) => onChange({ preventClosingX: v })}
                     min={-50}
                     max={50}
                 />
                 <NumberInput
                     label="Lock Y"
-                    value={tabs.lockY}
-                    onChange={(v) => onChange({ lockY: v })}
+                    value={tabs.preventClosingY}
+                    onChange={(v) => onChange({ preventClosingY: v })}
                     min={-50}
                     max={50}
                 />
             </div>
+
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Background Translucency</h3>
+            <CheckboxInput
+                label="Enable Translucent Background"
+                checked={tabs.bgTranslucent ?? false}
+                onChange={(v) => onChange({ bgTranslucent: v })}
+            />
 
             <h3 className="mb-3 text-lg font-semibold text-gray-200">Plus/Minus Buttons</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -143,6 +181,49 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                         max={50}
                     />
                 </div>
+            </div>
+
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Close Button (Per-Tab)</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <CheckboxInput
+                    label="Show Close Button"
+                    checked={tabs.closeBtnEnabled ?? true}
+                    onChange={(v) => onChange({ closeBtnEnabled: v })}
+                />
+                <TextInput
+                    label="Close Image Up"
+                    value={tabs.closeBtnUp}
+                    onChange={(v) => onChange({ closeBtnUp: v })}
+                    placeholder="/tabs/close_up.svg"
+                />
+                <TextInput
+                    label="Close Image Over"
+                    value={tabs.closeBtnOver}
+                    onChange={(v) => onChange({ closeBtnOver: v })}
+                    placeholder="/tabs/close_over.svg"
+                />
+                <TextInput
+                    label="Close Image Down"
+                    value={tabs.closeBtnDown}
+                    onChange={(v) => onChange({ closeBtnDown: v })}
+                    placeholder="/tabs/close_down.svg"
+                />
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <NumberInput
+                    label="Close X"
+                    value={tabs.closeBtnX}
+                    onChange={(v) => onChange({ closeBtnX: v })}
+                    min={-50}
+                    max={200}
+                />
+                <NumberInput
+                    label="Close Y"
+                    value={tabs.closeBtnY}
+                    onChange={(v) => onChange({ closeBtnY: v })}
+                    min={-50}
+                    max={50}
+                />
             </div>
         </div>
     )
