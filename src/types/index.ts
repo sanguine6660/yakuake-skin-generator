@@ -181,6 +181,13 @@ export interface SkinConfig {
 
 export type ConfigSection = 'meta' | 'global' | 'title' | 'tabs'
 
+export interface SavedSkin {
+    name: string
+    config: SkinConfig
+    createdAt: number
+    updatedAt: number
+}
+
 export interface FormField {
     key: string
     label: string

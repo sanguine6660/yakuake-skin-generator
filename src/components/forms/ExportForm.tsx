@@ -19,7 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { SkinConfig } from '../../types'
+import type { SavedSkin, SkinConfig } from '../../types'
 
 interface ExportFormProps {
     config: SkinConfig
@@ -27,10 +27,7 @@ interface ExportFormProps {
     installToYakuake: (config: SkinConfig) => void
     installStatus: { message: string; type: 'success' | 'error' | 'info' } | null
     clearStatus: () => void
-    savedSkins: Record<
-        string,
-        { name: string; config: SkinConfig; createdAt: number; updatedAt: number }
-    >
+    savedSkins: Record<string, SavedSkin>
 }
 
 export const ExportForm = ({

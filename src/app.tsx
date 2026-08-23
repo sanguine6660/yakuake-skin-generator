@@ -20,7 +20,7 @@
  */
 
 import { useState, useEffect } from 'preact/compat'
-import type { IconRole, RgbColor, SkinConfig, IconLibrary } from './types'
+import type { IconRole, RgbColor, SkinConfig, IconLibrary, SavedSkin } from './types'
 import { useSkinConfig } from './hooks/useSkinConfig'
 import { useSkinExport } from './hooks/useSkinExport'
 import { useSessionStorage } from './hooks/useSessionStorage'
@@ -230,6 +230,7 @@ export function App() {
     const { totalDownloads, incrementDownload } = useDownloadCounter()
 
     const [exportCount, setExportCount] = useLocalStorage<number>('yakuake-export-count', 0)
+    const [savedSkins] = useLocalStorage<Record<string, SavedSkin>>('yakuake-skin-saves', {})
     const [presetUsage, setPresetUsage] = useLocalStorage<Record<string, number>>(
         'yakuake-preset-usage',
         {}
@@ -552,29 +553,14 @@ export function App() {
                         </TabPanel>
 
                         <TabPanel activeTab={activeTab} tabId="export">
-                            {(() => {
-                                const savedSkins = (() => {
-                                    if (typeof window !== 'undefined') {
-                                        try {
-                                            const saved = localStorage.getItem('yakuake-skin-saves')
-                                            return saved ? JSON.parse(saved) : {}
-                                        } catch {
-                                            return {}
-                                        }
-                                    }
-                                    return {}
-                                })()
-                                return (
-                                    <ExportForm
-                                        config={config}
-                                        downloadSkin={handleDownloadSkin}
-                                        installToYakuake={handleInstallToYakuake}
-                                        installStatus={installStatus}
-                                        clearStatus={clearStatus}
-                                        savedSkins={savedSkins}
-                                    />
-                                )
-                            })()}
+                            <ExportForm
+                                config={config}
+                                downloadSkin={handleDownloadSkin}
+                                installToYakuake={handleInstallToYakuake}
+                                installStatus={installStatus}
+                                clearStatus={clearStatus}
+                                savedSkins={savedSkins}
+                            />
                         </TabPanel>
 
                         <TabPanel activeTab={activeTab} tabId="skins">

@@ -20,22 +20,16 @@
  */
 
 import { useState } from 'preact/hooks'
+import type { SavedSkin, SkinConfig } from '../../types'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { TextInput } from '../ui'
 
 interface SkinSavesManagerProps {
     currentSkinName: string
     onSave: (name: string) => void
-    onLoad: (savedConfig: any) => void
+    onLoad: (savedConfig: SkinConfig) => void
     onDelete: (name: string) => void
     onRename: (oldName: string, newName: string) => void
-}
-
-interface SavedSkin {
-    name: string
-    config: any
-    createdAt: number
-    updatedAt: number
 }
 
 export const SkinSavesManager = ({
