@@ -26,25 +26,33 @@ export const Navbar = ({ config, activeTab, onTabChange, onResetToDefault }: Nav
 
     return (
         <nav
-            className="mb-6 rounded-xl border border-[#1e293b] bg-[#121824] p-2 shadow-lg"
+            className="mb-6 rounded-xl border border-[#1e293b] bg-[#121824] p-3 shadow-lg md:p-4"
             style={{ borderColor: `${accentColor}40` }}
         >
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 px-3">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                {/* Logo & Titel-Bereich */}
+                <div className="flex items-center gap-3 px-1">
                     <div
-                        className="flex h-8 w-8 items-center justify-center rounded-lg"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
                         style={{ backgroundColor: accentColor }}
                     >
                         <img src={logoSrc} alt="Logo" className="h-6 w-6 object-contain" />
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold text-white">Yakuake Skin Generator</h1>
+                        <h1 className="text-base font-bold text-white md:text-lg">
+                            Yakuake Skin Generator
+                        </h1>
                         <p className="text-xs text-gray-400">Create custom terminal skins</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1" role="tablist">
+                {/* Navigation Tabs & Actions */}
+                <div className="flex flex-wrap items-center gap-2">
+                    {/* Scrollbarer Container für Tabs bei kleinen Screens */}
+                    <div
+                        className="flex w-full scrollbar-none items-center gap-1 overflow-x-auto pb-1 sm:w-auto lg:pb-0"
+                        role="tablist"
+                    >
                         {NAV_TABS.map((tab) => (
                             <button
                                 key={tab.id}
@@ -52,7 +60,7 @@ export const Navbar = ({ config, activeTab, onTabChange, onResetToDefault }: Nav
                                 role="tab"
                                 aria-selected={activeTab === tab.id}
                                 onClick={() => onTabChange(tab.id)}
-                                className={`relative overflow-hidden rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                                className={`relative shrink-0 overflow-hidden rounded-lg px-3 py-2 text-sm font-medium transition-all md:px-4 ${
                                     activeTab === tab.id
                                         ? 'text-white shadow-md'
                                         : 'text-gray-400 hover:text-gray-200'
@@ -67,36 +75,39 @@ export const Navbar = ({ config, activeTab, onTabChange, onResetToDefault }: Nav
                             </button>
                         ))}
                     </div>
-                    <button
-                        type="button"
-                        onClick={onResetToDefault}
-                        className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
-                        title="Reset to default settings"
-                        aria-label="Reset to default settings"
-                    >
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+
+                    <div className="ml-auto flex items-center gap-2 sm:ml-0">
+                        <button
+                            type="button"
+                            onClick={onResetToDefault}
+                            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                            title="Reset to default settings"
+                            aria-label="Reset to default settings"
                         >
-                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                            <path d="M3 3v5h5" />
-                        </svg>
-                    </button>
-                    <a
-                        href="https://github.com/sanguine6660/yakuake-skin-generator"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-lg p-2 transition-colors hover:bg-gray-800"
-                        aria-label="GitHub Repository"
-                    >
-                        <span dangerouslySetInnerHTML={{ __html: GITHUB_LOGO }} />
-                    </a>
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                        </button>
+                        <a
+                            href="https://github.com/sanguine6660/yakuake-skin-generator"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                            aria-label="GitHub Repository"
+                        >
+                            <span dangerouslySetInnerHTML={{ __html: GITHUB_LOGO }} />
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
