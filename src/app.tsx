@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect } from 'preact/compat'
 import type { IconRole, RgbColor, SkinConfig, IconLibrary } from './types'
 import { useSkinConfig } from './hooks/useSkinConfig'
 import { useSkinExport } from './hooks/useSkinExport'
@@ -12,6 +12,7 @@ import { ColorPreview } from './components/preview/ColorPreview'
 import { Navbar } from './components/ui/Navbar'
 import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
+import { SkinSavesManager } from './components/forms/SkinSavesManager'
 import { PRESETS } from './constants'
 
 export function App() {
@@ -37,9 +38,30 @@ export function App() {
             bgRight: '/title/background_right.svg',
             bgTranslucent: false,
             titleEnabled: true,
-            focusBtn: { enabled: true, x: 88, y: 4, up: '/title/focus_up.svg', over: '/title/focus_over.svg', down: '/title/focus_down.svg' },
-            configBtn: { enabled: true, x: 58, y: 4, up: '/title/config_up.svg', over: '/title/config_over.svg', down: '/title/config_down.svg' },
-            quitBtn: { enabled: true, x: 28, y: 4, up: '/title/quit_up.svg', over: '/title/quit_over.svg', down: '/title/quit_down.svg' },
+            focusBtn: {
+                enabled: true,
+                x: 88,
+                y: 4,
+                up: '/title/focus_up.svg',
+                over: '/title/focus_over.svg',
+                down: '/title/focus_down.svg',
+            },
+            configBtn: {
+                enabled: true,
+                x: 58,
+                y: 4,
+                up: '/title/config_up.svg',
+                over: '/title/config_over.svg',
+                down: '/title/config_down.svg',
+            },
+            quitBtn: {
+                enabled: true,
+                x: 28,
+                y: 4,
+                up: '/title/quit_up.svg',
+                over: '/title/quit_over.svg',
+                down: '/title/quit_down.svg',
+            },
         },
         tabs: {
             tabsX: 36,
@@ -62,22 +84,99 @@ export function App() {
             bgRight: '/tabs/background_right.svg',
             bgTranslucent: false,
             tabsEnabled: true,
-            plusBtn: { enabled: true, x: 2, y: 6, up: '/tabs/plus_up.svg', over: '/tabs/plus_over.svg', down: '/tabs/plus_down.svg' },
-            minusBtn: { enabled: true, x: 22, y: 6, up: '/tabs/minus_up.svg', over: '/tabs/minus_over.svg', down: '/tabs/minus_down.svg' },
-            closeBtn: { enabled: true, x: 5, y: 5, up: '/tabs/close_up.svg', over: '/tabs/close_over.svg', down: '/tabs/close_down.svg' },
-            lockBtn: { enabled: true, x: 0, y: 8, up: '/tabs/lock.svg', over: '/tabs/lock.svg', down: '/tabs/lock.svg' },
+            plusBtn: {
+                enabled: true,
+                x: 2,
+                y: 6,
+                up: '/tabs/plus_up.svg',
+                over: '/tabs/plus_over.svg',
+                down: '/tabs/plus_down.svg',
+            },
+            minusBtn: {
+                enabled: true,
+                x: 22,
+                y: 6,
+                up: '/tabs/minus_up.svg',
+                over: '/tabs/minus_over.svg',
+                down: '/tabs/minus_down.svg',
+            },
+            closeBtn: {
+                enabled: true,
+                x: 5,
+                y: 5,
+                up: '/tabs/close_up.svg',
+                over: '/tabs/close_over.svg',
+                down: '/tabs/close_down.svg',
+            },
+            lockBtn: {
+                enabled: true,
+                x: 0,
+                y: 8,
+                up: '/tabs/lock.svg',
+                over: '/tabs/lock.svg',
+                down: '/tabs/lock.svg',
+            },
         },
         global: {
             iconLibrary: 'lucide' as IconLibrary,
-            iconSet: { settings: 'LuSettings', maximize: 'LuMaximize2', close: 'LuX', plus: 'LuPlus', minus: 'LuMinus', lock: 'LuLock' },
+            iconSet: {
+                settings: 'LuSettings',
+                maximize: 'LuMaximize2',
+                close: 'LuX',
+                plus: 'LuPlus',
+                minus: 'LuMinus',
+                lock: 'LuLock',
+            },
             colors: { bg: '#1e2233', selected: '#3b4252', text: '#66c2f2', dim: '#232834' },
             buttonColors: {
-                focus: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
-                config: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
-                quit: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#bf616a', downIcon: '#ffffff' },
-                plus: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
-                minus: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
-                close: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
+                focus: {
+                    upBg: '#232834',
+                    upIcon: '#66c2f2',
+                    overBg: '#3b4252',
+                    overIcon: '#66c2f2',
+                    downBg: '#66c2f2',
+                    downIcon: '#1e2233',
+                },
+                config: {
+                    upBg: '#232834',
+                    upIcon: '#66c2f2',
+                    overBg: '#3b4252',
+                    overIcon: '#66c2f2',
+                    downBg: '#66c2f2',
+                    downIcon: '#1e2233',
+                },
+                quit: {
+                    upBg: '#232834',
+                    upIcon: '#66c2f2',
+                    overBg: '#3b4252',
+                    overIcon: '#66c2f2',
+                    downBg: '#bf616a',
+                    downIcon: '#ffffff',
+                },
+                plus: {
+                    upBg: '#232834',
+                    upIcon: '#66c2f2',
+                    overBg: '#3b4252',
+                    overIcon: '#66c2f2',
+                    downBg: '#66c2f2',
+                    downIcon: '#1e2233',
+                },
+                minus: {
+                    upBg: '#232834',
+                    upIcon: '#66c2f2',
+                    overBg: '#3b4252',
+                    overIcon: '#66c2f2',
+                    downBg: '#66c2f2',
+                    downIcon: '#1e2233',
+                },
+                close: {
+                    upBg: '#232834',
+                    upIcon: '#66c2f2',
+                    overBg: '#3b4252',
+                    overIcon: '#66c2f2',
+                    downBg: '#66c2f2',
+                    downIcon: '#1e2233',
+                },
             },
             borderRadius: 0,
             opacity: 100,
@@ -85,7 +184,10 @@ export function App() {
         },
     }
 
-    const [savedConfig, setSavedConfig] = useSessionStorage<SkinConfig>('yakuake-skin-config', defaultConfig)
+    const [savedConfig, setSavedConfig] = useSessionStorage<SkinConfig>(
+        'yakuake-skin-config',
+        defaultConfig
+    )
     const {
         config,
         updateMeta,
@@ -101,12 +203,12 @@ export function App() {
     const { downloadSkin, installToYakuake, installStatus, clearStatus } = useSkinExport()
 
     const [activeTab, setActiveTab] = useState(() => {
-    if (typeof window !== 'undefined') {
-        const saved = sessionStorage.getItem('yakuake-active-tab')
-        if (saved) return saved
-    }
-    return 'global'
-})
+        if (typeof window !== 'undefined') {
+            const saved = sessionStorage.getItem('yakuake-active-tab')
+            if (saved) return saved
+        }
+        return 'global'
+    })
 
     // Save config to sessionStorage whenever it changes
     useEffect(() => {
@@ -163,14 +265,13 @@ export function App() {
     const handleApplyPreset = (presetId: string) => {
         const preset = PRESETS.find((p) => p.id === presetId)
         if (preset) {
-            // We need to update the config - but useSkinConfig doesn't have a replace method
-            // We'll use setConfig through the hook... but it's not exposed.
-            // For now, we'll apply each part manually
             Object.entries(preset.config.global || {}).forEach(([key, value]) => {
                 if (key === 'iconSet' && typeof value === 'object') {
                     updateGlobal({ iconSet: value as any })
                 } else if (key === 'colors' && typeof value === 'object') {
                     updateGlobal({ colors: { ...config.global.colors, ...(value as any) } })
+                } else if (key === 'buttonColors' && typeof value === 'object') {
+                    updateGlobal({ buttonColors: value as any })
                 } else {
                     updateGlobal({ [key]: value } as any)
                 }
@@ -181,7 +282,6 @@ export function App() {
             Object.entries(preset.config.tabs || {}).forEach(([key, value]) => {
                 updateTabs({ [key]: value } as any)
             })
-            // Update meta
             updateMeta({
                 skinName: preset.name,
                 author: 'sanguine6660',
@@ -191,10 +291,78 @@ export function App() {
         }
     }
 
+    const handleSaveSkin = (name: string) => {
+        const saved = localStorage.getItem('yakuake-skin-saves')
+        const saves = saved ? JSON.parse(saved) : {}
+        const existing = saves[name]
+        saves[name] = {
+            name,
+            config: { ...config },
+            createdAt: existing?.createdAt ?? Date.now(),
+            updatedAt: Date.now(),
+        }
+        localStorage.setItem('yakuake-skin-saves', JSON.stringify(saves))
+        window.dispatchEvent(new Event('local-storage'))
+    }
+
+    const handleLoadSkin = (savedConfigData: SkinConfig) => {
+        Object.entries(savedConfigData.global || {}).forEach(([key, value]) => {
+            if (key === 'iconSet' && typeof value === 'object') {
+                updateGlobal({ iconSet: value as any })
+            } else if (key === 'colors' && typeof value === 'object') {
+                updateGlobal({ colors: { ...config.global.colors, ...(value as any) } })
+            } else if (key === 'buttonColors' && typeof value === 'object') {
+                updateGlobal({ buttonColors: value as any })
+            } else {
+                updateGlobal({ [key]: value } as any)
+            }
+        })
+        Object.entries(savedConfigData.title || {}).forEach(([key, value]) => {
+            updateTitle({ [key]: value } as any)
+        })
+        Object.entries(savedConfigData.tabs || {}).forEach(([key, value]) => {
+            updateTabs({ [key]: value } as any)
+        })
+        updateMeta({
+            skinName: savedConfigData.meta.skinName,
+            author: 'sanguine6660',
+            email: 'sanguine6660@gmail.com',
+            web: 'https://github.com/sanguine6660/yakuake-skin-generator',
+        })
+    }
+
+    const handleDeleteSkin = (name: string) => {
+        const saved = localStorage.getItem('yakuake-skin-saves')
+        if (saved) {
+            const saves = JSON.parse(saved)
+            delete saves[name]
+            localStorage.setItem('yakuake-skin-saves', JSON.stringify(saves))
+            window.dispatchEvent(new Event('local-storage'))
+        }
+    }
+
+    const handleRenameSkin = (oldName: string, newName: string) => {
+        const saved = localStorage.getItem('yakuake-skin-saves')
+        if (saved) {
+            const saves = JSON.parse(saved)
+            if (saves[oldName]) {
+                saves[newName] = { ...saves[oldName], name: newName, updatedAt: Date.now() }
+                delete saves[oldName]
+                localStorage.setItem('yakuake-skin-saves', JSON.stringify(saves))
+                window.dispatchEvent(new Event('local-storage'))
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen bg-[#090d16] font-sans text-white">
             <div className="w-full px-4 py-8 md:px-6 lg:px-8">
-                <Navbar config={config} activeTab={activeTab} onTabChange={setActiveTab} onResetToDefault={handleResetToDefault} />
+                <Navbar
+                    config={config}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    onResetToDefault={handleResetToDefault}
+                />
 
                 {installStatus && (
                     <div
@@ -270,12 +438,38 @@ export function App() {
                         </TabPanel>
 
                         <TabPanel activeTab={activeTab} tabId="export">
-                            <ExportForm
-                                config={config}
-                                downloadSkin={downloadSkin}
-                                installToYakuake={installToYakuake}
-                                installStatus={installStatus}
-                                clearStatus={clearStatus}
+                            {(() => {
+                                const savedSkins = (() => {
+                                    if (typeof window !== 'undefined') {
+                                        try {
+                                            const saved = localStorage.getItem('yakuake-skin-saves')
+                                            return saved ? JSON.parse(saved) : {}
+                                        } catch {
+                                            return {}
+                                        }
+                                    }
+                                    return {}
+                                })()
+                                return (
+                                    <ExportForm
+                                        config={config}
+                                        downloadSkin={downloadSkin}
+                                        installToYakuake={installToYakuake}
+                                        installStatus={installStatus}
+                                        clearStatus={clearStatus}
+                                        savedSkins={savedSkins}
+                                    />
+                                )
+                            })()}
+                        </TabPanel>
+
+                        <TabPanel activeTab={activeTab} tabId="skins">
+                            <SkinSavesManager
+                                currentSkinName={config.meta.skinName}
+                                onSave={handleSaveSkin}
+                                onLoad={handleLoadSkin}
+                                onDelete={handleDeleteSkin}
+                                onRename={handleRenameSkin}
                             />
                         </TabPanel>
                     </div>

@@ -6,6 +6,10 @@ interface ExportFormProps {
     installToYakuake: (config: SkinConfig) => void
     installStatus: { message: string; type: 'success' | 'error' | 'info' } | null
     clearStatus: () => void
+    savedSkins: Record<
+        string,
+        { name: string; config: SkinConfig; createdAt: number; updatedAt: number }
+    >
 }
 
 export const ExportForm = ({
@@ -14,8 +18,46 @@ export const ExportForm = ({
     installToYakuake,
     installStatus,
     clearStatus,
+    savedSkins,
 }: ExportFormProps) => {
     const accentColor = config.global.colors.text
+    const skinFolder = config.meta.skinName.toLowerCase().replace(/[^a-z0-9]/g, '_')
+
+    const folderStructure = `${skinFolder}/
+├── logo.svg
+├── title.skin
+├── tabs.skin
+├── title/
+│   ├── background_center.svg
+│   ├── background_left.svg
+│   ├── background_right.svg
+│   ├── config_up.svg
+│   ├── config_over.svg
+│   ├── config_down.svg
+│   ├── focus_up.svg
+│   ├── focus_over.svg
+│   ├── focus_down.svg
+│   ├── quit_up.svg
+│   ├── quit_over.svg
+│   └── quit_down.svg
+└── tabs/
+    ├── background_center.svg
+    ├── background_left.svg
+    ├── background_right.svg
+    ├── tab_selected.svg
+    ├── tab_unselected.svg
+    ├── tab_selected_left.svg
+    ├── tab_selected_right.svg
+    ├── tab_unselected_left.svg
+    ├── tab_unselected_right.svg
+    ├── tab_separator.svg
+    ├── lock.svg
+    ├── plus_up.svg
+    ├── plus_over.svg
+    ├── plus_down.svg
+    ├── minus_up.svg
+    ├── minus_over.svg
+    └── minus_down.svg`
 
     return (
         <div className="space-y-6">
@@ -76,6 +118,59 @@ export const ExportForm = ({
                 </div>
             )}
 
+            {Object.keys(savedSkins).length > 0 && (
+                <div className="rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
+                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-200">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            style={{ color: accentColor }}
+                        >
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2" />
+                            <path
+                                d="M10 6v8M6 10h8"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                        Saved Skins - Export
+                    </h3>
+                    <div className="space-y-2">
+                        {Object.values(savedSkins)
+                            .sort((a, b) => b.updatedAt - a.updatedAt)
+                            .map((skin) => (
+                                <div
+                                    key={skin.name}
+                                    className="flex items-center justify-between rounded-lg border border-[#1e293b] bg-[#090d16] p-3"
+                                >
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate font-medium text-white">
+                                            {skin.name}
+                                        </p>
+                                        <p className="truncate text-xs text-gray-400">
+                                            Updated: {new Date(skin.updatedAt).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => downloadSkin(skin.config)}
+                                        className="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+                                        style={{
+                                            backgroundColor: '#3b4252',
+                                            color: accentColor,
+                                            border: `1px solid ${accentColor}`,
+                                        }}
+                                    >
+                                        Export .tar.gz
+                                    </button>
+                                </div>
+                            ))}
+                    </div>
+                </div>
+            )}
+
             <div className="rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
                 <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-200">
                     <svg
@@ -96,93 +191,118 @@ export const ExportForm = ({
                     How to Install Your Yakuake Skin
                 </h3>
                 <div className="space-y-4 text-sm text-gray-300">
-                    <div className="border-l-2 border-sky-400 pl-4 space-y-3">
+                    <div className="space-y-3 border-l-2 border-sky-400 pl-4">
                         <div>
                             <p className="font-medium text-white">1. Download the Skin Package</p>
                             <p className="text-gray-400">
-                                Click <strong>"Download .tar.gz"</strong> above. Your browser will save a <code className="rounded bg-gray-700 px-1.5 py-0.5 text-xs font-mono text-sky-300">{config.meta.skinName.toLowerCase().replace(/[^a-z0-9]/g, '_')}.tar.gz</code> file.
+                                Click <strong>&quot;Download .tar.gz&quot;</strong> above. Your
+                                browser will save a{' '}
+                                <code className="rounded bg-gray-700 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-sky-300">
+                                    {skinFolder}.tar.gz
+                                </code>{' '}
+                                file.
                             </p>
                         </div>
                         <div>
-                            <p className="font-medium text-white">2. Extract to the Yakuake Skins Directory</p>
-                            <p className="text-gray-400">
-                                Open your file manager and extract the downloaded <code className="rounded bg-gray-700 px-1.5 py-0.5 text-xs font-mono text-sky-300">{config.meta.skinName.toLowerCase().replace(/[^a-z0-9]/g, '_')}.tar.gz</code> archive.
+                            <p className="font-medium text-white">
+                                2. Extract to the Yakuake Skins Directory
                             </p>
-                            <p className="text-gray-400 mt-1">
+                            <p className="text-gray-400">
+                                Open your file manager and extract the downloaded{' '}
+                                <code className="rounded bg-gray-700 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-sky-300">
+                                    {skinFolder}.tar.gz
+                                </code>{' '}
+                                archive.
+                            </p>
+                            <p className="mt-1 text-gray-400">
                                 Place the extracted folder into your Yakuake skins directory:
                                 <br />
-                                <code className="rounded bg-gray-700 px-1.5 py-0.5 text-xs font-mono text-sky-300">~/.local/share/yakuake/skins/</code>
+                                <code className="rounded bg-gray-700 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-sky-300">
+                                    ~/.local/share/yakuake/skins/
+                                </code>
                             </p>
-                            <div className="mt-2 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
-                                <p className="text-xs text-gray-400 mb-1 font-medium">Expected folder structure after extraction:</p>
-                                <pre className="text-xs font-mono text-gray-300 overflow-x-auto">
-{config.meta.skinName.toLowerCase().replace(/[^a-z0-9]/g, '_')}/
-├── logo.svg
-├── title.skin
-├── tabs.skin
-├── title/
-│   ├── background_center.svg
-│   ├── background_left.svg
-│   ├── background_right.svg
-│   ├── config_up.svg
-│   ├── config_over.svg
-│   ├── config_down.svg
-│   ├── focus_up.svg
-│   ├── focus_over.svg
-│   ├── focus_down.svg
-│   ├── quit_up.svg
-│   ├── quit_over.svg
-│   └── quit_down.svg
-└── tabs/
-    ├── background_center.svg
-    ├── background_left.svg
-    ├── background_right.svg
-    ├── tab_selected.svg
-    ├── tab_unselected.svg
-    ├── tab_selected_left.svg
-    ├── tab_selected_right.svg
-    ├── tab_unselected_left.svg
-    ├── tab_unselected_right.svg
-    ├── tab_separator.svg
-    ├── lock.svg
-    ├── plus_up.svg
-    ├── plus_over.svg
-    ├── plus_down.svg
-    ├── minus_up.svg
-    ├── minus_over.svg
-    └── minus_down.svg
-</pre>
+                            <div className="mt-2 rounded-lg border border-gray-700 bg-gray-800/50 p-3">
+                                <p className="mb-1 text-xs font-medium text-gray-400">
+                                    Expected folder structure after extraction:
+                                </p>
+                                <pre className="overflow-x-auto font-mono text-xs text-gray-300">
+                                    {folderStructure}
+                                </pre>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">
-                                <strong>Important:</strong> The folder name must match your skin&apos;s identifier and contain <code className="font-mono">title.skin</code> and <code className="font-mono">tabs.skin</code> directly inside — not nested in a subfolder.
+                            <p className="mt-2 text-xs text-gray-500">
+                                <strong>Important:</strong> The folder name must match your
+                                skin&apos;s identifier and contain{' '}
+                                <code className="font-mono">title.skin</code> and{' '}
+                                <code className="font-mono">tabs.skin</code> directly inside — not
+                                nested in a subfolder.
                             </p>
                         </div>
                         <div>
                             <p className="font-medium text-white">3. Apply the Skin in Yakuake</p>
-                            <ol className="list-decimal list-inside space-y-1 text-gray-400 mt-1">
-                                <li>Open Yakuake (press your toggle key, usually <kbd className="rounded bg-gray-700 px-1.5 py-0.5 text-xs font-mono">F12</kbd>)</li>
-                                <li>Right-click the title bar → <strong>Configure Yakuake...</strong></li>
-                                <li>Go to <strong>Appearance</strong> tab</li>
-                                <li>In the <strong>Skin</strong> dropdown, select your new skin: <strong className="text-sky-300">{config.meta.skinName}</strong></li>
-                                <li>Click <strong>Apply</strong> (bottom right)</li>
+                            <ol className="mt-1 list-inside list-decimal space-y-1 text-gray-400">
+                                <li>
+                                    Open Yakuake (press your toggle key, usually{' '}
+                                    <kbd className="rounded bg-gray-700 px-1.5 py-0.5 font-mono text-xs">
+                                        F12
+                                    </kbd>
+                                    )
+                                </li>
+                                <li>
+                                    Right-click the title bar →{' '}
+                                    <strong>Configure Yakuake...</strong>
+                                </li>
+                                <li>
+                                    Go to <strong>Appearance</strong> tab
+                                </li>
+                                <li>
+                                    In the <strong>Skin</strong> dropdown, select your new skin:{' '}
+                                    <strong className="text-sky-300">{config.meta.skinName}</strong>
+                                </li>
+                                <li>
+                                    Click <strong>Apply</strong> (bottom right)
+                                </li>
                             </ol>
                         </div>
                         <div>
-                            <p className="font-medium text-white">4. Verify & Refresh (if needed)</p>
-                            <p className="text-gray-400">
-                                The skin should apply immediately. If it doesn&apos;t appear in the list or looks wrong:
+                            <p className="font-medium text-white">
+                                4. Verify & Refresh (if needed)
                             </p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-400 mt-1">
-                                <li>Restart Yakuake: <code className="rounded bg-gray-700 px-1.5 py-0.5 text-xs font-mono text-sky-300">killall yakuake && yakuake &</code></li>
-                                <li>Check the extracted folder is directly in <code className="font-mono">~/.local/share/yakuake/skins/</code> (not in a subfolder)</li>
-                                <li>Verify the folder contains <code className="font-mono">title.skin</code> and <code className="font-mono">tabs.skin</code> at the root level</li>
+                            <p className="text-gray-400">
+                                The skin should apply immediately. If it doesn&apos;t appear in the
+                                list or looks wrong:
+                            </p>
+                            <ul className="mt-1 list-inside list-disc space-y-1 text-gray-400">
+                                <li>
+                                    Restart Yakuake:{' '}
+                                    <code className="rounded bg-gray-700 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-sky-300">
+                                        killall yakuake && yakuake &
+                                    </code>
+                                </li>
+                                <li>
+                                    Check the extracted folder is directly in{' '}
+                                    <code className="font-mono whitespace-nowrap">
+                                        ~/.local/share/yakuake/skins/
+                                    </code>{' '}
+                                    (not in a subfolder)
+                                </li>
+                                <li>
+                                    Verify the folder contains{' '}
+                                    <code className="font-mono whitespace-nowrap">title.skin</code>{' '}
+                                    and{' '}
+                                    <code className="font-mono whitespace-nowrap">tabs.skin</code>{' '}
+                                    at the root level
+                                </li>
                             </ul>
                         </div>
-                        <div className="p-3 bg-sky-500/10 border border-sky-500/30 rounded-lg">
-                            <p className="font-medium text-sky-300 mb-1">Pro Tip: Auto-Install</p>
-                            <p className="text-gray-400 text-sm">
-                                Use the <strong>"Install to Yakuake"</strong> button above for automatic installation.
-                                It will prompt you to select <code className="font-mono">~/.local/share/yakuake/skins/</code> and extract everything automatically.
+                        <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 p-3">
+                            <p className="mb-1 font-medium text-sky-300">Pro Tip: Auto-Install</p>
+                            <p className="text-sm text-gray-400">
+                                Use the <strong>&quot;Install to Yakuake&quot;</strong> button above
+                                for automatic installation. It will prompt you to select{' '}
+                                <code className="font-mono whitespace-nowrap">
+                                    ~/.local/share/yakuake/skins/
+                                </code>{' '}
+                                and extract everything automatically.
                             </p>
                         </div>
                     </div>

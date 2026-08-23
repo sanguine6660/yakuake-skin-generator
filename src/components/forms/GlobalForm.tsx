@@ -117,7 +117,7 @@ export const GlobalForm = ({
                             >
                                 <div className="mb-2 flex items-center gap-2">
                                     <div
-                                        className="h-6 w-6 flex-shrink-0 rounded"
+                                        className="h-6 w-6 shrink-0 rounded"
                                         style={{ background: preset.previewColors.text }}
                                     />
                                     <span className={`truncate font-medium ${textColor}`}>
@@ -245,16 +245,16 @@ export const GlobalForm = ({
                 ))}
             </div>
 
-{activeModal && (
-            <ButtonStateModal
-                isOpen={true}
-                onClose={() => setActiveModal(null)}
-                config={config}
-                button={activeModal}
-                buttonLabel={BUTTON_LABELS[activeModal] || activeModal}
-                onColorChange={onButtonColorChange}
-            />
-        )}
+            {activeModal && (
+                <ButtonStateModal
+                    isOpen={true}
+                    onClose={() => setActiveModal(null)}
+                    config={config}
+                    button={activeModal}
+                    buttonLabel={BUTTON_LABELS[activeModal] || activeModal}
+                    onColorChange={onButtonColorChange}
+                />
+            )}
         </div>
     )
 }
