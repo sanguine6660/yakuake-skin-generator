@@ -59,6 +59,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                 label="Bold Text"
                 checked={title.textBold}
                 onChange={(v) => onChange({ textBold: v })}
+                config={config}
             />
 
             <h3 className="mt-6 mb-3 text-lg font-semibold text-gray-200">
@@ -68,6 +69,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                 label="Enable Translucent Background"
                 checked={title.bgTranslucent ?? false}
                 onChange={(v) => onChange({ bgTranslucent: v })}
+                config={config}
             />
 
             <h3 className="mb-3 text-lg font-semibold text-gray-200">Title Bar Enabled</h3>
@@ -75,6 +77,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                 label="Enable Title Bar"
                 checked={title.titleEnabled ?? true}
                 onChange={(v) => onChange({ titleEnabled: v })}
+                config={config}
             />
 
             <div className="space-y-6">
@@ -83,6 +86,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                     config={config.title.focusBtn}
                     label="Focus/Maximize"
                     onChange={(updates) => onChange({ focusBtn: { ...config.title.focusBtn, ...updates } })}
+                    globalConfig={config}
                 />
 
                 <h3 className="mb-3 text-lg font-semibold text-gray-200">Config/Settings Button</h3>
@@ -90,6 +94,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                     config={config.title.configBtn}
                     label="Config/Settings"
                     onChange={(updates) => onChange({ configBtn: { ...config.title.configBtn, ...updates } })}
+                    globalConfig={config}
                 />
 
                 <h3 className="mb-3 text-lg font-semibold text-gray-200">Quit/Close Button</h3>
@@ -97,6 +102,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                     config={config.title.quitBtn}
                     label="Quit/Close"
                     onChange={(updates) => onChange({ quitBtn: { ...config.title.quitBtn, ...updates } })}
+                    globalConfig={config}
                 />
             </div>
         </div>

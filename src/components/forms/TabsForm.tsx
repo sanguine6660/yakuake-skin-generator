@@ -7,7 +7,7 @@ interface TabsFormProps {
     onRgbColorChange: (colorKey: string, rgb: RgbColor) => void
 }
 
-const ButtonConfigEditor = ({ config, label, onChange }: { config: any; label: string; onChange: (updates: any) => void }) => (
+const ButtonConfigEditor = ({ config, label, onChange, globalConfig }: { config: any; label: string; onChange: (updates: any) => void; globalConfig: SkinConfig }) => (
     <div className="bg-[#090d16] p-4 rounded-lg border border-[#1e293b]">
         <div className="mb-3 flex items-center justify-between">
             <h4 className="font-medium text-white capitalize">{label} Button</h4>
@@ -15,6 +15,7 @@ const ButtonConfigEditor = ({ config, label, onChange }: { config: any; label: s
                 label="Enabled"
                 checked={config.enabled}
                 onChange={(v) => onChange({ enabled: v })}
+                config={globalConfig}
             />
         </div>
 
@@ -23,6 +24,7 @@ const ButtonConfigEditor = ({ config, label, onChange }: { config: any; label: s
                 label="Enabled"
                 checked={config.enabled}
                 onChange={(v) => onChange({ enabled: v })}
+                config={globalConfig}
             />
             <div className="md:col-span-2 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
@@ -105,6 +107,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 label="Enable Tabs Bar"
                 checked={tabs.tabsEnabled ?? true}
                 onChange={(v) => onChange({ tabsEnabled: v })}
+                config={config}
             />
 
             <h3 className="mb-3 text-lg font-semibold text-gray-200">Tab Styling (3-Piece)</h3>
@@ -166,6 +169,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 label="Enable Translucent Background"
                 checked={tabs.bgTranslucent ?? false}
                 onChange={(v) => onChange({ bgTranslucent: v })}
+                config={config}
             />
 
             <div className="space-y-6">
@@ -174,6 +178,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     config={config.tabs.lockBtn}
                     label="Lock/Prevent Closing"
                     onChange={(updates) => onChange({ lockBtn: { ...config.tabs.lockBtn, ...updates } })}
+                    globalConfig={config}
                 />
 
                 <h3 className="mb-3 text-lg font-semibold text-gray-200">Plus/New Tab Button</h3>
@@ -181,6 +186,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     config={config.tabs.plusBtn}
                     label="Plus/New Tab"
                     onChange={(updates) => onChange({ plusBtn: { ...config.tabs.plusBtn, ...updates } })}
+                    globalConfig={config}
                 />
 
                 <h3 className="mb-3 text-lg font-semibold text-gray-200">Minus/Close Tab Button</h3>
@@ -188,6 +194,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     config={config.tabs.minusBtn}
                     label="Minus/Close Tab"
                     onChange={(updates) => onChange({ minusBtn: { ...config.tabs.minusBtn, ...updates } })}
+                    globalConfig={config}
                 />
 
                 <h3 className="mb-3 text-lg font-semibold text-gray-200">Close Button (Per-Tab)</h3>
@@ -195,6 +202,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     config={config.tabs.closeBtn}
                     label="Close Tab"
                     onChange={(updates) => onChange({ closeBtn: { ...config.tabs.closeBtn, ...updates } })}
+                    globalConfig={config}
                 />
             </div>
         </div>
