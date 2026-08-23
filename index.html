@@ -60,10 +60,479 @@
 
         <!-- Theme & Styling -->
         <meta name="theme-color" content="#66c2f2" />
-      <script type="module" crossorigin src="/yakuake-skin-generator/assets/index-CmDAAtPu.js"></script>
-      <link rel="stylesheet" crossorigin href="/yakuake-skin-generator/assets/index-B0rg8WbZ.css">
+
+        <style>
+            /* Loading screen — shown while the app bundle (icon libraries) downloads.
+               All styles are inline so the screen renders instantly, before any CSS/JS loads. */
+            #loading-screen {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: radial-gradient(circle at 50% 40%, #0d1322 0%, #090d16 70%);
+                opacity: 1;
+                transition: opacity 0.35s ease;
+                font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+                    'Helvetica Neue', Arial, sans-serif;
+            }
+
+            #loading-screen.loading-screen--hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            /* Lock the scrollbar for as long as the loading screen exists */
+            body:has(#loading-screen) {
+                overflow: hidden;
+            }
+
+            .loading-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 26px;
+            }
+
+            .loading-logo {
+                width: 72px;
+                height: 72px;
+                animation: logo-glow 2.8s ease-in-out infinite;
+            }
+
+            .loading-logo svg {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            /* Animated logo paths: dropdown chevron draws, then ">_" types in,
+               the cursor blinks like a real terminal — then the loop restarts. */
+            .logo-chevron,
+            .logo-prompt,
+            .logo-cursor {
+                stroke-dasharray: 24;
+                stroke-dashoffset: 24;
+            }
+
+            .logo-prompt {
+                stroke-dasharray: 19;
+                stroke-dashoffset: 19;
+            }
+
+            .logo-cursor {
+                stroke-dasharray: 12;
+                stroke-dashoffset: 12;
+            }
+
+            .logo-chevron {
+                animation: draw-chevron 2.8s ease-in-out infinite;
+            }
+
+            .logo-prompt {
+                animation: draw-prompt 2.8s ease-in-out infinite;
+            }
+
+            .logo-cursor {
+                animation: draw-cursor 2.8s step-end infinite;
+            }
+
+            @keyframes draw-chevron {
+                0% {
+                    stroke-dashoffset: 24;
+                    opacity: 1;
+                }
+                16% {
+                    stroke-dashoffset: 0;
+                }
+                80% {
+                    stroke-dashoffset: 0;
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 0;
+                }
+                100% {
+                    stroke-dashoffset: 24;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes draw-prompt {
+                0%,
+                12% {
+                    stroke-dashoffset: 19;
+                    opacity: 1;
+                }
+                30% {
+                    stroke-dashoffset: 0;
+                }
+                80% {
+                    stroke-dashoffset: 0;
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 0;
+                }
+                100% {
+                    stroke-dashoffset: 19;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes draw-cursor {
+                0%,
+                26% {
+                    stroke-dashoffset: 12;
+                    opacity: 1;
+                }
+                36% {
+                    stroke-dashoffset: 0;
+                }
+                48% {
+                    opacity: 1;
+                    stroke-dashoffset: 0;
+                }
+                54% {
+                    opacity: 0;
+                }
+                60% {
+                    opacity: 1;
+                }
+                66% {
+                    opacity: 0;
+                }
+                72% {
+                    opacity: 1;
+                }
+                80% {
+                    opacity: 1;
+                    stroke-dashoffset: 0;
+                }
+                90% {
+                    opacity: 0;
+                }
+                100% {
+                    stroke-dashoffset: 12;
+                    opacity: 0;
+                }
+            }
+
+            .loading-text {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 2px;
+                font-size: 15px;
+                font-weight: 600;
+                letter-spacing: 0.02em;
+                color: #e5edf5;
+            }
+
+            .loading-cursor {
+                display: inline-block;
+                width: 8px;
+                height: 16px;
+                margin-left: 4px;
+                background: #66c2f2;
+                border-radius: 2px;
+                animation: blink 1s step-end infinite;
+            }
+
+            .loading-hint {
+                margin: 0;
+                font-size: 12px;
+                color: #5c6a7e;
+            }
+
+            /* Fake boot-sequence terminal — pure CSS, lines fade in staggered */
+            .loading-terminal {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                width: 330px;
+                max-width: 86vw;
+                padding: 14px 18px;
+                border: 1px solid rgba(102, 194, 242, 0.14);
+                border-radius: 10px;
+                background: rgba(18, 24, 36, 0.55);
+                font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
+                    monospace;
+                font-size: 11.5px;
+                line-height: 1.5;
+                color: #6a7a90;
+                text-align: left;
+                user-select: none;
+            }
+
+            .term-line {
+                display: flex;
+                align-items: baseline;
+                gap: 8px;
+                opacity: 0;
+                animation: term-in 0.35s ease forwards;
+            }
+
+            /* Line pacing is driven by --term-step (set by the inline script below
+               from the average historical startup time; default: fast). */
+            .term-line:nth-child(1) {
+                animation-delay: 0s;
+            }
+            .term-line:nth-child(2) {
+                animation-delay: calc(var(--term-step, 0.35s) * 1);
+            }
+            .term-line:nth-child(3) {
+                animation-delay: calc(var(--term-step, 0.35s) * 2);
+            }
+            .term-line:nth-child(4) {
+                animation-delay: calc(var(--term-step, 0.35s) * 3);
+            }
+            .term-line:nth-child(5) {
+                animation-delay: calc(var(--term-step, 0.35s) * 4);
+            }
+            .term-line:nth-child(6) {
+                animation-delay: calc(var(--term-step, 0.35s) * 5);
+            }
+
+            .term-prompt {
+                color: #66c2f2;
+                flex-shrink: 0;
+            }
+
+            .term-ok {
+                color: #a3be8c;
+                flex-shrink: 0;
+            }
+
+            .term-dim {
+                margin-left: auto;
+                color: #46536a;
+            }
+
+            .term-cursor {
+                display: inline-block;
+                width: 7px;
+                height: 12px;
+                margin-left: 2px;
+                background: #66c2f2;
+                border-radius: 1px;
+                align-self: center;
+                animation: blink 1s step-end infinite;
+            }
+
+            @keyframes term-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(3px);
+                }
+                to {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes blink {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0;
+                }
+            }
+
+            @keyframes logo-glow {
+                0%,
+                100% {
+                    filter: drop-shadow(0 0 10px rgba(102, 194, 242, 0.2));
+                }
+                50% {
+                    filter: drop-shadow(0 0 22px rgba(102, 194, 242, 0.45));
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .loading-logo {
+                    animation: none;
+                    filter: drop-shadow(0 0 14px rgba(102, 194, 242, 0.3));
+                }
+                .logo-chevron,
+                .logo-prompt,
+                .logo-cursor {
+                    animation: none;
+                    stroke-dashoffset: 0;
+                    opacity: 1;
+                }
+                .term-line {
+                    animation: none;
+                    opacity: 1;
+                }
+                .loading-cursor,
+                .term-cursor {
+                    animation: none;
+                }
+            }
+        </style>
+      <script type="module" crossorigin src="/yakuake-skin-generator/assets/index-BiM6a83p.js"></script>
+      <link rel="stylesheet" crossorigin href="/yakuake-skin-generator/assets/index-DXwPlj9T.css">
     </head>
     <body>
+        <div
+            id="loading-screen"
+            role="status"
+            aria-label="Application is loading"
+        >
+            <div class="loading-content">
+                <div class="loading-logo">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 48 48"
+                        fill="none"
+                        aria-hidden="true"
+                    >
+                        <defs>
+                            <linearGradient
+                                id="loaderBg"
+                                x1="8"
+                                y1="4"
+                                x2="40"
+                                y2="44"
+                                gradientUnits="userSpaceOnUse"
+                            >
+                                <stop stop-color="#232834" />
+                                <stop offset="1" stop-color="#0b0f1a" />
+                            </linearGradient>
+                            <linearGradient
+                                id="loaderAccent"
+                                x1="12"
+                                y1="10"
+                                x2="36"
+                                y2="38"
+                                gradientUnits="userSpaceOnUse"
+                            >
+                                <stop stop-color="#8ed0f8" />
+                                <stop offset="1" stop-color="#4aa8e0" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="48" height="48" rx="11" fill="url(#loaderBg)" />
+                        <rect
+                            x="1.25"
+                            y="1.25"
+                            width="45.5"
+                            height="45.5"
+                            rx="9.75"
+                            stroke="url(#loaderAccent)"
+                            stroke-width="2.5"
+                        />
+                        <path
+                            class="logo-chevron"
+                            d="M16 12 L24 18.5 L32 12"
+                            stroke="url(#loaderAccent)"
+                            stroke-width="3.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            class="logo-prompt"
+                            d="M13.5 26 L20 31.5 L13.5 37"
+                            stroke="#e5edf5"
+                            stroke-width="3.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            class="logo-cursor"
+                            d="M24.5 37 H35"
+                            stroke="#e5edf5"
+                            stroke-width="3.5"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </div>
+                <div class="loading-spinner" aria-hidden="true"></div>
+                <p class="loading-text">
+                    Loading<span class="loading-cursor" aria-hidden="true"></span>
+                </p>
+                <p class="loading-hint">warming up the icon libraries, hang tight…</p>
+                <div class="loading-terminal" aria-hidden="true">
+                    <div class="term-line">
+                        <span class="term-prompt">$</span>
+                        yakuake-skin-generator --init
+                    </div>
+                    <div class="term-line">
+                        <span class="term-ok">✓</span>
+                        loading icon libraries
+                        <span class="term-dim">28/28</span>
+                    </div>
+                    <div class="term-line">
+                        <span class="term-ok">✓</span>
+                        loading theme presets
+                        <span class="term-dim">20/20</span>
+                    </div>
+                    <div class="term-line">
+                        <span class="term-ok">✓</span>
+                        compiling svg generators
+                        <span class="term-dim">ok</span>
+                    </div>
+                    <div class="term-line">
+                        <span class="term-ok">✓</span>
+                        mounting live preview
+                        <span class="term-dim">ok</span>
+                    </div>
+                    <div class="term-line">
+                        <span class="term-ok">✓</span>
+                        skin engine ready
+                        <span class="term-cursor"></span>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                (function () {
+                    try {
+                        var raw = localStorage.getItem('yakuake-startup-times')
+                        var times = raw ? JSON.parse(raw) : []
+                        if (Array.isArray(times) && times.length > 0) {
+                            var avg =
+                                times.reduce(function (s, t) {
+                                    return s + (t.duration || 0)
+                                }, 0) / times.length
+                            var step = (avg - 350) / 5
+                            step = Math.min(1500, Math.max(120, step))
+                            document.documentElement.style.setProperty(
+                                '--term-step',
+                                (step / 1000).toFixed(2) + 's'
+                            )
+                        }
+                    } catch (e) {}
+                })()
+            </script>
+        </div>
+
+        <noscript>
+            <p
+                style="
+                    position: fixed;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #e5edf5;
+                    background: #090d16;
+                    font-family: sans-serif;
+                "
+            >
+                The Yakuake Skin Generator requires JavaScript to run.
+            </p>
+        </noscript>
+
         <div id="app"></div>
     </body>
 </html>
