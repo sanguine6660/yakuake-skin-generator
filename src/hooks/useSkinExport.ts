@@ -35,19 +35,20 @@ export const useSkinExport = () => {
     const { trackEvent } = useGoatCounter()
 
     const downloadSkin = useCallback(
-        async (config: SkinConfig) => {
+        async (config: SkinConfig): Promise<boolean> => {
             const { files, folderName } = prepareSkinFiles(config)
             const { createTarGz } = await import('../utils')
             await createTarGz(files, `${folderName}.tar.gz`)
 
             // Track successful download event
             trackEvent('skin-download', `Download: ${folderName}`)
+            return true
         },
         [trackEvent]
     )
 
     const installToYakuake = useCallback(
-        async (config: SkinConfig) => {
+        async (config: SkinConfig): Promise<boolean> => {
             try {
                 setInstallStatus({ message: 'Preparing skin for installation...', type: 'info' })
 
@@ -63,7 +64,7 @@ export const useSkinExport = () => {
 
                     // Track fallback download event
                     trackEvent('skin-download-fallback', `Download Fallback: ${folderName}`)
-                    return
+                    return true
                 }
 
                 try {
@@ -139,7 +140,7 @@ export const useSkinExport = () => {
 
                         // Track successful direct installation event
                         trackEvent('skin-install-success', `Install Success: ${folderName}`)
-                        return
+                        return true
                     }
 
                     setInstallStatus({
@@ -182,10 +183,11 @@ export const useSkinExport = () => {
                     })
 
                     trackEvent('skin-install-custom', `Install Custom: ${folderName}`)
+                    return true
                 } catch (err) {
                     if (err instanceof Error && err.name === 'AbortError') {
                         setInstallStatus({ message: 'Installation cancelled', type: 'info' })
-                        return
+                        return false
                     }
                     throw err
                 }
@@ -194,6 +196,7 @@ export const useSkinExport = () => {
                     message: `Installation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
                     type: 'error',
                 })
+                return false
             }
         },
         [trackEvent]

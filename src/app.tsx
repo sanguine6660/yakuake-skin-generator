@@ -24,6 +24,9 @@ import type { IconRole, RgbColor, SkinConfig, IconLibrary } from './types'
 import { useSkinConfig } from './hooks/useSkinConfig'
 import { useSkinExport } from './hooks/useSkinExport'
 import { useSessionStorage } from './hooks/useSessionStorage'
+import { useLocalStorage } from './hooks/useLocalStorage'
+import { useGoatCounter } from './hooks/useGoatCounter'
+import { useDownloadCounter } from './hooks/useDownloadCounter'
 import { MetaForm } from './components/forms/MetaForm'
 import { GlobalForm } from './components/forms/GlobalForm'
 import { TitleForm } from './components/forms/TitleForm'
@@ -35,7 +38,7 @@ import { Navbar } from './components/ui/Navbar'
 import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
 import { SkinSavesManager } from './components/forms/SkinSavesManager'
-import { PRESETS } from './constants'
+import { PRESETS, ICON_LIBRARIES } from './constants'
 
 export function App() {
     const defaultConfig: SkinConfig = {
@@ -222,6 +225,18 @@ export function App() {
     } = useSkinConfig(savedConfig)
 
     const { downloadSkin, installToYakuake, installStatus, clearStatus } = useSkinExport()
+    const { trackEvent } = useGoatCounter()
+    const { totalDownloads, incrementDownload } = useDownloadCounter()
+
+    const [exportCount, setExportCount] = useLocalStorage<number>('yakuake-export-count', 0)
+    const [presetUsage, setPresetUsage] = useLocalStorage<Record<string, number>>(
+        'yakuake-preset-usage',
+        {}
+    )
+    const [iconLibraryUsage, setIconLibraryUsage] = useLocalStorage<Record<string, number>>(
+        'yakuake-icon-library-usage',
+        {}
+    )
 
     // State für Anzahl gespeicherter Skins (für StatsPreview)
     const [savedSkinsCount, setSavedSkinsCount] = useState(() => {
@@ -277,7 +292,29 @@ export function App() {
         }
     }, [])
 
+    const handleDownloadSkin = async (config: SkinConfig) => {
+        const success = await downloadSkin(config)
+        if (success) {
+            setExportCount((count) => count + 1)
+            void incrementDownload()
+        }
+    }
+
+    const handleInstallToYakuake = async (config: SkinConfig) => {
+        const success = await installToYakuake(config)
+        if (success) {
+            setExportCount((count) => count + 1)
+            void incrementDownload()
+        }
+    }
+
+    const handleTabChange = (tab: string) => {
+        trackEvent(`tab:${tab}`)
+        setActiveTab(tab)
+    }
+
     const handleResetToDefault = () => {
+        trackEvent('reset-default')
         setSavedConfig(defaultConfig)
         if (typeof window !== 'undefined') {
             sessionStorage.setItem('yakuake-active-tab', 'global')
@@ -301,7 +338,14 @@ export function App() {
         setRgbColor('tabs', colorKey, rgb)
     }
 
+    const handleIconLibraryChange = (lib: IconLibrary) => {
+        setIconLibraryUsage((prev) => ({ ...prev, [lib]: (prev[lib] ?? 0) + 1 }))
+        trackEvent(`icon-library:${lib}`)
+        setIconLibrary(lib)
+    }
+
     const handleIconChange = (role: IconRole, iconName: string) => {
+        trackEvent(`icon-set:${role}:${iconName}`)
         setIcon(role, iconName)
     }
 
@@ -343,10 +387,13 @@ export function App() {
                 email: 'sanguine6660@gmail.com',
                 web: 'https://github.com/sanguine6660/yakuake-skin-generator',
             })
+            setPresetUsage((prev) => ({ ...prev, [preset.id]: (prev[preset.id] ?? 0) + 1 }))
+            trackEvent(`preset:${preset.id}`, `${preset.name} (${preset.category})`)
         }
     }
 
     const handleSaveSkin = (name: string) => {
+        trackEvent('skin-saved')
         const saved = localStorage.getItem('yakuake-skin-saves')
         const saves = saved ? JSON.parse(saved) : {}
         const existing = saves[name]
@@ -361,6 +408,7 @@ export function App() {
     }
 
     const handleLoadSkin = (savedConfigData: SkinConfig) => {
+        trackEvent('skin-loaded')
         Object.entries(savedConfigData.global || {}).forEach(([key, value]) => {
             if (key === 'iconSet' && typeof value === 'object') {
                 updateGlobal({ iconSet: value as any })
@@ -387,6 +435,7 @@ export function App() {
     }
 
     const handleDeleteSkin = (name: string) => {
+        trackEvent('skin-deleted')
         const saved = localStorage.getItem('yakuake-skin-saves')
         if (saved) {
             const saves = JSON.parse(saved)
@@ -397,6 +446,7 @@ export function App() {
     }
 
     const handleRenameSkin = (oldName: string, newName: string) => {
+        trackEvent('skin-renamed')
         const saved = localStorage.getItem('yakuake-skin-saves')
         if (saved) {
             const saves = JSON.parse(saved)
@@ -409,13 +459,22 @@ export function App() {
         }
     }
 
+    const topPresetEntry = Object.entries(presetUsage).sort((a, b) => b[1] - a[1])[0]
+    const topPresetName = topPresetEntry
+        ? PRESETS.find((preset) => preset.id === topPresetEntry[0])?.name
+        : undefined
+    const topLibraryEntry = Object.entries(iconLibraryUsage).sort((a, b) => b[1] - a[1])[0]
+    const topLibraryName = topLibraryEntry
+        ? ICON_LIBRARIES[topLibraryEntry[0] as IconLibrary]
+        : undefined
+
     return (
         <div className="min-h-screen bg-[#090d16] font-sans text-white">
             <div className="w-full px-4 py-8 md:px-6 lg:px-8">
                 <Navbar
                     config={config}
                     activeTab={activeTab}
-                    onTabChange={setActiveTab}
+                    onTabChange={handleTabChange}
                     onResetToDefault={handleResetToDefault}
                 />
 
@@ -464,7 +523,7 @@ export function App() {
                         <TabPanel activeTab={activeTab} tabId="global">
                             <GlobalForm
                                 config={config}
-                                onIconLibraryChange={setIconLibrary}
+                                onIconLibraryChange={handleIconLibraryChange}
                                 onColorChange={handleColorChange}
                                 onButtonColorChange={handleButtonColorChange}
                                 onBorderRadiusChange={(v) => updateGlobal({ borderRadius: v })}
@@ -507,8 +566,8 @@ export function App() {
                                 return (
                                     <ExportForm
                                         config={config}
-                                        downloadSkin={downloadSkin}
-                                        installToYakuake={installToYakuake}
+                                        downloadSkin={handleDownloadSkin}
+                                        installToYakuake={handleInstallToYakuake}
                                         installStatus={installStatus}
                                         clearStatus={clearStatus}
                                         savedSkins={savedSkins}
@@ -531,7 +590,15 @@ export function App() {
                     <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-[420px]">
                         <Preview config={config} />
                         <ColorPreview config={config} />
-                        <StatsPreview savedSkinsCount={savedSkinsCount} />
+                        <StatsPreview
+                            totalDownloads={totalDownloads}
+                            exportCount={exportCount}
+                            savedSkinsCount={savedSkinsCount}
+                            favoritePreset={topPresetName}
+                            favoritePresetCount={topPresetEntry?.[1] ?? 0}
+                            favoriteIconLibrary={topLibraryName}
+                            favoriteIconLibraryCount={topLibraryEntry?.[1] ?? 0}
+                        />
                     </div>
                 </div>
             </div>
