@@ -1,4 +1,4 @@
-import type { IconRole, IconLibrary, IconSet, SkinMeta, RgbColor, SkinConfig } from '../types'
+import type { IconRole, IconLibrary, IconSet, SkinMeta, RgbColor, SkinConfig, ButtonColors } from '../types'
 
 export const ICON_LIBRARIES: Record<IconLibrary, string> = {
     lucide: 'Lucide',
@@ -361,6 +361,24 @@ export const DEFAULT_TABS_CONFIG = {
     closeBtnDown: '/tabs/close_down.svg',
 }
 
+const DEFAULT_BUTTON_STATE = {
+    upBg: '#232834',
+    upIcon: '#66c2f2',
+    overBg: '#3b4252',
+    overIcon: '#66c2f2',
+    downBg: '#66c2f2',
+    downIcon: '#1e2233',
+}
+
+export const DEFAULT_BUTTON_COLORS: ButtonColors = {
+    focus: { ...DEFAULT_BUTTON_STATE },
+    config: { ...DEFAULT_BUTTON_STATE },
+    quit: { ...DEFAULT_BUTTON_STATE, downBg: '#bf616a', downIcon: '#ffffff' },
+    plus: { ...DEFAULT_BUTTON_STATE },
+    minus: { ...DEFAULT_BUTTON_STATE },
+    close: { ...DEFAULT_BUTTON_STATE },
+}
+
 export const createDefaultSkinConfig = (): SkinConfig => ({
     meta: DEFAULT_META,
     title: DEFAULT_TITLE_CONFIG,
@@ -374,6 +392,7 @@ export const createDefaultSkinConfig = (): SkinConfig => ({
             text: '#66c2f2',
             dim: '#232834',
         },
+        buttonColors: DEFAULT_BUTTON_COLORS,
         borderRadius: 0,
         opacity: 100,
         translucency: false,

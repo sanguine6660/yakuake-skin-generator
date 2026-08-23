@@ -15,5 +15,11 @@ export const MetaForm = ({ meta, onChange }: MetaFormProps) => (
         />
         <TextInput label="Author" value={meta.author} onChange={(v) => onChange({ author: v })} />
         <TextInput label="Email" value={meta.email} onChange={(v) => onChange({ email: v })} />
+        <TextInput
+            label="Website (optional)"
+            value={meta.web || ''}
+            onChange={(v) => onChange({ web: v })}
+            placeholder="https://github.com/yourname"
+        />
     </div>
 )

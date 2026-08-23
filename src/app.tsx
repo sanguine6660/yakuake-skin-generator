@@ -50,6 +50,18 @@ export function App() {
         setIcon(role, iconName)
     }
 
+    const handleButtonColorChange = (button: string, state: string, value: string) => {
+        const currentButtonColors = config.global.buttonColors
+        const updatedButtonColors = {
+            ...currentButtonColors,
+            [button]: {
+                ...currentButtonColors[button as keyof typeof currentButtonColors],
+                [state]: value,
+            },
+        }
+        updateGlobal({ buttonColors: updatedButtonColors as any })
+    }
+
     const handleApplyPreset = (presetId: string) => {
         const preset = PRESETS.find((p) => p.id === presetId)
         if (preset) {
@@ -134,12 +146,12 @@ export function App() {
                                 config={config}
                                 onIconLibraryChange={setIconLibrary}
                                 onColorChange={handleColorChange}
+                                onButtonColorChange={handleButtonColorChange}
                                 onBorderRadiusChange={(v) => updateGlobal({ borderRadius: v })}
                                 onOpacityChange={(v) => updateGlobal({ opacity: v })}
                                 onTranslucencyChange={(v) => updateGlobal({ translucency: v })}
                                 onIconChange={handleIconChange}
                                 onApplyPreset={handleApplyPreset}
-                                onChange={updateMeta}
                             />
                         </TabPanel>
 

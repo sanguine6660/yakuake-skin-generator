@@ -140,6 +140,24 @@ export interface TabsConfig {
     closeBtnDown: string
 }
 
+export interface ButtonStateColors {
+    upBg: string
+    upIcon: string
+    overBg: string
+    overIcon: string
+    downBg: string
+    downIcon: string
+}
+
+export interface ButtonColors {
+    focus: ButtonStateColors
+    config: ButtonStateColors
+    quit: ButtonStateColors
+    plus: ButtonStateColors
+    minus: ButtonStateColors
+    close: ButtonStateColors
+}
+
 export interface SkinConfig {
     meta: SkinMeta
     title: Omit<TitleConfig, 'meta'>
@@ -153,6 +171,7 @@ export interface SkinConfig {
             text: string
             dim: string
         }
+        buttonColors: ButtonColors
         borderRadius: number
         opacity: number
         translucency: boolean

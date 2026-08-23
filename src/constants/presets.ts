@@ -1,5 +1,5 @@
 import type { SkinConfig } from '../types'
-import { DEFAULT_ICON_SETS, DEFAULT_TITLE_CONFIG, DEFAULT_TABS_CONFIG } from './constants'
+import { DEFAULT_ICON_SETS, DEFAULT_TITLE_CONFIG, DEFAULT_TABS_CONFIG, DEFAULT_BUTTON_COLORS } from './constants'
 
 export interface SkinPreset {
     id: string
@@ -32,6 +32,7 @@ const createPresetConfig = (
         borderRadius,
         iconLibrary,
         iconSet: DEFAULT_ICON_SETS[iconLibrary],
+        buttonColors: DEFAULT_BUTTON_COLORS,
         ...baseGlobal,
     },
     title: {

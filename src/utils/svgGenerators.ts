@@ -145,34 +145,36 @@ export const generateTabsBackgrounds = (config: SkinConfig) => {
 }
 
 export const generateAllTitleButtons = (config: SkinConfig) => {
-    const { bg, selected, dim, text } = config.global.colors
+    const { buttonColors } = config.global
+    const { config: configColors, focus, quit } = buttonColors
 
     return {
-        config_up: generateButtonSvg('settings', bg, text, 20, 14),
-        config_over: generateButtonSvg('settings', selected, text, 20, 14),
-        config_down: generateButtonSvg('settings', dim, text, 20, 14),
-        focus_up: generateButtonSvg('square', bg, text, 20, 14),
-        focus_over: generateButtonSvg('square', selected, text, 20, 14),
-        focus_down: generateButtonSvg('square', dim, text, 20, 14),
-        quit_up: generateButtonSvg('x', bg, text, 20, 14),
-        quit_over: generateButtonSvg('x', '#bf616a', '#fff', 20, 14),
-        quit_down: generateButtonSvg('x', '#a3be8c', '#fff', 20, 14),
+        config_up: generateButtonSvg('settings', configColors.upBg, configColors.upIcon, 20, 14),
+        config_over: generateButtonSvg('settings', configColors.overBg, configColors.overIcon, 20, 14),
+        config_down: generateButtonSvg('settings', configColors.downBg, configColors.downIcon, 20, 14),
+        focus_up: generateButtonSvg('square', focus.upBg, focus.upIcon, 20, 14),
+        focus_over: generateButtonSvg('square', focus.overBg, focus.overIcon, 20, 14),
+        focus_down: generateButtonSvg('square', focus.downBg, focus.downIcon, 20, 14),
+        quit_up: generateButtonSvg('x', quit.upBg, quit.upIcon, 20, 14),
+        quit_over: generateButtonSvg('x', quit.overBg, quit.overIcon, 20, 14),
+        quit_down: generateButtonSvg('x', quit.downBg, quit.downIcon, 20, 14),
     }
 }
 
 export const generateAllTabsButtons = (config: SkinConfig) => {
-    const { bg, selected, dim, text } = config.global.colors
+    const { buttonColors } = config.global
+    const { plus, minus, close } = buttonColors
 
     return {
-        plus_up: generatePlusMinusSvg('plus', dim, text, 16),
-        plus_over: generatePlusMinusSvg('plus', selected, text, 16),
-        plus_down: generatePlusMinusSvg('plus', text, bg, 16),
-        minus_up: generatePlusMinusSvg('minus', dim, text, 16),
-        minus_over: generatePlusMinusSvg('minus', selected, text, 16),
-        minus_down: generatePlusMinusSvg('minus', text, bg, 16),
-        close_up: generateCloseButtonSvg(dim, text, 16, 12),
-        close_over: generateCloseButtonSvg(selected, text, 16, 12),
-        close_down: generateCloseButtonSvg(text, bg, 16, 12),
+        plus_up: generatePlusMinusSvg('plus', plus.upBg, plus.upIcon, 16),
+        plus_over: generatePlusMinusSvg('plus', plus.overBg, plus.overIcon, 16),
+        plus_down: generatePlusMinusSvg('plus', plus.downBg, plus.downIcon, 16),
+        minus_up: generatePlusMinusSvg('minus', minus.upBg, minus.upIcon, 16),
+        minus_over: generatePlusMinusSvg('minus', minus.overBg, minus.overIcon, 16),
+        minus_down: generatePlusMinusSvg('minus', minus.downBg, minus.downIcon, 16),
+        close_up: generateCloseButtonSvg(close.upBg, close.upIcon, 16, 12),
+        close_over: generateCloseButtonSvg(close.overBg, close.overIcon, 16, 12),
+        close_down: generateCloseButtonSvg(close.downBg, close.downIcon, 16, 12),
     }
 }
 

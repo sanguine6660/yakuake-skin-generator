@@ -1,31 +1,42 @@
 import { useState } from 'preact/hooks'
-import type { SkinConfig, IconLibrary, IconRole } from '../../types'
+import type {
+    SkinConfig,
+    IconLibrary,
+    IconRole,
+    ButtonColors,
+    ButtonStateColors,
+} from '../../types'
 import { ICON_LIBRARIES, ICON_ROLES, PRESETS, getPresetsByCategory } from '../../constants'
-import { ColorInput, NumberInput, SelectInput, CheckboxInput, TextInput } from '../ui'
+import { ColorInput, NumberInput, SelectInput, CheckboxInput } from '../ui'
 import { IconPicker } from '../ui/IconPicker'
+import { ButtonStateModal } from './ButtonStateModal'
 
 interface GlobalFormProps {
     config: SkinConfig
     onIconLibraryChange: (lib: IconLibrary) => void
     onColorChange: (section: 'global' | 'title' | 'tabs', colorKey: string, value: string) => void
+    onButtonColorChange: (
+        button: keyof ButtonColors,
+        state: keyof ButtonStateColors,
+        value: string
+    ) => void
     onBorderRadiusChange: (value: number) => void
     onOpacityChange: (value: number) => void
     onTranslucencyChange: (value: boolean) => void
     onIconChange: (role: IconRole, iconName: string) => void
     onApplyPreset: (presetId: string) => void
-    onChange: (updates: Partial<SkinConfig['meta']>) => void
 }
 
 export const GlobalForm = ({
     config,
     onIconLibraryChange,
     onColorChange,
+    onButtonColorChange,
     onBorderRadiusChange,
     onOpacityChange,
     onTranslucencyChange,
     onIconChange,
     onApplyPreset,
-    onChange,
 }: GlobalFormProps) => {
     const isPresetActive = (preset: (typeof PRESETS)[0]) => {
         return (
@@ -41,10 +52,19 @@ export const GlobalForm = ({
     const darkPresets = getPresetsByCategory('dark')
     const lightPresets = getPresetsByCategory('light')
     const [activePresetCategory, setActivePresetCategory] = useState<'dark' | 'light'>('dark')
+    const [activeModal, setActiveModal] = useState<keyof ButtonColors | null>(null)
+
+    const BUTTON_LABELS: Record<string, string> = {
+        focus: 'Focus/Maximize',
+        config: 'Config/Settings',
+        quit: 'Quit/Close',
+        plus: 'Plus/New Tab',
+        minus: 'Minus/Close Tab',
+        close: 'Close Tab (Per-Tab)',
+    }
 
     return (
         <div className="space-y-6">
-            {/* Presets */}
             <h3 className="mb-3 text-lg font-semibold text-gray-200">Presets</h3>
             <div className="mb-3 flex gap-2" role="tablist">
                 <button
@@ -177,13 +197,38 @@ export const GlobalForm = ({
                 />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <TextInput
-                    label="Website (optional)"
-                    value={config.meta.web || ''}
-                    onChange={(v) => onChange({ web: v })}
-                    placeholder="https://github.com/yourname"
-                />
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Button State Colors</h3>
+            <p className="mb-4 text-sm text-gray-400">
+                Click a button to customize its up/over/down state colors.
+            </p>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {(['focus', 'config', 'quit', 'plus', 'minus', 'close'] as const).map((btn) => (
+                    <button
+                        key={btn}
+                        type="button"
+                        onClick={() => setActiveModal(btn)}
+                        className="rounded-lg border border-[#1e293b] bg-[#090d16] p-3 text-left transition-colors hover:border-sky-400/50"
+                    >
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-white capitalize">{btn}</span>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                className="text-gray-500"
+                            >
+                                <path
+                                    d="M4 6L8 10L12 6"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </div>
+                    </button>
+                ))}
             </div>
 
             <h3 className="mb-3 text-lg font-semibold text-gray-200">Icon Selection</h3>
@@ -198,6 +243,17 @@ export const GlobalForm = ({
                     />
                 ))}
             </div>
+
+{activeModal && (
+            <ButtonStateModal
+                isOpen={true}
+                onClose={() => setActiveModal(null)}
+                config={config}
+                button={activeModal}
+                buttonLabel={BUTTON_LABELS[activeModal] || activeModal}
+                onColorChange={onButtonColorChange}
+            />
+        )}
         </div>
     )
 }
