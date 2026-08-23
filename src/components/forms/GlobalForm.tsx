@@ -7,7 +7,7 @@ import type {
     ButtonStateColors,
 } from '../../types'
 import { ICON_LIBRARIES, ICON_ROLES, PRESETS, getPresetsByCategory } from '../../constants'
-import { ColorInput, NumberInput, SelectInput, CheckboxInput } from '../ui'
+import { ColorInput, NumberInput, SelectInput, Switch } from '../ui'
 import { IconPicker } from '../ui/IconPicker'
 import { ButtonStateModal } from './ButtonStateModal'
 
@@ -166,10 +166,11 @@ export const GlobalForm = ({
                     step={5}
                     showValue
                 />
-                <CheckboxInput
+                <Switch
                     label="Enable Translucency"
                     checked={config.global.translucency}
                     onChange={onTranslucencyChange}
+                    config={config}
                 />
             </div>
 

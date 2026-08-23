@@ -1,5 +1,5 @@
 import type { SkinConfig, ButtonColors, ButtonStateColors } from '../../types'
-import { ColorInput, CheckboxInput } from '../ui'
+import { ColorInput, Switch } from '../ui'
 import { Modal } from '../ui/Modal'
 
 interface ButtonStateModalProps {
@@ -36,7 +36,7 @@ export const ButtonStateModal = ({
         >
             <div className="space-y-4">
                 <div className="bg-[#090d16] p-3 rounded-lg border border-[#1e293b]">
-                    <CheckboxInput
+                    <Switch
                         label="Transparent Background (all states)"
                         checked={config.global.buttonColors[button].upBg === 'transparent'}
                         onChange={(enabled) => {
@@ -46,6 +46,7 @@ export const ButtonStateModal = ({
                                 onColorChange(button, 'downBg', 'transparent')
                             }
                         }}
+                        config={config}
                     />
                     <p className="mt-1 text-xs text-gray-500">
                         When enabled, backgrounds become transparent and only icon colors are used.
