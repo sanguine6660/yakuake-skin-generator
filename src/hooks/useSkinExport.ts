@@ -22,6 +22,7 @@
 import { useCallback, useState } from 'preact/hooks'
 import type { SkinConfig } from '../types'
 import { prepareSkinFiles } from '../utils'
+import { useGoatCounter } from './useGoatCounter'
 
 let savedDirHandle: any = null
 
@@ -31,71 +32,129 @@ export const useSkinExport = () => {
         type: 'success' | 'error' | 'info'
     } | null>(null)
 
-    const downloadSkin = useCallback(async (config: SkinConfig) => {
-        const { files, folderName } = prepareSkinFiles(config)
-        const { createTarGz } = await import('../utils')
-        await createTarGz(files, `${folderName}.tar.gz`)
-    }, [])
+    const { trackEvent } = useGoatCounter()
 
-    const installToYakuake = useCallback(async (config: SkinConfig) => {
-        try {
-            setInstallStatus({ message: 'Preparing skin for installation...', type: 'info' })
-
+    const downloadSkin = useCallback(
+        async (config: SkinConfig) => {
             const { files, folderName } = prepareSkinFiles(config)
+            const { createTarGz } = await import('../utils')
+            await createTarGz(files, `${folderName}.tar.gz`)
 
-            if (!('showDirectoryPicker' in window)) {
-                const { createTarGz } = await import('../utils')
-                await createTarGz(files, `${folderName}.tar.gz`)
-                setInstallStatus({
-                    message: `Direct install not supported in this browser. Downloaded ${folderName}.tar.gz. Extract to ~/.local/share/yakuake/skins/${folderName}/`,
-                    type: 'info',
-                })
-                return
-            }
+            // Track successful download event
+            trackEvent('skin-download', `Download: ${folderName}`)
+        },
+        [trackEvent]
+    )
 
+    const installToYakuake = useCallback(
+        async (config: SkinConfig) => {
             try {
-                let dirHandle: any
+                setInstallStatus({ message: 'Preparing skin for installation...', type: 'info' })
 
-                if (savedDirHandle) {
-                    try {
-                        const permission = await savedDirHandle.queryPermission({
-                            mode: 'readwrite',
-                        })
-                        if (permission === 'granted') {
-                            dirHandle = savedDirHandle
-                        }
-                    } catch {}
-                }
+                const { files, folderName } = prepareSkinFiles(config)
 
-                if (!dirHandle) {
+                if (!('showDirectoryPicker' in window)) {
+                    const { createTarGz } = await import('../utils')
+                    await createTarGz(files, `${folderName}.tar.gz`)
                     setInstallStatus({
-                        message: 'Select home folder to find Yakuake skins directory...',
+                        message: `Direct install not supported in this browser. Downloaded ${folderName}.tar.gz. Extract to ~/.local/share/yakuake/skins/${folderName}/`,
                         type: 'info',
                     })
-                    dirHandle = await (window as any).showDirectoryPicker({
-                        mode: 'readwrite',
-                    })
-                    await dirHandle.requestPermission({ mode: 'readwrite' })
-                    savedDirHandle = dirHandle
+
+                    // Track fallback download event
+                    trackEvent('skin-download-fallback', `Download Fallback: ${folderName}`)
+                    return
                 }
 
-                let skinsDirHandle: any
                 try {
-                    const localHandle = await dirHandle.getDirectoryHandle('.local', {
-                        create: false,
-                    })
-                    const shareHandle = await localHandle.getDirectoryHandle('share', {
-                        create: false,
-                    })
-                    const yakuakeHandle = await shareHandle.getDirectoryHandle('yakuake', {
-                        create: false,
-                    })
-                    skinsDirHandle = await yakuakeHandle.getDirectoryHandle('skins', {
-                        create: false,
-                    })
-                } catch {}
+                    let dirHandle: any
 
-                if (skinsDirHandle) {
+                    if (savedDirHandle) {
+                        try {
+                            const permission = await savedDirHandle.queryPermission({
+                                mode: 'readwrite',
+                            })
+                            if (permission === 'granted') {
+                                dirHandle = savedDirHandle
+                            }
+                        } catch {}
+                    }
+
+                    if (!dirHandle) {
+                        setInstallStatus({
+                            message: 'Select home folder to find Yakuake skins directory...',
+                            type: 'info',
+                        })
+                        dirHandle = await (window as any).showDirectoryPicker({
+                            mode: 'readwrite',
+                        })
+                        await dirHandle.requestPermission({ mode: 'readwrite' })
+                        savedDirHandle = dirHandle
+                    }
+
+                    let skinsDirHandle: any
+                    try {
+                        const localHandle = await dirHandle.getDirectoryHandle('.local', {
+                            create: false,
+                        })
+                        const shareHandle = await localHandle.getDirectoryHandle('share', {
+                            create: false,
+                        })
+                        const yakuakeHandle = await shareHandle.getDirectoryHandle('yakuake', {
+                            create: false,
+                        })
+                        skinsDirHandle = await yakuakeHandle.getDirectoryHandle('skins', {
+                            create: false,
+                        })
+                    } catch {}
+
+                    if (skinsDirHandle) {
+                        const skinDirHandle = await skinsDirHandle.getDirectoryHandle(folderName, {
+                            create: true,
+                        })
+
+                        for (const file of files) {
+                            const pathParts = file.path.split('/')
+                            const fileName = pathParts.pop()!
+                            let currentDir = skinDirHandle
+
+                            for (const part of pathParts) {
+                                currentDir = await currentDir.getDirectoryHandle(part, {
+                                    create: true,
+                                })
+                            }
+
+                            const fileHandle = await currentDir.getFileHandle(fileName, {
+                                create: true,
+                            })
+                            const writable = await fileHandle.createWritable()
+                            await writable.write(file.content)
+                            await writable.close()
+                        }
+
+                        setInstallStatus({
+                            message: `Skin installed to ~/.local/share/yakuake/skins/${folderName}/ (overwritten if existed). Restart Yakuake.`,
+                            type: 'success',
+                        })
+
+                        // Track successful direct installation event
+                        trackEvent('skin-install-success', `Install Success: ${folderName}`)
+                        return
+                    }
+
+                    setInstallStatus({
+                        message:
+                            'Yakuake skins folder not found. Please select ~/.local/share/yakuake/skins/...',
+                        type: 'info',
+                    })
+                    const userDirHandle = await (window as any).showDirectoryPicker({
+                        mode: 'readwrite',
+                        startIn: 'home',
+                    })
+                    await userDirHandle.requestPermission({ mode: 'readwrite' })
+                    savedDirHandle = userDirHandle
+                    skinsDirHandle = userDirHandle
+
                     const skinDirHandle = await skinsDirHandle.getDirectoryHandle(folderName, {
                         create: true,
                     })
@@ -118,62 +177,27 @@ export const useSkinExport = () => {
                     }
 
                     setInstallStatus({
-                        message: `Skin installed to ~/.local/share/yakuake/skins/${folderName}/ (overwritten if existed). Restart Yakuake.`,
+                        message: `Skin installed to selected folder (overwritten if existed). Restart Yakuake.`,
                         type: 'success',
                     })
-                    return
-                }
 
-                setInstallStatus({
-                    message:
-                        'Yakuake skins folder not found. Please select ~/.local/share/yakuake/skins/...',
-                    type: 'info',
-                })
-                const userDirHandle = await (window as any).showDirectoryPicker({
-                    mode: 'readwrite',
-                    startIn: 'home',
-                })
-                await userDirHandle.requestPermission({ mode: 'readwrite' })
-                savedDirHandle = userDirHandle
-                skinsDirHandle = userDirHandle
-
-                const skinDirHandle = await skinsDirHandle.getDirectoryHandle(folderName, {
-                    create: true,
-                })
-
-                for (const file of files) {
-                    const pathParts = file.path.split('/')
-                    const fileName = pathParts.pop()!
-                    let currentDir = skinDirHandle
-
-                    for (const part of pathParts) {
-                        currentDir = await currentDir.getDirectoryHandle(part, { create: true })
+                    trackEvent('skin-install-custom', `Install Custom: ${folderName}`)
+                } catch (err) {
+                    if (err instanceof Error && err.name === 'AbortError') {
+                        setInstallStatus({ message: 'Installation cancelled', type: 'info' })
+                        return
                     }
-
-                    const fileHandle = await currentDir.getFileHandle(fileName, { create: true })
-                    const writable = await fileHandle.createWritable()
-                    await writable.write(file.content)
-                    await writable.close()
+                    throw err
                 }
-
+            } catch (error) {
                 setInstallStatus({
-                    message: `Skin installed to selected folder (overwritten if existed). Restart Yakuake.`,
-                    type: 'success',
+                    message: `Installation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    type: 'error',
                 })
-            } catch (err) {
-                if (err instanceof Error && err.name === 'AbortError') {
-                    setInstallStatus({ message: 'Installation cancelled', type: 'info' })
-                    return
-                }
-                throw err
             }
-        } catch (error) {
-            setInstallStatus({
-                message: `Installation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                type: 'error',
-            })
-        }
-    }, [])
+        },
+        [trackEvent]
+    )
 
     const clearStatus = useCallback(() => setInstallStatus(null), [])
 

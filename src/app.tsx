@@ -30,6 +30,7 @@ import { TitleForm } from './components/forms/TitleForm'
 import { TabsForm } from './components/forms/TabsForm'
 import { Preview } from './components/preview/Preview'
 import { ColorPreview } from './components/preview/ColorPreview'
+import { StatsPreview } from './components/preview/StatsPreview'
 import { Navbar } from './components/ui/Navbar'
 import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
@@ -222,6 +223,19 @@ export function App() {
 
     const { downloadSkin, installToYakuake, installStatus, clearStatus } = useSkinExport()
 
+    // State für Anzahl gespeicherter Skins (für StatsPreview)
+    const [savedSkinsCount, setSavedSkinsCount] = useState(() => {
+        if (typeof window !== 'undefined') {
+            try {
+                const saved = localStorage.getItem('yakuake-skin-saves')
+                return saved ? Object.keys(JSON.parse(saved)).length : 0
+            } catch {
+                return 0
+            }
+        }
+        return 0
+    })
+
     const [activeTab, setActiveTab] = useState(() => {
         if (typeof window !== 'undefined') {
             const saved = sessionStorage.getItem('yakuake-active-tab')
@@ -239,6 +253,29 @@ export function App() {
             sessionStorage.setItem('yakuake-active-tab', activeTab)
         }
     }, [activeTab])
+
+    // Listener für localStorage-Änderungen, um den Saved-Skins-Zähler aktuell zu halten
+    useEffect(() => {
+        const updateSkinsCount = () => {
+            try {
+                const saved = localStorage.getItem('yakuake-skin-saves')
+                if (saved) {
+                    setSavedSkinsCount(Object.keys(JSON.parse(saved)).length)
+                } else {
+                    setSavedSkinsCount(0)
+                }
+            } catch {
+                setSavedSkinsCount(0)
+            }
+        }
+
+        window.addEventListener('storage', updateSkinsCount)
+        window.addEventListener('local-storage', updateSkinsCount)
+        return () => {
+            window.removeEventListener('storage', updateSkinsCount)
+            window.removeEventListener('local-storage', updateSkinsCount)
+        }
+    }, [])
 
     const handleResetToDefault = () => {
         setSavedConfig(defaultConfig)
@@ -494,6 +531,7 @@ export function App() {
                     <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-[420px]">
                         <Preview config={config} />
                         <ColorPreview config={config} />
+                        <StatsPreview savedSkinsCount={savedSkinsCount} />
                     </div>
                 </div>
             </div>

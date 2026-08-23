@@ -60,6 +60,8 @@ export const SkinSavesManager = ({
             onSave(saveName.trim())
             setSaveName('')
             setShowSaveModal(false)
+            // Event feuern, damit die App/Stats sofort aktualisiert werden
+            window.dispatchEvent(new Event('local-storage'))
         }
     }
 
@@ -75,6 +77,8 @@ export const SkinSavesManager = ({
                 return updated
             })
             onDelete(name)
+            // Event feuern
+            window.dispatchEvent(new Event('local-storage'))
         }
     }
 
@@ -102,6 +106,8 @@ export const SkinSavesManager = ({
             })
             onRename(renameModal.oldName, renameModal.newName.trim())
             setRenameModal(null)
+            // Event feuern
+            window.dispatchEvent(new Event('local-storage'))
         }
     }
 
