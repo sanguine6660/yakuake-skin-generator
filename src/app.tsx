@@ -1,7 +1,8 @@
-import { useState } from 'preact/hooks'
-import type { IconRole, RgbColor } from './types'
+import { useState, useEffect } from 'preact/hooks'
+import type { IconRole, RgbColor, SkinConfig, IconLibrary } from './types'
 import { useSkinConfig } from './hooks/useSkinConfig'
 import { useSkinExport } from './hooks/useSkinExport'
+import { useSessionStorage } from './hooks/useSessionStorage'
 import { MetaForm } from './components/forms/MetaForm'
 import { GlobalForm } from './components/forms/GlobalForm'
 import { TitleForm } from './components/forms/TitleForm'
@@ -14,6 +15,77 @@ import { ExportForm } from './components/forms/ExportForm'
 import { PRESETS } from './constants'
 
 export function App() {
+    // Create default config for initial value
+    const defaultConfig: SkinConfig = {
+        meta: {
+            skinName: 'My Custom Skin',
+            author: 'Your Name',
+            email: 'you@example.com',
+            web: 'https://github.com/sanguine6660/yakuake-skin-generator',
+            icon: '/logo.svg',
+        },
+        title: {
+            borderColor: { r: 0, g: 0, b: 0 },
+            borderWidth: 0,
+            textX: 14,
+            textY: 18,
+            textColor: { r: 102, g: 194, b: 242 },
+            textContent: 'My Custom Skin',
+            textBold: true,
+            bgCenter: '/title/background_center.svg',
+            bgLeft: '/title/background_left.svg',
+            bgRight: '/title/background_right.svg',
+            bgTranslucent: false,
+            titleEnabled: true,
+            focusBtn: { enabled: true, x: 88, y: 4, up: '/title/focus_up.svg', over: '/title/focus_over.svg', down: '/title/focus_down.svg' },
+            configBtn: { enabled: true, x: 58, y: 4, up: '/title/config_up.svg', over: '/title/config_over.svg', down: '/title/config_down.svg' },
+            quitBtn: { enabled: true, x: 28, y: 4, up: '/title/quit_up.svg', over: '/title/quit_over.svg', down: '/title/quit_down.svg' },
+        },
+        tabs: {
+            tabsX: 36,
+            tabsY: 0,
+            selectedColor: { r: 102, g: 194, b: 242 },
+            unselectedColor: { r: 150, g: 150, b: 150 },
+            separatorImage: '/tabs/tab_separator.svg',
+            selectedLeft: '/tabs/tab_selected_left.svg',
+            selectedMiddle: '/tabs/tab_selected_middle.svg',
+            selectedRight: '/tabs/tab_selected_right.svg',
+            unselectedLeft: '/tabs/tab_unselected_left.svg',
+            unselectedMiddle: '/tabs/tab_unselected_middle.svg',
+            unselectedRight: '/tabs/tab_unselected_right.svg',
+            preventClosingImage: '/tabs/lock.svg',
+            preventClosingX: 0,
+            preventClosingY: 8,
+            lockEnabled: true,
+            bgCenter: '/tabs/background_center.svg',
+            bgLeft: '/tabs/background_left.svg',
+            bgRight: '/tabs/background_right.svg',
+            bgTranslucent: false,
+            tabsEnabled: true,
+            plusBtn: { enabled: true, x: 2, y: 6, up: '/tabs/plus_up.svg', over: '/tabs/plus_over.svg', down: '/tabs/plus_down.svg' },
+            minusBtn: { enabled: true, x: 22, y: 6, up: '/tabs/minus_up.svg', over: '/tabs/minus_over.svg', down: '/tabs/minus_down.svg' },
+            closeBtn: { enabled: true, x: 5, y: 5, up: '/tabs/close_up.svg', over: '/tabs/close_over.svg', down: '/tabs/close_down.svg' },
+            lockBtn: { enabled: true, x: 0, y: 8, up: '/tabs/lock.svg', over: '/tabs/lock.svg', down: '/tabs/lock.svg' },
+        },
+        global: {
+            iconLibrary: 'lucide' as IconLibrary,
+            iconSet: { settings: 'LuSettings', maximize: 'LuMaximize2', close: 'LuX', plus: 'LuPlus', minus: 'LuMinus', lock: 'LuLock' },
+            colors: { bg: '#1e2233', selected: '#3b4252', text: '#66c2f2', dim: '#232834' },
+            buttonColors: {
+                focus: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
+                config: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
+                quit: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#bf616a', downIcon: '#ffffff' },
+                plus: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
+                minus: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
+                close: { upBg: '#232834', upIcon: '#66c2f2', overBg: '#3b4252', overIcon: '#66c2f2', downBg: '#66c2f2', downIcon: '#1e2233' },
+            },
+            borderRadius: 0,
+            opacity: 100,
+            translucency: false,
+        },
+    }
+
+    const [savedConfig, setSavedConfig] = useSessionStorage<SkinConfig>('yakuake-skin-config', defaultConfig)
     const {
         config,
         updateMeta,
@@ -24,11 +96,37 @@ export function App() {
         setIcon,
         setColor,
         setRgbColor,
-    } = useSkinConfig()
+    } = useSkinConfig(savedConfig)
 
     const { downloadSkin, installToYakuake, installStatus, clearStatus } = useSkinExport()
 
-    const [activeTab, setActiveTab] = useState('global')
+    const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+        const saved = sessionStorage.getItem('yakuake-active-tab')
+        if (saved) return saved
+    }
+    return 'global'
+})
+
+    // Save config to sessionStorage whenever it changes
+    useEffect(() => {
+        setSavedConfig(config)
+    }, [config])
+
+    // Save activeTab to sessionStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('yakuake-active-tab', activeTab)
+        }
+    }, [activeTab])
+
+    const handleResetToDefault = () => {
+        setSavedConfig(defaultConfig)
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('yakuake-active-tab', 'global')
+        }
+        setActiveTab('global')
+    }
 
     const handleColorChange = (
         section: 'global' | 'title' | 'tabs',
@@ -96,7 +194,7 @@ export function App() {
     return (
         <div className="min-h-screen bg-[#090d16] font-sans text-white">
             <div className="w-full px-4 py-8 md:px-6 lg:px-8">
-                <Navbar config={config} activeTab={activeTab} onTabChange={setActiveTab} />
+                <Navbar config={config} activeTab={activeTab} onTabChange={setActiveTab} onResetToDefault={handleResetToDefault} />
 
                 {installStatus && (
                     <div
@@ -186,94 +284,6 @@ export function App() {
                     <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-[420px]">
                         <Preview config={config} />
                         <ColorPreview config={config} />
-
-                        {/* Installation Guide */}
-                        <div className="w-full rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
-                            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-200">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                    style={{ color: config.global.colors.text }}
-                                >
-                                    <circle
-                                        cx="10"
-                                        cy="10"
-                                        r="9"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                    />
-                                    <path
-                                        d="M10 6v8M6 10h8"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                                How to Install
-                            </h3>
-                            <div className="space-y-3 text-sm text-gray-300">
-                                <div className="flex items-start gap-3">
-                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-gray-700 font-mono text-xs text-white">
-                                        1
-                                    </span>
-                                    <div>
-                                        <p className="font-medium text-white">
-                                            Auto-Install (Recommended)
-                                        </p>
-                                        <p>
-                                            Click "Install to Yakuake" → select{' '}
-                                            <code className="rounded bg-gray-700 px-1 text-xs">
-                                                ~/.local/share/yakuake/skins/
-                                            </code>{' '}
-                                            → done!
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-gray-700 font-mono text-xs text-white">
-                                        2
-                                    </span>
-                                    <div>
-                                        <p className="font-medium text-white">Manual Install</p>
-                                        <p>
-                                            Click "Download .tar.gz" → extract to{' '}
-                                            <code className="rounded bg-gray-700 px-1 text-xs">
-                                                ~/.local/share/yakuake/skins/
-                                            </code>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-gray-700 font-mono text-xs text-white">
-                                        3
-                                    </span>
-                                    <div>
-                                        <p className="font-medium text-white">Apply in Yakuake</p>
-                                        <p>
-                                            Open Yakuake → Right-click title bar → Configure →
-                                            Appearance → Select your skin → Apply
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-gray-700 font-mono text-xs text-white">
-                                        4
-                                    </span>
-                                    <div>
-                                        <p className="font-medium text-white">Restart if needed</p>
-                                        <p>
-                                            Run{' '}
-                                            <code className="rounded bg-gray-700 px-1 text-xs">
-                                                killall yakuake && yakuake
-                                            </code>{' '}
-                                            if skin doesn't appear immediately
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

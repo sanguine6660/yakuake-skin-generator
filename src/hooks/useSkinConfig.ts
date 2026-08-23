@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'preact/hooks'
+import { useState, useCallback, useEffect } from 'preact/hooks'
 import type { SkinConfig, SkinMeta, IconLibrary, IconRole, RgbColor } from '../types'
 import { createDefaultSkinConfig, DEFAULT_ICON_SETS } from '../constants'
 
@@ -10,8 +10,15 @@ const hexToRgb = (hex: string): RgbColor => {
     return { r, g, b }
 }
 
-export const useSkinConfig = () => {
-    const [config, setConfig] = useState<SkinConfig>(createDefaultSkinConfig())
+export const useSkinConfig = (initialConfig?: SkinConfig) => {
+    const [config, setConfig] = useState<SkinConfig>(initialConfig ?? createDefaultSkinConfig())
+
+    // Sync config with external changes (e.g., from sessionStorage reset)
+    useEffect(() => {
+        if (initialConfig) {
+            setConfig(initialConfig)
+        }
+    }, [initialConfig])
 
     const updateMeta = useCallback((updates: Partial<SkinMeta>) => {
         setConfig((prev) => ({
