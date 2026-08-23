@@ -55,7 +55,6 @@ export const useSkinExport = () => {
                     })
                     dirHandle = await (window as any).showDirectoryPicker({
                         mode: 'readwrite',
-                        startIn: 'home',
                     })
                     await dirHandle.requestPermission({ mode: 'readwrite' })
                     savedDirHandle = dirHandle
