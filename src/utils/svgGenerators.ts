@@ -132,12 +132,34 @@ export const generatePlusMinusSvg = (
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/><g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
 }
 
+const adjustHexBrightness = (hex: string, amount: number): string => {
+    const cleanHex = hex.replace('#', '')
+    const num = parseInt(cleanHex, 16)
+    const clamp = (v: number) => Math.min(255, Math.max(0, v))
+    const r = clamp((num >> 16) + amount)
+    const g = clamp(((num >> 8) & 0xff) + amount)
+    const b = clamp((num & 0xff) + amount)
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
+}
+
 export const generateLogo = (config: SkinConfig): string => {
-    const { bg, text } = config.global.colors
+    const { bg, selected, text } = config.global.colors
     return `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="10" fill="${bg}" stroke="${text}" stroke-width="2"/>
-  <path d="M12 24 L20 32 L36 16" stroke="${text}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="24" cy="24" r="5" fill="${text}"/>
+  <defs>
+    <linearGradient id="ylogo-bg" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="${selected}"/>
+      <stop offset="1" stop-color="${bg}"/>
+    </linearGradient>
+    <linearGradient id="ylogo-accent" x1="12" y1="10" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="${adjustHexBrightness(text, 40)}"/>
+      <stop offset="1" stop-color="${adjustHexBrightness(text, -30)}"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="11" fill="url(#ylogo-bg)"/>
+  <rect x="1.25" y="1.25" width="45.5" height="45.5" rx="9.75" stroke="url(#ylogo-accent)" stroke-width="2.5"/>
+  <path d="M16 12 L24 18.5 L32 12" stroke="url(#ylogo-accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M13.5 26 L20 31.5 L13.5 37" stroke="${text}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24.5 37 H35" stroke="${text}" stroke-width="3.5" stroke-linecap="round"/>
 </svg>`
 }
 
