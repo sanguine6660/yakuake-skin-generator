@@ -1,68 +1,51 @@
-[Description]
-Skin=MyCustomSkin
-Author=John Doe
-Email=john.doe@example.com
-Icon=icon.png
+# tabs.skin — Reference
+# Verified against Yakuake source: app/skin.cpp (parsing) and app/tabbar.cpp (rendering)
+# https://invent.kde.org/utilities/yakuake
+# NOTE: inline comments are for documentation only — remove them before using
+#       this file as an actual skin (KConfig does not support inline comments).
 
-[Background]
-# Main background image spanning across the entire tab bar layout
-back_image=tabs_background.png
+[Description]                                          # section: skin metadata (required)
+Skin=MyCustomSkin                                      # name shown in Yakuake's skin selector
+Author=John Doe                                        # author name
+Email=john.doe@example.com                             # author email
+Web=https://example.com                                # optional: author website
+Icon=/logo.svg                                         # skin icon, path relative to the skin folder
 
-# Left corner image for the tab bar container
-left_corner=tabs_left_corner.png
+[Tabs]                                                 # section: tab bar layout & tab rendering
+x=36                                                   # x offset where the tabs start inside the bar
+y=0                                                    # y offset where the tabs start inside the bar
+red=255                                                # tab label text color, red component (0-255)
+green=255                                              # tab label text color, green component (single color for ALL tabs)
+blue=255                                               # tab label text color, blue component
+separator_image=/tabs/tab_separator.svg                # optional: vertical separator between unselected tabs (only used when no unselected corners are set)
+selected_background=/tabs/selected_back.svg            # selected tab background — TILED (repeated), never stretched; use 1px strip or plain rect
+unselected_background=/tabs/unselected_back.svg        # unselected tab background — same tiling rule
+selected_left_corner=/tabs/selected_left.svg           # optional: corner piece at the selected tab's left edge (natural size)
+selected_right_corner=/tabs/selected_right.svg         # optional: corner piece at the selected tab's right edge
+unselected_left_corner=/tabs/unselected_left.svg       # optional: left corner for unselected tabs (replaces separator_image)
+unselected_right_corner=/tabs/unselected_right.svg     # optional: right corner for unselected tabs
+selected_text_bold=true                                # bold text on the selected tab (default: true)
+prevent_closing_image=/tabs/lock.svg                   # optional: lock icon for tabs with "prevent closing" (system icon if omitted)
+prevent_closing_image_x=0                              # lock icon x offset inside the tab
+prevent_closing_image_y=9                              # lock icon y offset inside the tab
+compact=false                                          # optional: compact tab bar mode (default: false)
 
-# Right corner image for the tab bar container
-right_corner=tabs_right_corner.png
+[Background]                                           # section: tab bar background
+back_image=/tabs/back_image.svg                        # bar background — TILED horizontally; its IMAGE HEIGHT sets the tab bar height
+left_corner=/tabs/left_corner.svg                      # left end piece of the bar (natural size)
+right_corner=/tabs/right_corner.svg                    # right end piece of the bar
 
-[Tab]
-# Component graphics for an unselected (inactive) tab item
-unselected_left=tab_unselected_left.png
-unselected_middle=tab_unselected_middle.png
-unselected_right=tab_unselected_right.png
+[PlusButton]                                           # section: "new tab" button (rendered as QToolButton at natural image size)
+x=2                                                    # button x position, measured from the LEFT edge
+y=7                                                    # button y position
+up_image=/tabs/plus_up.svg                             # normal state image
+over_image=/tabs/plus_over.svg                         # hover state image
+down_image=/tabs/plus_down.svg                         # pressed state image
+at_end_of_tabs=false                                   # optional: place the button after the last tab instead of a fixed position
 
-# Component graphics for the selected (active) tab item
-selected_left=tab_selected_left.png
-selected_middle=tab_selected_middle.png
-selected_right=tab_selected_right.png
-
-# Vertical separator image placed between individual tabs
-separator=tab_separator.png
-
-[Text]
-# Horizontal offset of the tab title string inside the tab body
-x=10
-
-# Vertical offset of the tab title string inside the tab body
-y=3
-
-# RGB text color applied to the active/selected tab title
-selected_color=255,255,255
-
-# RGB text color applied to inactive/unselected tab titles
-unselected_color=150,150,150
-
-[CloseButton]
-# X coordinate for an optional close button rendered directly inside a tab
-x=5
-
-# Y coordinate for an optional close button rendered directly inside a tab
-y=5
-
-# Normal image state for the individual tab close button
-up_image=tab_close_up.png
-
-# Hover image state for the individual tab close button
-over_image=tab_close_over.png
-
-# Clicked image state for the individual tab close button
-down_image=tab_close_down.png
-
-[LockButton]
-# Image icon displayed on a tab when it is locked to prevent accidental closure
-prevent_closing_image=tab_locked.png
-
-# X coordinate position for the lock indicator icon
-x=5
-
-# Y coordinate position for the lock indicator icon
-y=5
+[MinusButton]                                          # section: tab-bar close button (rendered as QPushButton at natural image size)
+x=22                                                   # button x position, measured FROM THE RIGHT EDGE
+y=7                                                    # button y position
+up_image=/tabs/minus_up.svg                            # normal state image
+over_image=/tabs/minus_over.svg                        # hover state image
+down_image=/tabs/minus_down.svg                        # pressed state image

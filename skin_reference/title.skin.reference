@@ -1,81 +1,57 @@
-[Description]
-Skin=MyCustomSkin
-Author=John Doe
-Email=john.doe@example.com
-Icon=icon.png
+# title.skin — Reference
+# Verified against Yakuake source: app/skin.cpp (parsing) and app/titlebar.cpp (rendering)
+# https://invent.kde.org/utilities/yakuake
+# NOTE: inline comments are for documentation only — remove them before using
+#       this file as an actual skin (KConfig does not support inline comments).
 
-[Background]
-# Main background image for the title bar. 
-# Note: The physical height of this image determines the total height of the title bar!
-back_image=title_background.png
+[Description]                                          # section: skin metadata (required)
+Skin=MyCustomSkin                                      # name shown in Yakuake's skin selector
+Author=John Doe                                        # author name
+Email=john.doe@example.com                             # author email
+Web=https://example.com                                # optional: author website
+Icon=/logo.svg                                         # skin icon, path relative to the skin folder
 
-# Image file for the rounded or styled left corner of the title bar
-left_corner=title_left_corner.png
+[Background]                                           # section: title bar background
+back_image=/title/back_image.svg                       # bar background — TILED horizontally between the corners; its IMAGE HEIGHT sets the title bar height
+left_corner=/title/left_corner.svg                     # left window corner piece (natural size; its alpha channel shapes the window mask)
+right_corner=/title/right_corner.svg                   # right window corner piece
 
-# Image file for the rounded or styled right corner of the title bar
-right_corner=title_right_corner.png
+[Border]                                               # section: window border around the terminal
+width=0                                                # border thickness in px, 0 = none (default: 1)
+red=0                                                  # border color, red component (0-255)
+green=0                                                # border color, green component
+blue=0                                                 # border color, blue component
 
-[Border]
-# Thickness of the outer border surrounding the entire terminal window in pixels (0 = no border)
-width=1
+[Text]                                                 # section: title bar text
+text=MyCustomSkin                                      # static text appended to the session title as "<session> - <text>"
+x=14                                                   # text x position inside the bar
+y=18                                                   # text y position inside the bar
+red=255                                                # text color, red component (0-255)
+green=255                                              # text color, green component
+blue=255                                               # text color, blue component
+bold=true                                              # bold text (default: true)
+centered=false                                         # optional: center text horizontally when it fits (default: false)
 
-# Color of the outer border defined in RGB format (Red, Green, Blue)
-color=50,50,50
+[FocusButton]                                          # section: "keep window open" toggle (rendered as QPushButton at natural image size)
+x=88                                                   # button x position, measured from the anchor side (default anchor: right)
+y=4                                                    # button y position
+anchor=right                                           # anchor side for x: left or right (default: right)
+up_image=/title/focus_up.svg                           # normal state image
+over_image=/title/focus_over.svg                       # hover state image
+down_image=/title/focus_down.svg                       # pressed state image
 
-[Text]
-# X coordinate (horizontal offset) for the window title text relative to the title bar
-x=30
+[ConfigButton]                                         # section: menu button (same rendering rules as FocusButton)
+x=58                                                   # button x position from the anchor side
+y=4                                                    # button y position
+anchor=right                                           # anchor side for x
+up_image=/title/config_up.svg                          # normal state image
+over_image=/title/config_over.svg                      # hover state image
+down_image=/title/config_down.svg                      # pressed state image
 
-# Y coordinate (vertical offset) for the window title text relative to the title bar
-y=5
-
-# Text color of the window title defined in RGB format
-color=200,200,200
-
-[FocusButton]
-# X coordinate for the focus/keep-open toggle button
-x=10
-
-# Y coordinate for the focus/keep-open toggle button
-y=5
-
-# Image when the button is in its normal, unpressed state
-up_image=focus_up.png
-
-# Image when the mouse cursor hovers over the button
-over_image=focus_over.png
-
-# Image when the button is actively being clicked
-down_image=focus_down.png
-
-[ConfigButton]
-# X coordinate for the settings/configuration button
-x=60
-
-# Y coordinate for the settings/configuration button
-y=5
-
-# Normal state image for the configuration button
-up_image=config_up.png
-
-# Hover state image for the configuration button
-over_image=config_over.png
-
-# Clicked state image for the configuration button
-down_image=config_down.png
-
-[QuitButton]
-# X coordinate for the close/quit button
-x=85
-
-# Y coordinate for the close/quit button
-y=5
-
-# Normal state image for the quit button
-up_image=quit_up.png
-
-# Hover state image for the quit button
-over_image=quit_over.png
-
-# Clicked state image for the quit button
-down_image=quit_down.png
+[QuitButton]                                           # section: quit button (same rendering rules as FocusButton)
+x=28                                                   # button x position from the anchor side
+y=4                                                    # button y position
+anchor=right                                           # anchor side for x
+up_image=/title/quit_up.svg                            # normal state image
+over_image=/title/quit_over.svg                        # hover state image
+down_image=/title/quit_down.svg                        # pressed state image
