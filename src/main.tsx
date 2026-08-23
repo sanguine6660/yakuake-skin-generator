@@ -1,6 +1,6 @@
 /**
  * @file src/main.tsx
- * @description Application entry point - renders the main App component
+ * @description Application entry point - renders the App, records startup time and dismisses the loading screen
  * @copyright Copyright (C) 2026 sanguine6660
  * @since 1.0.0
  * @license GPL-3.0-or-later
@@ -22,5 +22,29 @@
 import { render } from 'preact'
 import './index.css'
 import { App } from './app.tsx'
+import { StartupTimesRecorder, readAverageStartupTime } from './utils/startupTimes.tsx'
 
-render(<App />, document.getElementById('app')!)
+const startedAt = performance.timeOrigin
+const loadedAt = startedAt + performance.now()
+
+render(
+    <>
+        <App />
+        <StartupTimesRecorder start={startedAt} loaded={loadedAt} />
+    </>,
+    document.getElementById('app')!
+)
+
+const MIN_EXTRA_MS = 1000
+const actualLoadTime = loadedAt - startedAt
+const fallbackLoadTime = readAverageStartupTime()
+const minDisplayMs = (actualLoadTime > 0 ? actualLoadTime : fallbackLoadTime) + MIN_EXTRA_MS
+
+const loadingScreen = document.getElementById('loading-screen')
+if (loadingScreen) {
+    const remaining = Math.max(0, minDisplayMs - performance.now())
+    setTimeout(() => {
+        loadingScreen.classList.add('loading-screen--hidden')
+        setTimeout(() => loadingScreen.remove(), 400)
+    }, remaining)
+}
