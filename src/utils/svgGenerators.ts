@@ -105,7 +105,7 @@ export const generateSeparator = (color: string, height = 28): string => {
 
 export const generateLockSvg = (config: SkinConfig): string => {
     const { text } = config.global.colors
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><g transform="scale(0.5)">${getIconPath('lock').replace(/currentColor/g, text)}</g></svg>`
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">${getIconPath('lock').replace(/currentColor/g, text)}</svg>`
 }
 
 export const generateCloseButtonSvg = (

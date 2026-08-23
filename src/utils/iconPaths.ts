@@ -26,10 +26,10 @@ export const ICON_SVG_PATHS: Record<string, string> = {
     plus: `<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/>`,
     minus: `<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/>`,
     lock: `<rect width="18" height="11" x="3" y="11" fill="none" stroke="currentColor" stroke-width="2" rx="2" ry="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
-    hamburger: `<rect x="2" y="3" width="10" height="1.5" rx="0.75" fill="currentColor"/><rect x="2" y="6.25" width="10" height="1.5" rx="0.75" fill="currentColor"/><rect x="2" y="9.5" width="10" height="1.5" rx="0.75" fill="currentColor"/>`,
-    square: `<rect x="2" y="2" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>`,
-    x: `<path d="M3.5,3.5 L10.5,10.5 M10.5,3.5 L3.5,10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
-    lockSmall: `<rect x="1" y="4" width="8" height="5" rx="1" ry="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3,4 V2.5 a2,2 0 0 1 4,0 V4" fill="none" stroke="currentColor" stroke-width="1.5"/>`,
+    hamburger: `<rect x="4" y="6" width="16" height="2.4" rx="1.2" fill="currentColor"/><rect x="4" y="10.8" width="16" height="2.4" rx="1.2" fill="currentColor"/><rect x="4" y="15.6" width="16" height="2.4" rx="1.2" fill="currentColor"/>`,
+    square: `<rect x="4.5" y="4.5" width="15" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.5"/>`,
+    x: `<path d="M6.5,6.5 L17.5,17.5 M17.5,6.5 L6.5,17.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>`,
+    lockSmall: `<rect x="3" y="9" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M8,9 V6.5 a4,4 0 0 1 8,0 V9" fill="none" stroke="currentColor" stroke-width="2.5"/>`,
 }
 
 export type IconName = keyof typeof ICON_SVG_PATHS
