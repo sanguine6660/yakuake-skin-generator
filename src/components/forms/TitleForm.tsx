@@ -1,3 +1,24 @@
+/**
+ * @file src/components/forms/TitleForm.tsx
+ * @description Form component for title bar configuration - border, text, background, buttons
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import type { SkinConfig, RgbColor } from '../../types'
 import { NumberInput, TextInput, RgbColorInput, Switch, ButtonConfigEditor } from '../ui'
 
@@ -85,7 +106,9 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                 <ButtonConfigEditor
                     config={config.title.focusBtn}
                     label="Focus/Maximize"
-                    onChange={(updates) => onChange({ focusBtn: { ...config.title.focusBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ focusBtn: { ...config.title.focusBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
 
@@ -93,7 +116,9 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                 <ButtonConfigEditor
                     config={config.title.configBtn}
                     label="Config/Settings"
-                    onChange={(updates) => onChange({ configBtn: { ...config.title.configBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ configBtn: { ...config.title.configBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
 
@@ -101,7 +126,9 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                 <ButtonConfigEditor
                     config={config.title.quitBtn}
                     label="Quit/Close"
-                    onChange={(updates) => onChange({ quitBtn: { ...config.title.quitBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ quitBtn: { ...config.title.quitBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
             </div>

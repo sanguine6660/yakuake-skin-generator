@@ -1,3 +1,24 @@
+/**
+ * @file src/components/preview/Preview.tsx
+ * @description Live preview component showing Yakuake layout with tabs bar (top) and title bar (bottom)
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import type { SkinConfig } from '../../types'
 import { renderIcon } from '../../utils/iconRenderer'
 
@@ -17,12 +38,10 @@ export const Preview = ({ config }: PreviewProps) => {
             <h2 className="mb-4 text-xl font-semibold text-gray-200">Live Preview</h2>
 
             <div className="mx-auto max-w-md overflow-hidden rounded-lg border border-[#1e293b] bg-[#090d16]">
-                {/* Tabs Bar Preview (TOP in Yakuake) */}
                 <div
                     style={{ backgroundColor: global.colors.bg }}
                     className="flex h-[28px] items-center gap-2 border-b border-[#1e293b] px-2"
                 >
-                    {/* Plus/Minus buttons on left */}
                     <div className="flex items-center gap-1">
                         <div
                             className="flex h-[16px] w-[16px] items-center justify-center"
@@ -45,9 +64,7 @@ export const Preview = ({ config }: PreviewProps) => {
                         style={{ backgroundColor: `${global.colors.text}40` }}
                     />
 
-                    {/* Tabs */}
                     <div className="flex flex-1 items-center gap-1 overflow-x-auto">
-                        {/* Active tab with lock icon */}
                         <div
                             className="flex min-w-[70px] flex-shrink-0 items-center gap-1.5 px-3 py-1"
                             style={{
@@ -74,7 +91,7 @@ export const Preview = ({ config }: PreviewProps) => {
                                 Shell
                             </span>
                             {tabs.closeBtn.enabled && (
-                                <span className="flex h-4 w-4 items-center justify-center ml-1">
+                                <span className="ml-1 flex h-4 w-4 items-center justify-center">
                                     {renderIcon(config, global.iconSet.close, 8)}
                                 </span>
                             )}
@@ -102,7 +119,6 @@ export const Preview = ({ config }: PreviewProps) => {
                     </div>
                 </div>
 
-                {/* Title Bar Preview (BOTTOM in Yakuake) */}
                 <div
                     style={{
                         backgroundColor: global.colors.bg,
@@ -113,7 +129,6 @@ export const Preview = ({ config }: PreviewProps) => {
                     }}
                     className="flex h-[28px] items-center justify-between px-3"
                 >
-                    {/* Left: Title text */}
                     <span
                         style={{
                             color: textColor,
@@ -125,9 +140,7 @@ export const Preview = ({ config }: PreviewProps) => {
                         {title.textContent}
                     </span>
 
-                    {/* Right: Window buttons (config, maximize, close) - right to left */}
                     <div className="flex items-center gap-1">
-                        {/* Config button - hamburger menu */}
                         <div
                             className="flex h-[20px] w-[20px] items-center justify-center"
                             style={{ backgroundColor: global.colors.bg, borderRadius: '50%' }}
@@ -136,7 +149,6 @@ export const Preview = ({ config }: PreviewProps) => {
                             {renderIcon(config, global.iconSet.settings, 12)}
                         </div>
 
-                        {/* Maximize/Focus button - square outline */}
                         <div
                             className="flex h-[20px] w-[20px] items-center justify-center"
                             style={{ backgroundColor: global.colors.bg, borderRadius: '50%' }}
@@ -145,7 +157,6 @@ export const Preview = ({ config }: PreviewProps) => {
                             {renderIcon(config, global.iconSet.maximize, 12)}
                         </div>
 
-                        {/* Close button - X */}
                         <div
                             className="flex h-[20px] w-[20px] items-center justify-center"
                             style={{ backgroundColor: global.colors.bg, borderRadius: '50%' }}

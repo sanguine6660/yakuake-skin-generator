@@ -1,3 +1,24 @@
+/**
+ * @file src/components/forms/TabsForm.tsx
+ * @description Form component for tabs bar configuration - layout, styling, buttons, separator
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import type { SkinConfig, RgbColor } from '../../types'
 import { NumberInput, TextInput, RgbColorInput, Switch } from '../ui'
 
@@ -7,8 +28,18 @@ interface TabsFormProps {
     onRgbColorChange: (colorKey: string, rgb: RgbColor) => void
 }
 
-const ButtonConfigEditor = ({ config, label, onChange, globalConfig }: { config: any; label: string; onChange: (updates: any) => void; globalConfig: SkinConfig }) => (
-    <div className="bg-[#090d16] p-4 rounded-lg border border-[#1e293b]">
+const ButtonConfigEditor = ({
+    config,
+    label,
+    onChange,
+    globalConfig,
+}: {
+    config: any
+    label: string
+    onChange: (updates: any) => void
+    globalConfig: SkinConfig
+}) => (
+    <div className="rounded-lg border border-[#1e293b] bg-[#090d16] p-4">
         <div className="mb-3 flex items-center justify-between">
             <h4 className="font-medium text-white capitalize">{label} Button</h4>
             <Switch
@@ -19,14 +50,16 @@ const ButtonConfigEditor = ({ config, label, onChange, globalConfig }: { config:
             />
         </div>
 
-        <div className={`grid grid-cols-1 gap-4 md:grid-cols-3 ${!config.enabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div
+            className={`grid grid-cols-1 gap-4 md:grid-cols-3 ${!config.enabled ? 'pointer-events-none opacity-50' : ''}`}
+        >
             <Switch
                 label="Enabled"
                 checked={config.enabled}
                 onChange={(v) => onChange({ enabled: v })}
                 config={globalConfig}
             />
-            <div className="md:col-span-2 space-y-3">
+            <div className="space-y-3 md:col-span-2">
                 <div className="grid grid-cols-2 gap-4">
                     <TextInput
                         label="Up Image"
@@ -112,7 +145,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
 
             <h3 className="mb-3 text-lg font-semibold text-gray-200">Tab Styling (3-Piece)</h3>
             <h4 className="mb-2 text-sm text-gray-400">Selected Tab</h4>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-4">
+            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
                 <TextInput
                     label="Selected Left"
                     value={tabs.selectedLeft}
@@ -133,7 +166,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 />
             </div>
             <h4 className="mb-2 text-sm text-gray-400">Unselected Tab</h4>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-4">
+            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
                 <TextInput
                     label="Unselected Left"
                     value={tabs.unselectedLeft}
@@ -177,7 +210,9 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 <ButtonConfigEditor
                     config={config.tabs.lockBtn}
                     label="Lock/Prevent Closing"
-                    onChange={(updates) => onChange({ lockBtn: { ...config.tabs.lockBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ lockBtn: { ...config.tabs.lockBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
 
@@ -185,7 +220,9 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 <ButtonConfigEditor
                     config={config.tabs.plusBtn}
                     label="Plus/New Tab"
-                    onChange={(updates) => onChange({ plusBtn: { ...config.tabs.plusBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ plusBtn: { ...config.tabs.plusBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
 
@@ -193,7 +230,9 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 <ButtonConfigEditor
                     config={config.tabs.minusBtn}
                     label="Minus/Close Tab"
-                    onChange={(updates) => onChange({ minusBtn: { ...config.tabs.minusBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ minusBtn: { ...config.tabs.minusBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
 
@@ -201,7 +240,9 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                 <ButtonConfigEditor
                     config={config.tabs.closeBtn}
                     label="Close Tab"
-                    onChange={(updates) => onChange({ closeBtn: { ...config.tabs.closeBtn, ...updates } })}
+                    onChange={(updates) =>
+                        onChange({ closeBtn: { ...config.tabs.closeBtn, ...updates } })
+                    }
                     globalConfig={config}
                 />
             </div>

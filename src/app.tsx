@@ -1,3 +1,24 @@
+/**
+ * @file src/app.tsx
+ * @description Main application component - orchestrates the skin generator UI with tabbed interface
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { useState, useEffect } from 'preact/compat'
 import type { IconRole, RgbColor, SkinConfig, IconLibrary } from './types'
 import { useSkinConfig } from './hooks/useSkinConfig'
@@ -16,7 +37,6 @@ import { SkinSavesManager } from './components/forms/SkinSavesManager'
 import { PRESETS } from './constants'
 
 export function App() {
-    // Create default config for initial value
     const defaultConfig: SkinConfig = {
         meta: {
             skinName: 'My Custom Skin',
@@ -210,12 +230,10 @@ export function App() {
         return 'global'
     })
 
-    // Save config to sessionStorage whenever it changes
     useEffect(() => {
         setSavedConfig(config)
     }, [config])
 
-    // Save activeTab to sessionStorage
     useEffect(() => {
         if (typeof window !== 'undefined') {
             sessionStorage.setItem('yakuake-active-tab', activeTab)
@@ -401,7 +419,6 @@ export function App() {
                 )}
 
                 <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-[1fr_420px]">
-                    {/* Left Column: Controls */}
                     <div className="w-full space-y-6">
                         <TabPanel activeTab={activeTab} tabId="meta">
                             <MetaForm meta={config.meta} onChange={updateMeta} />
@@ -474,7 +491,6 @@ export function App() {
                         </TabPanel>
                     </div>
 
-                    {/* Right Column: Live Preview - fixed width but responsive */}
                     <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-[420px]">
                         <Preview config={config} />
                         <ColorPreview config={config} />

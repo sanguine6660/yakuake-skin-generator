@@ -1,3 +1,24 @@
+/**
+ * @file src/components/ui/Navbar.tsx
+ * @description Navigation bar component with logo, tab navigation, reset button, and GitHub link
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import type { SkinConfig } from '../../types'
 
 interface NavbarProps {
@@ -30,7 +51,6 @@ export const Navbar = ({ config, activeTab, onTabChange, onResetToDefault }: Nav
             style={{ borderColor: `${accentColor}40` }}
         >
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                {/* Logo & Titel-Bereich */}
                 <div className="flex items-center gap-3 px-1">
                     <div
                         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
@@ -46,9 +66,7 @@ export const Navbar = ({ config, activeTab, onTabChange, onResetToDefault }: Nav
                     </div>
                 </div>
 
-                {/* Navigation Tabs & Actions */}
                 <div className="flex flex-wrap items-center gap-2">
-                    {/* Scrollbarer Container für Tabs bei kleinen Screens */}
                     <div
                         className="flex w-full scrollbar-none items-center gap-1 overflow-x-auto pb-1 sm:w-auto lg:pb-0"
                         role="tablist"

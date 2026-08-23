@@ -1,3 +1,24 @@
+/**
+ * @file src/components/forms/ExportForm.tsx
+ * @description Form component for exporting skins - download tar.gz, install to Yakuake, and view saved skins
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import type { SkinConfig } from '../../types'
 
 interface ExportFormProps {
@@ -195,8 +216,8 @@ export const ExportForm = ({
                         <div>
                             <p className="font-medium text-white">1. Download the Skin Package</p>
                             <p className="text-gray-400">
-                                Click <strong>&quot;Download .tar.gz&quot;</strong> above. Your
-                                browser will save a{' '}
+                                Click <strong>"Download .tar.gz"</strong> above. Your browser will
+                                save a{' '}
                                 <code className="rounded bg-gray-700 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-sky-300">
                                     {skinFolder}.tar.gz
                                 </code>{' '}
@@ -297,8 +318,8 @@ export const ExportForm = ({
                         <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 p-3">
                             <p className="mb-1 font-medium text-sky-300">Pro Tip: Auto-Install</p>
                             <p className="text-sm text-gray-400">
-                                Use the <strong>&quot;Install to Yakuake&quot;</strong> button above
-                                for automatic installation. It will prompt you to select{' '}
+                                Use the <strong>"Install to Yakuake"</strong> button above for
+                                automatic installation. It will prompt you to select{' '}
                                 <code className="font-mono whitespace-nowrap">
                                     ~/.local/share/yakuake/skins/
                                 </code>{' '}

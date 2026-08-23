@@ -1,3 +1,24 @@
+/**
+ * @file src/hooks/useSkinExport.ts
+ * @description Custom hook for exporting skin configurations as .tar.gz archives and installing to Yakuake
+ * @copyright Copyright (C) 2026 sanguine6660
+ * @since 1.0.0
+ * @license GPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { useCallback, useState } from 'preact/hooks'
 import type { SkinConfig } from '../types'
 import { prepareSkinFiles } from '../utils'
@@ -43,9 +64,7 @@ export const useSkinExport = () => {
                         if (permission === 'granted') {
                             dirHandle = savedDirHandle
                         }
-                    } catch {
-                        // Permission lost, will ask again
-                    }
+                    } catch {}
                 }
 
                 if (!dirHandle) {
@@ -60,7 +79,6 @@ export const useSkinExport = () => {
                     savedDirHandle = dirHandle
                 }
 
-                // Try to navigate to ~/.local/share/yakuake/skins/
                 let skinsDirHandle: any
                 try {
                     const localHandle = await dirHandle.getDirectoryHandle('.local', {
@@ -75,12 +93,9 @@ export const useSkinExport = () => {
                     skinsDirHandle = await yakuakeHandle.getDirectoryHandle('skins', {
                         create: false,
                     })
-                } catch {
-                    // Path doesn't exist or no permission, fallback to user selection
-                }
+                } catch {}
 
                 if (skinsDirHandle) {
-                    // Found it! Create skin folder there
                     const skinDirHandle = await skinsDirHandle.getDirectoryHandle(folderName, {
                         create: true,
                     })
@@ -109,7 +124,6 @@ export const useSkinExport = () => {
                     return
                 }
 
-                // Yakuake skins folder not found, let user select it
                 setInstallStatus({
                     message:
                         'Yakuake skins folder not found. Please select ~/.local/share/yakuake/skins/...',
