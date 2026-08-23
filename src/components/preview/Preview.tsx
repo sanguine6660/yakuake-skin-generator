@@ -73,7 +73,7 @@ export const Preview = ({ config }: PreviewProps) => {
                             >
                                 Shell
                             </span>
-                            {tabs.closeBtnEnabled && (
+                            {tabs.closeBtn.enabled && (
                                 <span className="flex h-4 w-4 items-center justify-center ml-1">
                                     {renderIcon(config, global.iconSet.close, 8)}
                                 </span>

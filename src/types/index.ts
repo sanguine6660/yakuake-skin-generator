@@ -53,6 +53,15 @@ export interface SkinMeta {
     icon: string
 }
 
+export interface ButtonConfig {
+    enabled: boolean
+    x: number
+    y: number
+    up: string
+    over: string
+    down: string
+}
+
 export interface TitleConfig {
     meta: SkinMeta
 
@@ -70,26 +79,11 @@ export interface TitleConfig {
     bgRight: string
     bgTranslucent?: boolean
 
-    focusBtnEnabled: boolean
-    focusBtnX: number
-    focusBtnY: number
-    focusBtnUp: string
-    focusBtnOver: string
-    focusBtnDown: string
+    titleEnabled: boolean
 
-    configBtnEnabled: boolean
-    configBtnX: number
-    configBtnY: number
-    configBtnUp: string
-    configBtnOver: string
-    configBtnDown: string
-
-    quitBtnEnabled: boolean
-    quitBtnX: number
-    quitBtnY: number
-    quitBtnUp: string
-    quitBtnOver: string
-    quitBtnDown: string
+    focusBtn: ButtonConfig
+    configBtn: ButtonConfig
+    quitBtn: ButtonConfig
 }
 
 export interface TabsConfig {
@@ -118,26 +112,12 @@ export interface TabsConfig {
     bgRight: string
     bgTranslucent?: boolean
 
-    plusBtnEnabled: boolean
-    plusBtnX: number
-    plusBtnY: number
-    plusBtnUp: string
-    plusBtnOver: string
-    plusBtnDown: string
+    tabsEnabled: boolean
 
-    minusBtnEnabled: boolean
-    minusBtnX: number
-    minusBtnY: number
-    minusBtnUp: string
-    minusBtnOver: string
-    minusBtnDown: string
-
-    closeBtnEnabled: boolean
-    closeBtnX: number
-    closeBtnY: number
-    closeBtnUp: string
-    closeBtnOver: string
-    closeBtnDown: string
+    plusBtn: ButtonConfig
+    minusBtn: ButtonConfig
+    closeBtn: ButtonConfig
+    lockBtn: ButtonConfig
 }
 
 export interface ButtonStateColors {

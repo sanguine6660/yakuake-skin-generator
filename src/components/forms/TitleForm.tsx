@@ -1,5 +1,5 @@
 import type { SkinConfig, RgbColor } from '../../types'
-import { NumberInput, TextInput, RgbColorInput, CheckboxInput } from '../ui'
+import { NumberInput, TextInput, RgbColorInput, Switch, ButtonConfigEditor } from '../ui'
 
 interface TitleFormProps {
     config: SkinConfig
@@ -55,7 +55,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                     onChange={(v) => onChange({ textContent: v })}
                 />
             </div>
-            <CheckboxInput
+            <Switch
                 label="Bold Text"
                 checked={title.textBold}
                 onChange={(v) => onChange({ textBold: v })}
@@ -64,79 +64,40 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
             <h3 className="mt-6 mb-3 text-lg font-semibold text-gray-200">
                 Background Translucency
             </h3>
-            <CheckboxInput
+            <Switch
                 label="Enable Translucent Background"
                 checked={title.bgTranslucent ?? false}
                 onChange={(v) => onChange({ bgTranslucent: v })}
             />
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">
-                Button Visibility & Positions
-            </h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="space-y-2">
-                    <CheckboxInput
-                        label="Show Focus/Maximize Button"
-                        checked={title.focusBtnEnabled ?? true}
-                        onChange={(v) => onChange({ focusBtnEnabled: v })}
-                    />
-                    <NumberInput
-                        label="Focus X"
-                        value={title.focusBtnX}
-                        onChange={(v) => onChange({ focusBtnX: v })}
-                        min={0}
-                        max={200}
-                    />
-                    <NumberInput
-                        label="Focus Y"
-                        value={title.focusBtnY}
-                        onChange={(v) => onChange({ focusBtnY: v })}
-                        min={0}
-                        max={50}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <CheckboxInput
-                        label="Show Config/Settings Button"
-                        checked={title.configBtnEnabled ?? true}
-                        onChange={(v) => onChange({ configBtnEnabled: v })}
-                    />
-                    <NumberInput
-                        label="Config X"
-                        value={title.configBtnX}
-                        onChange={(v) => onChange({ configBtnX: v })}
-                        min={0}
-                        max={200}
-                    />
-                    <NumberInput
-                        label="Config Y"
-                        value={title.configBtnY}
-                        onChange={(v) => onChange({ configBtnY: v })}
-                        min={0}
-                        max={50}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <CheckboxInput
-                        label="Show Quit/Close Button"
-                        checked={title.quitBtnEnabled ?? true}
-                        onChange={(v) => onChange({ quitBtnEnabled: v })}
-                    />
-                    <NumberInput
-                        label="Quit X"
-                        value={title.quitBtnX}
-                        onChange={(v) => onChange({ quitBtnX: v })}
-                        min={0}
-                        max={200}
-                    />
-                    <NumberInput
-                        label="Quit Y"
-                        value={title.quitBtnY}
-                        onChange={(v) => onChange({ quitBtnY: v })}
-                        min={0}
-                        max={50}
-                    />
-                </div>
+            <h3 className="mb-3 text-lg font-semibold text-gray-200">Title Bar Enabled</h3>
+            <Switch
+                label="Enable Title Bar"
+                checked={title.titleEnabled ?? true}
+                onChange={(v) => onChange({ titleEnabled: v })}
+            />
+
+            <div className="space-y-6">
+                <h3 className="mb-3 text-lg font-semibold text-gray-200">Focus/Maximize Button</h3>
+                <ButtonConfigEditor
+                    config={config.title.focusBtn}
+                    label="Focus/Maximize"
+                    onChange={(updates) => onChange({ focusBtn: { ...config.title.focusBtn, ...updates } })}
+                />
+
+                <h3 className="mb-3 text-lg font-semibold text-gray-200">Config/Settings Button</h3>
+                <ButtonConfigEditor
+                    config={config.title.configBtn}
+                    label="Config/Settings"
+                    onChange={(updates) => onChange({ configBtn: { ...config.title.configBtn, ...updates } })}
+                />
+
+                <h3 className="mb-3 text-lg font-semibold text-gray-200">Quit/Close Button</h3>
+                <ButtonConfigEditor
+                    config={config.title.quitBtn}
+                    label="Quit/Close"
+                    onChange={(updates) => onChange({ quitBtn: { ...config.title.quitBtn, ...updates } })}
+                />
             </div>
         </div>
     )

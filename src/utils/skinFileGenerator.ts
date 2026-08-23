@@ -1,6 +1,19 @@
 import type { SkinConfig } from '../types'
 import { generateAllAssets } from './svgGenerators'
 
+const writeButtonConfig = (prefix: string, btn: { enabled: boolean; x: number; y: number; up: string; over: string; down: string }): string[] => {
+    if (!btn.enabled) return []
+    return [
+        '',
+        `[${prefix}Button]`,
+        `x=${btn.x}`,
+        `y=${btn.y}`,
+        `up_image=${btn.up}`,
+        `over_image=${btn.over}`,
+        `down_image=${btn.down}`,
+    ]
+}
+
 export const generateTitleSkin = (config: SkinConfig): string => {
     const { meta, title } = config
     const borderColor = title.borderColor
@@ -35,40 +48,10 @@ export const generateTitleSkin = (config: SkinConfig): string => {
         `right_corner=${title.bgRight}`,
     ]
 
-    if (title.focusBtnEnabled) {
-        lines.push(
-            '',
-            '[FocusButton]',
-            `x=${title.focusBtnX}`,
-            `y=${title.focusBtnY}`,
-            `up_image=${title.focusBtnUp}`,
-            `over_image=${title.focusBtnOver}`,
-            `down_image=${title.focusBtnDown}`
-        )
-    }
-
-    if (title.configBtnEnabled) {
-        lines.push(
-            '',
-            '[ConfigButton]',
-            `x=${title.configBtnX}`,
-            `y=${title.configBtnY}`,
-            `up_image=${title.configBtnUp}`,
-            `over_image=${title.configBtnOver}`,
-            `down_image=${title.configBtnDown}`
-        )
-    }
-
-    if (title.quitBtnEnabled) {
-        lines.push(
-            '',
-            '[QuitButton]',
-            `x=${title.quitBtnX}`,
-            `y=${title.quitBtnY}`,
-            `up_image=${title.quitBtnUp}`,
-            `over_image=${title.quitBtnOver}`,
-            `down_image=${title.quitBtnDown}`
-        )
+    if (title.titleEnabled) {
+        lines.push(...writeButtonConfig('Focus', title.focusBtn))
+        lines.push(...writeButtonConfig('Config', title.configBtn))
+        lines.push(...writeButtonConfig('Quit', title.quitBtn))
     }
 
     return lines.filter(Boolean).join('\n')
@@ -101,56 +84,35 @@ export const generateTabsSkin = (config: SkinConfig): string => {
         `unselected_right=${tabs.unselectedRight}`,
     ]
 
-    if (tabs.lockEnabled) {
-        lines.push(
-            `prevent_closing_image=${tabs.preventClosingImage}`,
-            `prevent_closing_image_x=${tabs.preventClosingX}`,
-            `prevent_closing_image_y=${tabs.preventClosingY}`
-        )
-    }
+    if (tabs.tabsEnabled) {
+        if (tabs.lockEnabled) {
+            lines.push(
+                `prevent_closing_image=${tabs.preventClosingImage}`,
+                `prevent_closing_image_x=${tabs.preventClosingX}`,
+                `prevent_closing_image_y=${tabs.preventClosingY}`
+            )
+        }
 
-    lines.push(
-        '',
-        '[Background]',
-        `back_image=${tabs.bgCenter}`,
-        `left_corner=${tabs.bgLeft}`,
-        `right_corner=${tabs.bgRight}`
-    )
-
-    if (tabs.plusBtnEnabled) {
         lines.push(
             '',
-            '[PlusButton]',
-            `x=${tabs.plusBtnX}`,
-            `y=${tabs.plusBtnY}`,
-            `up_image=${tabs.plusBtnUp}`,
-            `over_image=${tabs.plusBtnOver}`,
-            `down_image=${tabs.plusBtnDown}`
+            '[Background]',
+            `back_image=${tabs.bgCenter}`,
+            `left_corner=${tabs.bgLeft}`,
+            `right_corner=${tabs.bgRight}`
         )
-    }
 
-    if (tabs.minusBtnEnabled) {
-        lines.push(
-            '',
-            '[MinusButton]',
-            `x=${tabs.minusBtnX}`,
-            `y=${tabs.minusBtnY}`,
-            `up_image=${tabs.minusBtnUp}`,
-            `over_image=${tabs.minusBtnOver}`,
-            `down_image=${tabs.minusBtnDown}`
-        )
-    }
-
-    if (tabs.closeBtnEnabled) {
-        lines.push(
-            '',
-            '[CloseButton]',
-            `x=${tabs.closeBtnX}`,
-            `y=${tabs.closeBtnY}`,
-            `up_image=${tabs.closeBtnUp}`,
-            `over_image=${tabs.closeBtnOver}`,
-            `down_image=${tabs.closeBtnDown}`
-        )
+        if (tabs.plusBtn.enabled) {
+            lines.push(...writeButtonConfig('Plus', tabs.plusBtn))
+        }
+        if (tabs.minusBtn.enabled) {
+            lines.push(...writeButtonConfig('Minus', tabs.minusBtn))
+        }
+        if (tabs.closeBtn.enabled) {
+            lines.push(...writeButtonConfig('Close', tabs.closeBtn))
+        }
+        if (tabs.lockBtn.enabled) {
+            lines.push(...writeButtonConfig('Lock', tabs.lockBtn))
+        }
     }
 
     return lines.filter(Boolean).join('\n')
