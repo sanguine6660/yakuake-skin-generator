@@ -52,8 +52,8 @@ with Preact, TypeScript, and Tailwind CSS.
   color picker + RGB inputs
 - **Advanced Features** - Separator images, selected/unselected tab corners,
   translucency support, border width/color
-- **True WYSIWYG Preview** - Renders the actual generated skin assets (not a
-  CSS approximation): hover/pressed button states, clickable tabs, tiled bar
+- **True WYSIWYG Preview** - Renders the actual generated skin assets (not a CSS
+  approximation): hover/pressed button states, clickable tabs, tiled bar
   backgrounds, terminal body with derived contrast color
 - **Export** - Generates a proper `.tar.gz` archive with all required files for
   instant Yakuake installation
@@ -66,8 +66,8 @@ with Preact, TypeScript, and Tailwind CSS.
     - **Light**: GitHub Light, Catppuccin Latte, Rose Pine Dawn, Catppuccin
       Frappé, Tokyo Day, Everforest Light, Kanagawa Light, Nord Light, Gruvbox
       Light, Solarized Light
-- Applying a preset themes **everything**: colors, title text, tab text, and
-  all button state colors
+- Applying a preset themes **everything**: colors, title text, tab text, and all
+  button state colors
 - **Terminal Background** auto-derived (lighter/darker) from the tab bar color
   so the preview terminal stands out
 
