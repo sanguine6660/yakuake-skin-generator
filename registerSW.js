@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/yakuake-skin-generator/sw.js', { scope: '/yakuake-skin-generator/' })})}
