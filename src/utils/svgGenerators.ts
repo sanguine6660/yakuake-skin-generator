@@ -20,7 +20,8 @@
  */
 
 import type { SkinConfig } from '../types'
-import { getIconPath } from './iconPaths'
+import { getIconPath, type IconName } from './iconPaths'
+import { getIconMarkup } from './iconRenderer'
 import { adjustHexBrightness } from './colors'
 
 export const generateBackgroundCenter = (
@@ -61,14 +62,15 @@ export const generateBackgroundRight = (
 }
 
 export const generateButtonSvg = (
-    iconName: string,
+    iconMarkup: string | null,
     bgColor: string,
     iconColor: string,
     size = 20,
     iconSize = 14,
-    isCircle = true
+    isCircle = true,
+    fallbackIcon: IconName = 'settings'
 ): string => {
-    const iconPath = getIconPath(iconName as keyof typeof import('./iconPaths').ICON_SVG_PATHS)
+    const iconPath = iconMarkup ?? getIconPath(fallbackIcon)
     const scale = iconSize / 24
     const translate = (size - 24 * scale) / 2
     const shape = isCircle
@@ -117,28 +119,31 @@ export const generateSeparator = (color: string, height = 28): string => {
 
 export const generateLockSvg = (config: SkinConfig): string => {
     const { text } = config.global.colors
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">${getIconPath('lock').replace(/currentColor/g, text)}</svg>`
+    const iconContent = getIconMarkup(config, config.global.iconSet.lock) ?? getIconPath('lock')
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">${iconContent.replace(/currentColor/g, text)}</svg>`
 }
 
 export const generateCloseButtonSvg = (
+    iconMarkup: string | null,
     bgColor: string,
     iconColor: string,
     size = 16,
     iconSize = 12
 ): string => {
-    const iconPath = getIconPath('x')
+    const iconPath = iconMarkup ?? getIconPath('x')
     const scale = iconSize / 24
     const translate = (size - 24 * scale) / 2
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/><g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
 }
 
 export const generatePlusMinusSvg = (
-    type: 'plus' | 'minus',
+    iconMarkup: string | null,
     bgColor: string,
     iconColor: string,
-    size = 16
+    size = 16,
+    fallbackIcon: IconName = 'plus'
 ): string => {
-    const iconPath = getIconPath(type)
+    const iconPath = iconMarkup ?? getIconPath(fallbackIcon)
     const scale = 0.5
     const translate = (size - 24 * scale) / 2
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/><g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
@@ -190,48 +195,44 @@ export const generateTabsBackgrounds = (config: SkinConfig) => {
 }
 
 export const generateAllTitleButtons = (config: SkinConfig) => {
-    const { buttonColors } = config.global
+    const { buttonColors, iconSet } = config.global
     const { config: configColors, focus, quit } = buttonColors
 
+    const configIcon = getIconMarkup(config, iconSet.settings)
+    const focusIcon = getIconMarkup(config, iconSet.maximize)
+    const quitIcon = getIconMarkup(config, iconSet.close)
+
     return {
-        config_up: generateButtonSvg('settings', configColors.upBg, configColors.upIcon, 20, 14),
-        config_over: generateButtonSvg(
-            'settings',
-            configColors.overBg,
-            configColors.overIcon,
-            20,
-            14
-        ),
-        config_down: generateButtonSvg(
-            'settings',
-            configColors.downBg,
-            configColors.downIcon,
-            20,
-            14
-        ),
-        focus_up: generateButtonSvg('square', focus.upBg, focus.upIcon, 20, 14),
-        focus_over: generateButtonSvg('square', focus.overBg, focus.overIcon, 20, 14),
-        focus_down: generateButtonSvg('square', focus.downBg, focus.downIcon, 20, 14),
-        quit_up: generateButtonSvg('x', quit.upBg, quit.upIcon, 20, 14),
-        quit_over: generateButtonSvg('x', quit.overBg, quit.overIcon, 20, 14),
-        quit_down: generateButtonSvg('x', quit.downBg, quit.downIcon, 20, 14),
+        config_up: generateButtonSvg(configIcon, configColors.upBg, configColors.upIcon, 20, 14, true, 'settings'),
+        config_over: generateButtonSvg(configIcon, configColors.overBg, configColors.overIcon, 20, 14, true, 'settings'),
+        config_down: generateButtonSvg(configIcon, configColors.downBg, configColors.downIcon, 20, 14, true, 'settings'),
+        focus_up: generateButtonSvg(focusIcon, focus.upBg, focus.upIcon, 20, 14, true, 'square'),
+        focus_over: generateButtonSvg(focusIcon, focus.overBg, focus.overIcon, 20, 14, true, 'square'),
+        focus_down: generateButtonSvg(focusIcon, focus.downBg, focus.downIcon, 20, 14, true, 'square'),
+        quit_up: generateButtonSvg(quitIcon, quit.upBg, quit.upIcon, 20, 14, true, 'x'),
+        quit_over: generateButtonSvg(quitIcon, quit.overBg, quit.overIcon, 20, 14, true, 'x'),
+        quit_down: generateButtonSvg(quitIcon, quit.downBg, quit.downIcon, 20, 14, true, 'x'),
     }
 }
 
 export const generateAllTabsButtons = (config: SkinConfig) => {
-    const { buttonColors } = config.global
+    const { buttonColors, iconSet } = config.global
     const { plus, minus, close } = buttonColors
 
+    const plusIcon = getIconMarkup(config, iconSet.plus)
+    const minusIcon = getIconMarkup(config, iconSet.minus)
+    const closeIcon = getIconMarkup(config, iconSet.close)
+
     return {
-        plus_up: generatePlusMinusSvg('plus', plus.upBg, plus.upIcon, 16),
-        plus_over: generatePlusMinusSvg('plus', plus.overBg, plus.overIcon, 16),
-        plus_down: generatePlusMinusSvg('plus', plus.downBg, plus.downIcon, 16),
-        minus_up: generatePlusMinusSvg('minus', minus.upBg, minus.upIcon, 16),
-        minus_over: generatePlusMinusSvg('minus', minus.overBg, minus.overIcon, 16),
-        minus_down: generatePlusMinusSvg('minus', minus.downBg, minus.downIcon, 16),
-        close_up: generateCloseButtonSvg(close.upBg, close.upIcon, 16, 12),
-        close_over: generateCloseButtonSvg(close.overBg, close.overIcon, 16, 12),
-        close_down: generateCloseButtonSvg(close.downBg, close.downIcon, 16, 12),
+        plus_up: generatePlusMinusSvg(plusIcon, plus.upBg, plus.upIcon, 16, 'plus'),
+        plus_over: generatePlusMinusSvg(plusIcon, plus.overBg, plus.overIcon, 16, 'plus'),
+        plus_down: generatePlusMinusSvg(plusIcon, plus.downBg, plus.downIcon, 16, 'plus'),
+        minus_up: generatePlusMinusSvg(minusIcon, minus.upBg, minus.upIcon, 16, 'minus'),
+        minus_over: generatePlusMinusSvg(minusIcon, minus.overBg, minus.overIcon, 16, 'minus'),
+        minus_down: generatePlusMinusSvg(minusIcon, minus.downBg, minus.downIcon, 16, 'minus'),
+        close_up: generateCloseButtonSvg(closeIcon, close.upBg, close.upIcon, 16, 12),
+        close_over: generateCloseButtonSvg(closeIcon, close.overBg, close.overIcon, 16, 12),
+        close_down: generateCloseButtonSvg(closeIcon, close.downBg, close.downIcon, 16, 12),
     }
 }
 

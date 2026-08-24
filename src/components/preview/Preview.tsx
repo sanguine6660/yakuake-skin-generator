@@ -19,10 +19,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMemo, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 import type { RgbColor, SkinConfig } from '../../types'
 import { generateAllAssets } from '../../utils/svgGenerators'
 import { deriveKonsoleBackground } from '../../utils/colors'
+import { warmIconMarkupCache } from '../../utils/iconRenderer'
 
 interface PreviewProps {
     config: SkinConfig
@@ -53,15 +54,24 @@ export const Preview = ({ config }: PreviewProps) => {
     const konsoleBackground =
         global.colors.konsoleBackground ?? deriveKonsoleBackground(global.colors.bg)
 
+    const [buttonStates, setButtonStates] = useState<Record<string, ButtonState | undefined>>({})
+    const [selectedTab, setSelectedTab] = useState(0)
+    const [iconMarkupVersion, setIconMarkupVersion] = useState(0)
+
     const uris = useMemo(() => {
         const assets = generateAllAssets(config)
         const map: Record<string, string> = {}
         for (const [name, svg] of Object.entries(assets)) map[name] = toDataUri(svg)
         return map
-    }, [config])
+    }, [config, iconMarkupVersion])
 
-    const [buttonStates, setButtonStates] = useState<Record<string, ButtonState | undefined>>({})
-    const [selectedTab, setSelectedTab] = useState(0)
+    useEffect(() => {
+        let warmed = false
+        for (const role of ['settings', 'maximize', 'close', 'plus', 'minus', 'lock'] as const) {
+            if (warmIconMarkupCache(config, config.global.iconSet[role])) warmed = true
+        }
+        if (warmed) setIconMarkupVersion((version) => version + 1)
+    }, [config])
 
     const getButtonSrc = (assetBase: string): string => {
         const state = buttonStates[assetBase] ?? 'up'

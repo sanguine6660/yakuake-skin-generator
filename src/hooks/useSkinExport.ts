@@ -23,6 +23,7 @@ import { useCallback, useState } from 'preact/hooks'
 import type { SkinConfig } from '../types'
 import { prepareSkinFiles } from '../utils'
 import { useGoatCounter } from './useGoatCounter'
+import { warmIconMarkupCache } from '../utils/iconRenderer'
 
 let savedDirHandle: any = null
 
@@ -36,6 +37,9 @@ export const useSkinExport = () => {
 
     const downloadSkin = useCallback(
         async (config: SkinConfig): Promise<boolean> => {
+            warmIconMarkupCache(config, config.global.iconSet.settings)
+            warmIconMarkupCache(config, config.global.iconSet.maximize)
+            warmIconMarkupCache(config, config.global.iconSet.close)
             const { files, folderName } = prepareSkinFiles(config)
             const { createTarGz } = await import('../utils')
             await createTarGz(files, `${folderName}.tar.gz`)
@@ -51,6 +55,13 @@ export const useSkinExport = () => {
         async (config: SkinConfig): Promise<boolean> => {
             try {
                 setInstallStatus({ message: 'Preparing skin for installation...', type: 'info' })
+
+                warmIconMarkupCache(config, config.global.iconSet.settings)
+                warmIconMarkupCache(config, config.global.iconSet.maximize)
+                warmIconMarkupCache(config, config.global.iconSet.close)
+                warmIconMarkupCache(config, config.global.iconSet.plus)
+                warmIconMarkupCache(config, config.global.iconSet.minus)
+                warmIconMarkupCache(config, config.global.iconSet.lock)
 
                 const { files, folderName } = prepareSkinFiles(config)
 

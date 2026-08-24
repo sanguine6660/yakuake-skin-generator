@@ -49,6 +49,8 @@ import * as Tfi from 'react-icons/tfi'
 import * as Pi from 'react-icons/pi'
 
 import type { SkinConfig, IconLibrary } from '../types'
+import { createElement } from 'preact'
+import { renderToString } from 'preact-render-to-string'
 
 export const libraries: Record<IconLibrary, any> = {
     lucide: Lu,
@@ -86,4 +88,50 @@ export const renderIcon = (config: SkinConfig, iconName: string, size = 16, colo
     const IconComponent = lib[iconName] || lib[Object.keys(lib)[0]]
     if (!IconComponent) return null
     return <IconComponent size={size} color={color || config.global.colors.text} />
+}
+
+const markupCache = new Map<string, string>()
+
+export const getIconMarkup = (config: SkinConfig, iconName: string): string | null => {
+    return markupCache.get(`${config.global.iconLibrary}:${iconName}`) ?? null
+}
+
+const buildIconMarkup = (config: SkinConfig, iconName: string): string | null => {
+    const lib = libraries[config.global.iconLibrary]
+    if (!lib) return null
+    const IconComponent = lib[iconName]
+    if (typeof IconComponent !== 'function') return null
+    try {
+        const markup = renderToString(createElement(IconComponent, { size: 24 }))
+        const rootMatch = markup.match(/^<svg([^>]*)>([\s\S]*)<\/svg>$/)
+        if (!rootMatch) return null
+        const rootAttrs = rootMatch[1]
+        let inner = rootMatch[2]
+        const viewBoxMatch = rootAttrs.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)
+        if (viewBoxMatch) {
+            const w = parseFloat(viewBoxMatch[1])
+            const h = parseFloat(viewBoxMatch[2])
+            if (w > 0 && h > 0 && (Math.abs(w - 24) > 0.01 || Math.abs(h - 24) > 0.01)) {
+                inner = `<g transform="scale(${(24 / w).toFixed(6)}, ${(24 / h).toFixed(6)})">${inner}</g>`
+            }
+        }
+        const presentationAttrs = ['stroke', 'fill', 'stroke-width', 'stroke-linecap', 'stroke-linejoin']
+            .map((name) => {
+                const match = rootAttrs.match(new RegExp(`${name}="([^"]*)"`))
+                return match ? `${name}="${match[1]}"` : ''
+            })
+            .filter(Boolean)
+            .join(' ')
+        return `<g ${presentationAttrs}>${inner}</g>`
+    } catch {
+        return null
+    }
+}
+
+export const warmIconMarkupCache = (config: SkinConfig, iconName: string): boolean => {
+    const key = `${config.global.iconLibrary}:${iconName}`
+    if (markupCache.has(key)) return false
+    const markup = buildIconMarkup(config, iconName)
+    if (markup !== null) markupCache.set(key, markup)
+    return markup !== null
 }
