@@ -45,6 +45,9 @@ if (loadingScreen) {
     const remaining = Math.max(0, minDisplayMs - performance.now())
     setTimeout(() => {
         loadingScreen.classList.add('loading-screen--hidden')
-        setTimeout(() => loadingScreen.remove(), 400)
+        setTimeout(() => {
+            loadingScreen.remove()
+            window.dispatchEvent(new Event('loading-screen-finished'))
+        }, 400)
     }, remaining)
 }

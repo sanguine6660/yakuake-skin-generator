@@ -44,6 +44,7 @@ import { ColorPreview } from './components/preview/ColorPreview'
 import { StatsPreview } from './components/preview/StatsPreview'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
+import { PrivacyNotice } from './components/ui/PrivacyNotice'
 import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
 import { SkinSavesManager } from './components/forms/SkinSavesManager'
@@ -84,6 +85,22 @@ export function App() {
         'yakuake-icon-library-usage',
         {}
     )
+    const [privacyAccepted, setPrivacyAccepted] = useLocalStorage<boolean>(
+        'yakuake-privacy-accepted',
+        false
+    )
+    const [loaderFinished, setLoaderFinished] = useState(false)
+    const [privacyOpen, setPrivacyOpen] = useState(false)
+
+    useEffect(() => {
+        const handler = () => setLoaderFinished(true)
+        window.addEventListener('loading-screen-finished', handler)
+        return () => window.removeEventListener('loading-screen-finished', handler)
+    }, [])
+
+    useEffect(() => {
+        if (loaderFinished && !privacyAccepted) setPrivacyOpen(true)
+    }, [loaderFinished, privacyAccepted])
 
     // State für Anzahl gespeicherter Skins (für StatsPreview)
     const [savedSkinsCount, setSavedSkinsCount] = useState(() => {
@@ -424,6 +441,16 @@ export function App() {
                     <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-[420px]">
                         <Preview config={config} />
                         <ColorPreview config={config} />
+                        {privacyOpen && (
+                            <PrivacyNotice
+                                onAccept={() => {
+                                    setPrivacyAccepted(true)
+                                    setPrivacyOpen(false)
+                                }}
+                                onClose={() => setPrivacyOpen(false)}
+                            />
+                        )}
+
                         <StatsPreview
                             totalDownloads={totalDownloads}
                             exportCount={exportCount}
@@ -436,7 +463,7 @@ export function App() {
                     </div>
                 </div>
 
-                <Footer config={config} />
+                <Footer onOpenPrivacy={() => setPrivacyOpen(true)} />
             </div>
         </div>
     )
