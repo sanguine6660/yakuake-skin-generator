@@ -28,6 +28,7 @@ import type {
     SkinConfig,
     ButtonColors,
 } from '../types'
+import { deriveKonsoleBackground } from '../utils/colors'
 
 export const ICON_LIBRARIES: Record<IconLibrary, string> = {
     lucide: 'Lucide',
@@ -441,6 +442,7 @@ export const createDefaultSkinConfig = (): SkinConfig => ({
             selected: '#3b4252',
             text: '#66c2f2',
             dim: '#232834',
+            konsoleBackground: deriveKonsoleBackground('#1e2233'),
         },
         buttonColors: DEFAULT_BUTTON_COLORS,
         borderRadius: 0,

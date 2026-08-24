@@ -21,6 +21,7 @@
 
 import type { SkinConfig } from '../types'
 import { getIconPath } from './iconPaths'
+import { adjustHexBrightness } from './colors'
 
 export const generateBackgroundCenter = (
     color: string,
@@ -141,16 +142,6 @@ export const generatePlusMinusSvg = (
     const scale = 0.5
     const translate = (size - 24 * scale) / 2
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="3" ry="3" fill="${bgColor}"/><g transform="translate(${translate}, ${translate}) scale(${scale})">${iconPath.replace(/currentColor/g, iconColor)}</g></svg>`
-}
-
-const adjustHexBrightness = (hex: string, amount: number): string => {
-    const cleanHex = hex.replace('#', '')
-    const num = parseInt(cleanHex, 16)
-    const clamp = (v: number) => Math.min(255, Math.max(0, v))
-    const r = clamp((num >> 16) + amount)
-    const g = clamp(((num >> 8) & 0xff) + amount)
-    const b = clamp((num & 0xff) + amount)
-    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
 }
 
 export const generateLogo = (config: SkinConfig): string => {

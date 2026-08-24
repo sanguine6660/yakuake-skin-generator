@@ -28,6 +28,7 @@ import type {
     ButtonStateColors,
 } from '../../types'
 import { ICON_LIBRARIES, ICON_ROLES, PRESETS, getPresetsByCategory } from '../../constants'
+import { deriveKonsoleBackground } from '../../utils/colors'
 import { ColorInput, NumberInput, SelectInput, Switch } from '../ui'
 import { IconPicker } from '../ui/IconPicker'
 import { ButtonStateModal } from './ButtonStateModal'
@@ -216,6 +217,15 @@ export const GlobalForm = ({
                     label="Inactive/Dim"
                     value={config.global.colors.dim}
                     onChange={(v) => onColorChange('global', 'dim', v)}
+                />
+                <ColorInput
+                    label="Terminal Background"
+                    value={
+                        config.global.colors.konsoleBackground ??
+                        deriveKonsoleBackground(config.global.colors.bg)
+                    }
+                    onChange={(v) => onColorChange('global', 'konsoleBackground', v)}
+                    hint="preview only"
                 />
             </div>
 

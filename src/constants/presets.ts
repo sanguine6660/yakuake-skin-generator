@@ -21,6 +21,7 @@
 
 import type { RgbColor, SkinConfig } from '../types'
 import { DEFAULT_ICON_SETS, DEFAULT_TITLE_CONFIG, DEFAULT_TABS_CONFIG } from './constants'
+import { deriveKonsoleBackground } from '../utils/colors'
 
 export interface SkinPreset {
     id: string
@@ -76,7 +77,7 @@ const createPresetConfig = (
     const buttonState = createButtonState(colors)
     return {
         global: {
-            colors,
+            colors: { ...colors, konsoleBackground: deriveKonsoleBackground(colors.bg) },
             borderRadius,
             iconLibrary,
             iconSet: DEFAULT_ICON_SETS[iconLibrary],

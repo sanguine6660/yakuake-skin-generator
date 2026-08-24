@@ -22,6 +22,7 @@
 import { useState, useCallback, useEffect } from 'preact/hooks'
 import type { SkinConfig, SkinMeta, IconLibrary, IconRole, RgbColor } from '../types'
 import { createDefaultSkinConfig, DEFAULT_ICON_SETS } from '../constants'
+import { deriveKonsoleBackground } from '../utils/colors'
 
 const hexToRgb = (hex: string): RgbColor => {
     const cleanHex = hex.replace('#', '')
@@ -93,11 +94,15 @@ export const useSkinConfig = (initialConfig?: SkinConfig) => {
         (section: 'global' | 'title' | 'tabs', colorKey: string, value: string) => {
             setConfig((prev) => {
                 if (section === 'global') {
+                    const newColors = { ...prev.global.colors, [colorKey]: value }
+                    if (colorKey === 'bg') {
+                        newColors.konsoleBackground = deriveKonsoleBackground(value)
+                    }
                     return {
                         ...prev,
                         global: {
                             ...prev.global,
-                            colors: { ...prev.global.colors, [colorKey]: value },
+                            colors: newColors,
                         },
                     }
                 }

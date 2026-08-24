@@ -22,6 +22,7 @@
 import { useMemo, useState } from 'preact/hooks'
 import type { RgbColor, SkinConfig } from '../../types'
 import { generateAllAssets } from '../../utils/svgGenerators'
+import { deriveKonsoleBackground } from '../../utils/colors'
 
 interface PreviewProps {
     config: SkinConfig
@@ -48,6 +49,9 @@ const rgb = (color: RgbColor): string => `rgb(${color.r}, ${color.g}, ${color.b}
 
 export const Preview = ({ config }: PreviewProps) => {
     const { global, title, tabs } = config
+
+    const konsoleBackground =
+        global.colors.konsoleBackground ?? deriveKonsoleBackground(global.colors.bg)
 
     const uris = useMemo(() => {
         const assets = generateAllAssets(config)
@@ -92,7 +96,7 @@ export const Preview = ({ config }: PreviewProps) => {
             >
                 <div
                     className="relative w-full px-4"
-                    style={{ backgroundColor: global.colors.bg, height: 132 }}
+                    style={{ backgroundColor: konsoleBackground, height: 132 }}
                 >
                     <div className="flex h-full flex-col justify-center gap-1 font-mono text-[11px] leading-relaxed">
                         <p className="m-0" style={{ color: rgb(tabs.selectedColor) }}>

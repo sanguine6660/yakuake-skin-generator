@@ -171,6 +171,7 @@ export interface SkinConfig {
             selected: string
             text: string
             dim: string
+            konsoleBackground: string
         }
         buttonColors: ButtonColors
         borderRadius: number
