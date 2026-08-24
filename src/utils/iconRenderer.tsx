@@ -49,7 +49,6 @@ import * as Tfi from 'react-icons/tfi'
 import * as Pi from 'react-icons/pi'
 
 import type { SkinConfig, IconLibrary } from '../types'
-import { createElement } from 'preact'
 import { renderToString } from 'preact-render-to-string'
 
 export const libraries: Record<IconLibrary, any> = {
@@ -99,15 +98,18 @@ export const getIconMarkup = (config: SkinConfig, iconName: string): string | nu
 const buildIconMarkup = (config: SkinConfig, iconName: string): string | null => {
     const lib = libraries[config.global.iconLibrary]
     if (!lib) return null
-    const IconComponent = lib[iconName]
-    if (typeof IconComponent !== 'function') return null
+    const iconFactory = lib[iconName]
+    if (typeof iconFactory !== 'function') return null
     try {
-        const markup = renderToString(createElement(IconComponent, { size: 24 }))
-        const rootMatch = markup.match(/^<svg([^>]*)>([\s\S]*)<\/svg>$/)
-        if (!rootMatch) return null
-        const rootAttrs = rootMatch[1]
-        let inner = rootMatch[2]
-        const viewBoxMatch = rootAttrs.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)
+        const vnode: any = iconFactory({ size: 24 })
+        const attr = vnode?.props?.attr ?? {}
+        const children = vnode?.props?.children
+        if (!children) return null
+
+        let inner = renderToString(children as any)
+
+        const viewBox = typeof attr.viewBox === 'string' ? attr.viewBox : undefined
+        const viewBoxMatch = viewBox?.match(/0 0 ([\d.]+) ([\d.]+)/)
         if (viewBoxMatch) {
             const w = parseFloat(viewBoxMatch[1])
             const h = parseFloat(viewBoxMatch[2])
@@ -115,13 +117,23 @@ const buildIconMarkup = (config: SkinConfig, iconName: string): string | null =>
                 inner = `<g transform="scale(${(24 / w).toFixed(6)}, ${(24 / h).toFixed(6)})">${inner}</g>`
             }
         }
-        const presentationAttrs = ['stroke', 'fill', 'stroke-width', 'stroke-linecap', 'stroke-linejoin']
-            .map((name) => {
-                const match = rootAttrs.match(new RegExp(`${name}="([^"]*)"`))
-                return match ? `${name}="${match[1]}"` : ''
+
+        const presentationAttrs = [
+            'stroke',
+            'fill',
+            'strokeWidth',
+            'strokeLinecap',
+            'strokeLinejoin',
+        ]
+            .map((camel) => {
+                const value = (attr as Record<string, string | undefined>)[camel]
+                if (value === undefined) return ''
+                const kebab = camel.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
+                return `${kebab}="${value}"`
             })
             .filter(Boolean)
             .join(' ')
+
         return `<g ${presentationAttrs}>${inner}</g>`
     } catch {
         return null

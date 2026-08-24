@@ -203,12 +203,52 @@ export const generateAllTitleButtons = (config: SkinConfig) => {
     const quitIcon = getIconMarkup(config, iconSet.close)
 
     return {
-        config_up: generateButtonSvg(configIcon, configColors.upBg, configColors.upIcon, 20, 14, true, 'settings'),
-        config_over: generateButtonSvg(configIcon, configColors.overBg, configColors.overIcon, 20, 14, true, 'settings'),
-        config_down: generateButtonSvg(configIcon, configColors.downBg, configColors.downIcon, 20, 14, true, 'settings'),
+        config_up: generateButtonSvg(
+            configIcon,
+            configColors.upBg,
+            configColors.upIcon,
+            20,
+            14,
+            true,
+            'settings'
+        ),
+        config_over: generateButtonSvg(
+            configIcon,
+            configColors.overBg,
+            configColors.overIcon,
+            20,
+            14,
+            true,
+            'settings'
+        ),
+        config_down: generateButtonSvg(
+            configIcon,
+            configColors.downBg,
+            configColors.downIcon,
+            20,
+            14,
+            true,
+            'settings'
+        ),
         focus_up: generateButtonSvg(focusIcon, focus.upBg, focus.upIcon, 20, 14, true, 'square'),
-        focus_over: generateButtonSvg(focusIcon, focus.overBg, focus.overIcon, 20, 14, true, 'square'),
-        focus_down: generateButtonSvg(focusIcon, focus.downBg, focus.downIcon, 20, 14, true, 'square'),
+        focus_over: generateButtonSvg(
+            focusIcon,
+            focus.overBg,
+            focus.overIcon,
+            20,
+            14,
+            true,
+            'square'
+        ),
+        focus_down: generateButtonSvg(
+            focusIcon,
+            focus.downBg,
+            focus.downIcon,
+            20,
+            14,
+            true,
+            'square'
+        ),
         quit_up: generateButtonSvg(quitIcon, quit.upBg, quit.upIcon, 20, 14, true, 'x'),
         quit_over: generateButtonSvg(quitIcon, quit.overBg, quit.overIcon, 20, 14, true, 'x'),
         quit_down: generateButtonSvg(quitIcon, quit.downBg, quit.downIcon, 20, 14, true, 'x'),
