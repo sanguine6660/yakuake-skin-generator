@@ -1,6 +1,6 @@
 /**
  * @file src/utils/iconRenderer.tsx
- * @description Renders icons from react-icons libraries based on active icon library selection
+ * @description Lazy-loading icon library registry - loads icon library chunks on demand, renders live icons and generates static SVG markup for exports
  * @copyright Copyright (C) 2026 sanguine6660
  * @since 1.0.0
  * @license GPL-3.0-or-later
@@ -19,71 +19,97 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Lu from 'react-icons/lu'
-import * as Fa from 'react-icons/fa'
-import * as Fa6 from 'react-icons/fa6'
-import * as Io from 'react-icons/io'
-import * as Io5 from 'react-icons/io5'
-import * as Md from 'react-icons/md'
-import * as Ti from 'react-icons/ti'
-import * as Go from 'react-icons/go'
-import * as Fi from 'react-icons/fi'
-import * as Gi from 'react-icons/gi'
-import * as Wi from 'react-icons/wi'
-import * as Di from 'react-icons/di'
-import * as Ai from 'react-icons/ai'
-import * as Bs from 'react-icons/bs'
-import * as Ri from 'react-icons/ri'
-import * as Fc from 'react-icons/fc'
-import * as Gr from 'react-icons/gr'
-import * as Hi from 'react-icons/hi'
-import * as Hi2 from 'react-icons/hi2'
-import * as Si from 'react-icons/si'
-import * as Sl from 'react-icons/sl'
-import * as Im from 'react-icons/im'
-import * as Bi from 'react-icons/bi'
-import * as Cg from 'react-icons/cg'
-import * as Vsc from 'react-icons/vsc'
-import * as Tb from 'react-icons/tb'
-import * as Tfi from 'react-icons/tfi'
-import * as Pi from 'react-icons/pi'
-
+import { useEffect, useState } from 'preact/hooks'
 import type { SkinConfig, IconLibrary } from '../types'
 import { renderToString } from 'preact-render-to-string'
 
-export const libraries: Record<IconLibrary, any> = {
-    lucide: Lu,
-    fa: Fa,
-    fa6: Fa6,
-    io: Io,
-    io5: Io5,
-    md: Md,
-    ti: Ti,
-    go: Go,
-    fi: Fi,
-    gi: Gi,
-    wi: Wi,
-    di: Di,
-    ai: Ai,
-    bs: Bs,
-    ri: Ri,
-    fc: Fc,
-    gr: Gr,
-    hi: Hi,
-    hi2: Hi2,
-    si: Si,
-    sl: Sl,
-    im: Im,
-    bi: Bi,
-    cg: Cg,
-    vsc: Vsc,
-    tb: Tb,
-    tfi: Tfi,
-    pi: Pi,
+type LibraryModule = Record<string, any>
+
+const loaders: Record<IconLibrary, () => Promise<LibraryModule>> = {
+    lucide: () => import('react-icons/lu'),
+    fa: () => import('react-icons/fa'),
+    fa6: () => import('react-icons/fa6'),
+    io: () => import('react-icons/io'),
+    io5: () => import('react-icons/io5'),
+    md: () => import('react-icons/md'),
+    ti: () => import('react-icons/ti'),
+    go: () => import('react-icons/go'),
+    fi: () => import('react-icons/fi'),
+    gi: () => import('react-icons/gi'),
+    wi: () => import('react-icons/wi'),
+    di: () => import('react-icons/di'),
+    ai: () => import('react-icons/ai'),
+    bs: () => import('react-icons/bs'),
+    ri: () => import('react-icons/ri'),
+    fc: () => import('react-icons/fc'),
+    gr: () => import('react-icons/gr'),
+    hi: () => import('react-icons/hi'),
+    hi2: () => import('react-icons/hi2'),
+    si: () => import('react-icons/si'),
+    sl: () => import('react-icons/sl'),
+    im: () => import('react-icons/im'),
+    bi: () => import('react-icons/bi'),
+    cg: () => import('react-icons/cg'),
+    vsc: () => import('react-icons/vsc'),
+    tb: () => import('react-icons/tb'),
+    tfi: () => import('react-icons/tfi'),
+    pi: () => import('react-icons/pi'),
 }
 
-export const renderIcon = (config: SkinConfig, iconName: string, size = 16, color?: string) => {
-    const lib = libraries[config.global.iconLibrary] || Lu
+const loadedLibraries: Partial<Record<IconLibrary, LibraryModule>> = {}
+const pendingLoads: Partial<Record<IconLibrary, Promise<LibraryModule>>> = {}
+
+export const loadIconLibrary = (library: IconLibrary): Promise<LibraryModule> => {
+    const cached = loadedLibraries[library]
+    if (cached) return Promise.resolve(cached)
+    const pending = pendingLoads[library]
+    if (pending) return pending
+
+    const load = loaders[library]()
+        .then((lib) => {
+            loadedLibraries[library] = lib
+            delete pendingLoads[library]
+            return lib
+        })
+        .catch((error) => {
+            delete pendingLoads[library]
+            console.error(`Failed to load icon library "${library}":`, error)
+            return {}
+        })
+    pendingLoads[library] = load
+    return load
+}
+
+export const useIconLibrary = (library: IconLibrary): LibraryModule | null => {
+    const [lib, setLib] = useState<LibraryModule | null>(loadedLibraries[library] ?? null)
+
+    useEffect(() => {
+        let cancelled = false
+        const current = loadedLibraries[library]
+        if (current) {
+            setLib(current)
+            return
+        }
+        setLib(null)
+        void loadIconLibrary(library).then((loaded) => {
+            if (!cancelled) setLib(loaded ?? null)
+        })
+        return () => {
+            cancelled = true
+        }
+    }, [library])
+
+    return lib
+}
+
+export const renderIcon = (
+    config: SkinConfig,
+    iconName: string,
+    size = 16,
+    color?: string
+) => {
+    const lib = loadedLibraries[config.global.iconLibrary]
+    if (!lib) return null
     const IconComponent = lib[iconName] || lib[Object.keys(lib)[0]]
     if (!IconComponent) return null
     return <IconComponent size={size} color={color || config.global.colors.text} />
@@ -96,7 +122,7 @@ export const getIconMarkup = (config: SkinConfig, iconName: string): string | nu
 }
 
 const buildIconMarkup = (config: SkinConfig, iconName: string): string | null => {
-    const lib = libraries[config.global.iconLibrary]
+    const lib = loadedLibraries[config.global.iconLibrary]
     if (!lib) return null
     const iconFactory = lib[iconName]
     if (typeof iconFactory !== 'function') return null
@@ -118,20 +144,18 @@ const buildIconMarkup = (config: SkinConfig, iconName: string): string | null =>
             }
         }
 
-        const presentationAttrs = [
-            'stroke',
-            'fill',
-            'strokeWidth',
-            'strokeLinecap',
-            'strokeLinejoin',
-        ]
-            .map((camel) => {
-                const value = (attr as Record<string, string | undefined>)[camel]
-                if (value === undefined) return ''
-                const kebab = camel.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
-                return `${kebab}="${value}"`
-            })
-            .filter(Boolean)
+        const rawAttr = attr as Record<string, string | number | undefined>
+        const presentationAttrs = (
+            [
+                ['stroke', rawAttr.stroke ?? 'currentColor'],
+                ['fill', rawAttr.fill ?? 'currentColor'],
+                ['stroke-width', rawAttr.strokeWidth ?? '0'],
+                ['stroke-linecap', rawAttr.strokeLinecap],
+                ['stroke-linejoin', rawAttr.strokeLinejoin],
+            ] as Array<[string, string | number | undefined]>
+        )
+            .filter(([, value]) => value !== undefined)
+            .map(([name, value]) => `${name}="${value}"`)
             .join(' ')
 
         return `<g ${presentationAttrs}>${inner}</g>`
@@ -140,9 +164,13 @@ const buildIconMarkup = (config: SkinConfig, iconName: string): string | null =>
     }
 }
 
-export const warmIconMarkupCache = (config: SkinConfig, iconName: string): boolean => {
+export const warmIconMarkupCache = async (
+    config: SkinConfig,
+    iconName: string
+): Promise<boolean> => {
     const key = `${config.global.iconLibrary}:${iconName}`
     if (markupCache.has(key)) return false
+    await loadIconLibrary(config.global.iconLibrary)
     const markup = buildIconMarkup(config, iconName)
     if (markup !== null) markupCache.set(key, markup)
     return markup !== null

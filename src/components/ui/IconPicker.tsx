@@ -21,7 +21,7 @@
 
 import { useState, useRef, useEffect } from 'preact/hooks'
 import type { SkinConfig, IconRole } from '../../types'
-import { libraries, renderIcon } from '../../utils/iconRenderer'
+import { useIconLibrary, renderIcon } from '../../utils/iconRenderer'
 
 interface IconPickerProps {
     config: SkinConfig
@@ -33,7 +33,7 @@ interface IconPickerProps {
 
 export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerProps) => {
     const currentIcon = config.global.iconSet[role]
-    const lib = libraries[config.global.iconLibrary]
+    const lib = useIconLibrary(config.global.iconLibrary)
     const availableIcons = lib ? Object.keys(lib).filter((k) => typeof lib[k] === 'function') : []
 
     const [isOpen, setIsOpen] = useState(false)
@@ -97,6 +97,11 @@ export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerPr
 
                 {isOpen && (
                     <div className="absolute top-full right-0 left-0 z-50 mt-1 max-h-72 overflow-y-auto rounded-lg border border-[#1e293b] bg-[#121824] shadow-lg">
+                        {!lib && (
+                            <div className="px-3 py-4 text-center text-xs text-gray-500">
+                                Loading icons…
+                            </div>
+                        )}
                         {availableIcons.slice(0, 120).map((icon) => (
                             <button
                                 key={icon}

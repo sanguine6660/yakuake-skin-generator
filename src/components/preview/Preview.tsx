@@ -66,11 +66,18 @@ export const Preview = ({ config }: PreviewProps) => {
     }, [config, iconMarkupVersion])
 
     useEffect(() => {
-        let warmed = false
-        for (const role of ['settings', 'maximize', 'close', 'plus', 'minus', 'lock'] as const) {
-            if (warmIconMarkupCache(config, config.global.iconSet[role])) warmed = true
+        let cancelled = false
+        const warm = async () => {
+            let warmed = false
+            for (const role of ['settings', 'maximize', 'close', 'plus', 'minus', 'lock'] as const) {
+                if (await warmIconMarkupCache(config, config.global.iconSet[role])) warmed = true
+            }
+            if (warmed && !cancelled) setIconMarkupVersion((version) => version + 1)
         }
-        if (warmed) setIconMarkupVersion((version) => version + 1)
+        void warm()
+        return () => {
+            cancelled = true
+        }
     }, [config])
 
     const getButtonSrc = (assetBase: string): string => {

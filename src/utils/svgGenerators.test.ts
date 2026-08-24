@@ -139,7 +139,7 @@ describe('generateAllAssets', () => {
         expect(assets['tabs/lock.svg']).toBeTruthy()
     })
 
-    it('produces different button icons per icon library', () => {
+    it('produces different button icons per icon library', async () => {
         const otherLibrary = {
             ...config,
             global: {
@@ -156,8 +156,8 @@ describe('generateAllAssets', () => {
             },
         }
         for (const role of ['settings', 'maximize', 'close', 'plus', 'minus', 'lock'] as const) {
-            warmIconMarkupCache(config, config.global.iconSet[role])
-            warmIconMarkupCache(otherLibrary, otherLibrary.global.iconSet[role])
+            await warmIconMarkupCache(config, config.global.iconSet[role])
+            await warmIconMarkupCache(otherLibrary, otherLibrary.global.iconSet[role])
         }
         const otherAssets = generateAllAssets(otherLibrary)
         expect(otherAssets['title/config_up.svg']).not.toBe(assets['title/config_up.svg'])

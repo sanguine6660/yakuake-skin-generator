@@ -21,7 +21,7 @@
 
 import { useCallback, useState } from 'preact/hooks'
 import type { SkinConfig } from '../types'
-import { prepareSkinFiles } from '../utils'
+import { createTarGz, prepareSkinFiles } from '../utils'
 import { useGoatCounter } from './useGoatCounter'
 import { warmIconMarkupCache } from '../utils/iconRenderer'
 
@@ -37,11 +37,10 @@ export const useSkinExport = () => {
 
     const downloadSkin = useCallback(
         async (config: SkinConfig): Promise<boolean> => {
-            warmIconMarkupCache(config, config.global.iconSet.settings)
-            warmIconMarkupCache(config, config.global.iconSet.maximize)
-            warmIconMarkupCache(config, config.global.iconSet.close)
+            await warmIconMarkupCache(config, config.global.iconSet.settings)
+            await warmIconMarkupCache(config, config.global.iconSet.maximize)
+            await warmIconMarkupCache(config, config.global.iconSet.close)
             const { files, folderName } = prepareSkinFiles(config)
-            const { createTarGz } = await import('../utils')
             await createTarGz(files, `${folderName}.tar.gz`)
 
             // Track successful download event
@@ -56,17 +55,16 @@ export const useSkinExport = () => {
             try {
                 setInstallStatus({ message: 'Preparing skin for installation...', type: 'info' })
 
-                warmIconMarkupCache(config, config.global.iconSet.settings)
-                warmIconMarkupCache(config, config.global.iconSet.maximize)
-                warmIconMarkupCache(config, config.global.iconSet.close)
-                warmIconMarkupCache(config, config.global.iconSet.plus)
-                warmIconMarkupCache(config, config.global.iconSet.minus)
-                warmIconMarkupCache(config, config.global.iconSet.lock)
+                await warmIconMarkupCache(config, config.global.iconSet.settings)
+                await warmIconMarkupCache(config, config.global.iconSet.maximize)
+                await warmIconMarkupCache(config, config.global.iconSet.close)
+                await warmIconMarkupCache(config, config.global.iconSet.plus)
+                await warmIconMarkupCache(config, config.global.iconSet.minus)
+                await warmIconMarkupCache(config, config.global.iconSet.lock)
 
                 const { files, folderName } = prepareSkinFiles(config)
 
                 if (!('showDirectoryPicker' in window)) {
-                    const { createTarGz } = await import('../utils')
                     await createTarGz(files, `${folderName}.tar.gz`)
                     setInstallStatus({
                         message: `Direct install not supported in this browser. Downloaded ${folderName}.tar.gz. Extract to ~/.local/share/yakuake/skins/${folderName}/`,
