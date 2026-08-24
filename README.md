@@ -23,6 +23,8 @@ and Tailwind CSS.
   <img src="./public/logo.svg" alt="Yakuake Skin Generator Logo" width="120" />
 </p>
 
+#### Made with ❤️ by sanguine6660
+
 ---
 
 ## Preview
