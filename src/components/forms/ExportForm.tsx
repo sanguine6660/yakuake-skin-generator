@@ -19,12 +19,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useRef, useState } from 'preact/hooks'
 import type { SavedSkin, SkinConfig } from '../../types'
+import {
+    downloadConfigJson,
+    encodeConfigHash,
+    parseConfigJson,
+} from '../../utils/configSerialization'
 
 interface ExportFormProps {
     config: SkinConfig
     downloadSkin: (config: SkinConfig) => void
     installToYakuake: (config: SkinConfig) => void
+    onImportConfig: (config: SkinConfig) => void
     installStatus: { message: string; type: 'success' | 'error' | 'info' } | null
     clearStatus: () => void
     savedSkins: Record<string, SavedSkin>
@@ -34,12 +41,50 @@ export const ExportForm = ({
     config,
     downloadSkin,
     installToYakuake,
+    onImportConfig,
     installStatus,
     clearStatus,
     savedSkins,
 }: ExportFormProps) => {
     const accentColor = config.global.colors.text
     const skinFolder = config.meta.skinName.toLowerCase().replace(/[^a-z0-9]/g, '_')
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const [shareStatus, setShareStatus] = useState<{
+        message: string
+        type: 'success' | 'error'
+    } | null>(null)
+
+    const handleDownloadJson = () => {
+        downloadConfigJson(config)
+        setShareStatus({ message: 'Configuration downloaded.', type: 'success' })
+    }
+
+    const handleFileChange = async (event: Event) => {
+        const input = event.target as HTMLInputElement
+        const file = input.files?.[0]
+        if (!file) return
+        try {
+            const imported = parseConfigJson(await file.text())
+            onImportConfig(imported)
+            setShareStatus({
+                message: `Configuration "${imported.meta.skinName}" imported.`,
+                type: 'success',
+            })
+        } catch {
+            setShareStatus({ message: 'Invalid skin configuration file.', type: 'error' })
+        }
+        input.value = ''
+    }
+
+    const handleCopyLink = async () => {
+        const shareUrl = `${location.origin}${location.pathname}${encodeConfigHash(config)}`
+        try {
+            await navigator.clipboard.writeText(shareUrl)
+            setShareStatus({ message: 'Share link copied to clipboard.', type: 'success' })
+        } catch {
+            setShareStatus({ message: 'Clipboard unavailable.', type: 'error' })
+        }
+    }
 
     const folderStructure = `${skinFolder}/
 ├── logo.svg
@@ -103,6 +148,64 @@ export const ExportForm = ({
                 >
                     Download .tar.gz
                 </button>
+            </div>
+
+            <div className="rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
+                <h3 className="mb-3 text-lg font-semibold text-gray-200">Share & Backup</h3>
+                <p className="mb-4 text-sm text-gray-400">
+                    Move your configuration between devices or share it as a link — no archive
+                    needed.
+                </p>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <button
+                        onClick={handleDownloadJson}
+                        className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition hover:opacity-90"
+                        style={{
+                            backgroundColor: '#3b4252',
+                            color: accentColor,
+                            border: `1px solid ${accentColor}`,
+                        }}
+                    >
+                        Download JSON
+                    </button>
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition hover:opacity-90"
+                        style={{
+                            backgroundColor: '#3b4252',
+                            color: accentColor,
+                            border: `1px solid ${accentColor}`,
+                        }}
+                    >
+                        Import JSON
+                    </button>
+                    <button
+                        onClick={handleCopyLink}
+                        className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition hover:opacity-90"
+                        style={{
+                            backgroundColor: '#3b4252',
+                            color: accentColor,
+                            border: `1px solid ${accentColor}`,
+                        }}
+                    >
+                        Copy Share Link
+                    </button>
+                </div>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".json,application/json"
+                    className="hidden"
+                    onChange={handleFileChange}
+                />
+                {shareStatus && (
+                    <p
+                        className="mt-3 text-sm"
+                        style={{ color: shareStatus.type === 'error' ? '#bf616a' : '#a3be8c' }}
+                    >
+                        {shareStatus.message}
+                    </p>
+                )}
             </div>
 
             {installStatus && (

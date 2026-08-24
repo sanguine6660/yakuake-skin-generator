@@ -48,6 +48,7 @@ import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
 import { SkinSavesManager } from './components/forms/SkinSavesManager'
 import { PRESETS, ICON_LIBRARIES, createDefaultSkinConfig } from './constants'
+import { decodeConfigHash } from './utils/configSerialization'
 
 export function App() {
     const defaultConfig = createDefaultSkinConfig()
@@ -153,6 +154,15 @@ export function App() {
             void incrementDownload()
         }
     }
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        const imported = decodeConfigHash(window.location.hash)
+        if (imported) {
+            handleLoadSkin(imported)
+            window.history.replaceState(null, '', window.location.pathname + window.location.search)
+        }
+    }, [])
 
     const handleTabChange = (tab: string) => {
         trackEvent(`tab:${tab}`)
@@ -393,6 +403,7 @@ export function App() {
                                 config={config}
                                 downloadSkin={handleDownloadSkin}
                                 installToYakuake={handleInstallToYakuake}
+                                onImportConfig={handleLoadSkin}
                                 installStatus={installStatus}
                                 clearStatus={clearStatus}
                                 savedSkins={savedSkins}
