@@ -12,12 +12,14 @@ CRITICAL NOTICE FOR AI ASSISTANTS AND AUTOMATED AGENTS:
 # Yakuake Skin Generator 🎨
 
 [![Deploy to GitHub Pages](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/deploy.yml/badge.svg)](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/deploy.yml)
+[![Test Build](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/build.yml/badge.svg)](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/build.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://sanguine6660.github.io/yakuake-skin-generator/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 🎨 A modern, full-featured web application to create custom Yakuake terminal
-skins with all possible configuration options. Built with Preact, TypeScript,
-and Tailwind CSS.
+skins with all possible configuration options — with a true WYSIWYG preview,
+preset theming, skin sharing via JSON or link, and direct installation. Built
+with Preact, TypeScript, and Tailwind CSS.
 
 <p align="center">
   <img src="./public/logo.svg" alt="Yakuake Skin Generator Logo" width="120" />
@@ -44,36 +46,58 @@ and Tailwind CSS.
 - **28 Icon Libraries** - Lucide, Font Awesome 5/6, Ionicons, Material Design,
   Bootstrap Icons, Tabler, Phosphor, and more
 - **Per-Icon Customization** - 6 icon roles (settings, maximize, close, plus,
-  minus, lock) each selectable from any library
+  minus, lock) each selectable from any library — and the selection is baked
+  into the generated button assets
 - **Full Color Palette** - Background, selected/accent, text, dim with hex +
   color picker + RGB inputs
 - **Advanced Features** - Separator images, selected/unselected tab corners,
   translucency support, border width/color
-- **Real-time Preview** - Accurate Yakuake rendering preview (tabs on top, title
-  bar on bottom)
+- **True WYSIWYG Preview** - Renders the actual generated skin assets (not a
+  CSS approximation): hover/pressed button states, clickable tabs, tiled bar
+  backgrounds, terminal body with derived contrast color
 - **Export** - Generates a proper `.tar.gz` archive with all required files for
   instant Yakuake installation
 
-### New Features
+### Presets & Theming
 
-- **20 Modern Presets** (10 Dark + 10 Light)
+- **20 Modern Presets** (10 Dark + 10 Light), fully palette-derived:
     - **Dark**: Midnight, Dracula, Nord, Tokyo Night, Catppuccin Mocha, Rose
       Pine, Gruvbox, Everforest, Kanagawa, GitHub Dark
     - **Light**: GitHub Light, Catppuccin Latte, Rose Pine Dawn, Catppuccin
       Frappé, Tokyo Day, Everforest Light, Kanagawa Light, Nord Light, Gruvbox
       Light, Solarized Light
-- **Dark/Light Preset Categories** - Easy switching between themes
-- **Direct Install to Yakuake** - One-click install to
-  `~/.local/share/yakuake/skins/` using File System Access API
-  (Chrome/Edge/Brave)
-- **Button Visibility Toggles** - Enable/disable each button (Config, Focus,
-  Quit, Lock, Plus, Minus) - disabled buttons are omitted from the skin file
-- **Icon Preview in Dropdowns** - Hover shows icon preview, dropdown shows 120+
-  icons with live previews
-- **Generator Branding** - Custom logo in favicon, navbar, and exported
-  `logo.svg`
-- **Tabbed Interface** - Global → Title Bar → Tabs Bar → Export → Metadata
-- **Detailed Installation Guide** - Step-by-step guide at bottom of Export tab
+- Applying a preset themes **everything**: colors, title text, tab text, and
+  all button state colors
+- **Terminal Background** auto-derived (lighter/darker) from the tab bar color
+  so the preview terminal stands out
+
+### Skins & Sharing
+
+- **My Skins Manager** - Save, load, rename, and delete skin configurations
+  (stored in your browser)
+- **Export Saved Skins** - Download any saved skin as `.tar.gz` directly from
+  the Export tab
+- **JSON Import/Export** - Full configuration as `.json` for backups and
+  migration between devices; imports are validated and merged onto defaults
+- **URL Share Links** - One click copies a `#config=…` link that loads the
+  entire skin configuration on any device
+
+### Stats & Insights
+
+- **Global Download Counter** - Live total of all skin exports, shown in the
+  Generator Stats panel
+- **Personal Stats** - Your exports, saved skins, top preset, and top icon
+  library (stored locally in your browser)
+- **Private Usage Analytics** - Preset applications, icon library switches, and
+  install outcomes tracked via GoatCounter for the maintainer
+
+### Polish
+
+- **Animated Loading Screen** - The logo draws itself in while a boot-sequence
+  terminal types out; pacing adapts to your average startup time
+- **Footer** - Links to the repository, issues, skin format wiki, and Yakuake
+  source
+- **Responsive Navbar & SEO Meta Tags**
 
 ## Quick Start
 
@@ -87,6 +111,9 @@ npm install
 
 # Start development server
 npm run dev
+
+# Run tests
+npm test
 
 # Build for production
 npm run build
@@ -121,10 +148,15 @@ skin-name/
     ├── tab_selected.svg
     ├── tab_unselected.svg
     ├── tab_selected_left.svg
+    ├── tab_selected_middle.svg
     ├── tab_selected_right.svg
     ├── tab_unselected_left.svg
+    ├── tab_unselected_middle.svg
     ├── tab_unselected_right.svg
     ├── tab_separator.svg
+    ├── close_up.svg
+    ├── close_over.svg
+    ├── close_down.svg
     ├── lock.svg
     ├── plus_up.svg
     ├── plus_over.svg
@@ -158,10 +190,9 @@ skin-name/
 - **Icon Library** - 28 libraries (Lucide, Font Awesome 5/6, Ionicons, Material
   Design, Bootstrap, Tabler, Phosphor, etc.)
 - **Per-Role Icons** - Settings, Maximize, Close, Plus, Minus, Lock
-- **Color Palette** - Background, Selected/Accent, Text, Dim with hex + picker +
-  RGB
+- **Color Palette** - Background, Selected/Accent, Text, Dim, Terminal
+  Background (auto-derived, preview only) with hex + picker
 - **Border Radius, Opacity, Translucency** toggles
-- **Website** field
 
 ### Title Bar (Tab 2)
 
@@ -183,14 +214,22 @@ skin-name/
 - **Button Visibility** - Enable/disable Plus/Minus buttons
 - Plus/Minus button positions - all 3 states
 
-### Export (Tab 4)
+### My Skins (Tab 4)
+
+- **Save Current Skin** - Store the current configuration under any name
+- **Load / Rename / Delete** saved skins
+- Timestamps for created/updated
+
+### Export (Tab 5)
 
 - **Install to Yakuake** - Direct install to `~/.local/share/yakuake/skins/`
 - **Download .tar.gz** - Manual install option
-- Detailed 4-step installation guide
-- Installation status notifications
+- **Share & Backup** - Download/import the configuration as JSON, copy a
+  `#config=…` share link
+- **Saved Skins list** - Export any saved skin directly as `.tar.gz`
+- Detailed installation guide + installation status notifications
 
-### Metadata (Tab 5)
+### Metadata (Tab 6)
 
 - Skin name, Author, Email
 - Auto-filled from presets (sanguine6660, sanguine6660@gmail.com, GitHub URL)
@@ -202,6 +241,31 @@ skin-name/
 - **Tailwind CSS** - Utility-first styling
 - **Vite** - Lightning-fast build tool
 - **react-icons** - 28 icon library integrations
+- **Vitest** - Unit tests for the skin generation pipeline
+
+## Testing
+
+The skin generation pipeline (SVG assets, `.skin` files, archives, presets,
+serialization) is covered by unit tests:
+
+```bash
+npm test        # run once (CI mode)
+npm run test:watch
+```
+
+Both GitHub Actions workflows (branch builds and the Pages deployment) run the
+test suite before building.
+
+## Skin Format Documentation
+
+Want to create skins by hand or understand what the generator produces?
+
+- **[WIKI.md](WIKI.md)** - Complete Yakuake skin format reference: folder
+  structure, every key in `title.skin` / `tabs.skin` with defaults, and the
+  rendering rules (tiled backgrounds, natural-size buttons, bar heights)
+- **[skin_reference/](skin_reference/)** - Annotated reference files plus
+  [LINKS.md](skin_reference/LINKS.md) with the official Yakuake source files
+  that define the format
 
 ## Contributing
 
