@@ -20,7 +20,15 @@
  */
 
 import { useState, useCallback, useEffect } from 'preact/hooks'
-import type { SkinConfig, SkinMeta, IconLibrary, IconRole, RgbColor } from '../types'
+import type {
+    SkinConfig,
+    SkinMeta,
+    IconLibrary,
+    IconRole,
+    RgbColor,
+    ButtonColors,
+    ButtonStateColors,
+} from '../types'
 import { createDefaultSkinConfig, DEFAULT_ICON_SETS } from '../constants'
 import { deriveKonsoleBackground } from '../utils/colors'
 
@@ -126,6 +134,25 @@ export const useSkinConfig = (initialConfig?: SkinConfig) => {
         []
     )
 
+    const setButtonColor = useCallback(
+        (button: keyof ButtonColors, state: keyof ButtonStateColors, value: string) => {
+            setConfig((prev) => ({
+                ...prev,
+                global: {
+                    ...prev.global,
+                    buttonColors: {
+                        ...prev.global.buttonColors,
+                        [button]: {
+                            ...prev.global.buttonColors[button],
+                            [state]: value,
+                        },
+                    },
+                },
+            }))
+        },
+        []
+    )
+
     const setRgbColor = useCallback(
         (section: 'title' | 'tabs', colorKey: string, rgb: RgbColor) => {
             setConfig((prev) => {
@@ -154,6 +181,7 @@ export const useSkinConfig = (initialConfig?: SkinConfig) => {
         setIconLibrary,
         setIcon,
         setColor,
+        setButtonColor,
         setRgbColor,
     }
 }

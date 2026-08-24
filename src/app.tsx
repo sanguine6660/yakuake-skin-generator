@@ -20,7 +20,15 @@
  */
 
 import { useState, useEffect } from 'preact/compat'
-import type { IconRole, RgbColor, SkinConfig, IconLibrary, SavedSkin } from './types'
+import type {
+    IconRole,
+    RgbColor,
+    SkinConfig,
+    IconLibrary,
+    SavedSkin,
+    ButtonColors,
+    ButtonStateColors,
+} from './types'
 import { useSkinConfig } from './hooks/useSkinConfig'
 import { useSkinExport } from './hooks/useSkinExport'
 import { useSessionStorage } from './hooks/useSessionStorage'
@@ -57,6 +65,7 @@ export function App() {
         setIconLibrary,
         setIcon,
         setColor,
+        setButtonColor,
         setRgbColor,
     } = useSkinConfig(savedConfig)
 
@@ -187,15 +196,7 @@ export function App() {
     }
 
     const handleButtonColorChange = (button: string, state: string, value: string) => {
-        const currentButtonColors = config.global.buttonColors
-        const updatedButtonColors = {
-            ...currentButtonColors,
-            [button]: {
-                ...currentButtonColors[button as keyof typeof currentButtonColors],
-                [state]: value,
-            },
-        }
-        updateGlobal({ buttonColors: updatedButtonColors as any })
+        setButtonColor(button as keyof ButtonColors, state as keyof ButtonStateColors, value)
     }
 
     const handleApplyPreset = (presetId: string) => {

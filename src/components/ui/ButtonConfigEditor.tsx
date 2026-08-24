@@ -49,32 +49,26 @@ export const ButtonConfigEditor = ({
         <div
             className={`grid grid-cols-1 gap-4 md:grid-cols-3 ${!config.enabled ? 'pointer-events-none opacity-50' : ''}`}
         >
-            <Switch
-                label="Enabled"
-                checked={config.enabled}
-                onChange={(v) => onChange({ enabled: v })}
-                config={globalConfig}
-            />
             <div className="space-y-3 md:col-span-2">
                 <div className="grid grid-cols-2 gap-4">
                     <TextInput
                         label="Up Image"
                         value={config.up}
                         onChange={(v) => onChange({ up: v })}
-                        placeholder="/title/focus_up.svg"
+                        placeholder="up_image.svg"
                     />
                     <TextInput
                         label="Over Image"
                         value={config.over}
                         onChange={(v) => onChange({ over: v })}
-                        placeholder="/title/focus_over.svg"
+                        placeholder="over_image.svg"
                     />
                 </div>
                 <TextInput
                     label="Down Image"
                     value={config.down}
                     onChange={(v) => onChange({ down: v })}
-                    placeholder="/title/focus_down.svg"
+                    placeholder="down_image.svg"
                 />
             </div>
 
