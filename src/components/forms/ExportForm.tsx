@@ -88,6 +88,9 @@ export const ExportForm = ({
 
     const folderStructure = `${skinFolder}/
 ├── logo.svg
+├── LICENSE
+├── README.md
+├── metadata.json
 ├── title.skin
 ├── tabs.skin
 ├── title/

@@ -126,6 +126,9 @@ Generated skins follow the official Yakuake skin format:
 ```text
 skin-name/
 ├── logo.svg
+├── LICENSE
+├── README.md
+├── metadata.json
 ├── title.skin
 ├── tabs.skin
 ├── title/

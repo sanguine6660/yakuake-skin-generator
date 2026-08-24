@@ -41,6 +41,27 @@ describe('parseConfigJson', () => {
         expect(parsed.tabs.selectedColor).toEqual(config.tabs.selectedColor)
     })
 
+    it('accepts a metadata.json file and extracts the config state', () => {
+        const metadata = {
+            generator: { name: 'Yakuake Skin Generator', url: 'x', version: '1.0.0' },
+            skin: { name: 'From Metadata', author: 'Tester', license: 'CC-BY-4.0' },
+            config: {
+                note: 'Full skin configuration state',
+                data: {
+                    global: config.global,
+                    title: config.title,
+                    tabs: config.tabs,
+                },
+            },
+        }
+        const parsed = parseConfigJson(JSON.stringify(metadata))
+        expect(parsed.meta.skinName).toBe('From Metadata')
+        expect(parsed.meta.author).toBe('Tester')
+        expect(parsed.global).toEqual(config.global)
+        expect(parsed.title).toEqual(config.title)
+        expect(parsed.tabs).toEqual(config.tabs)
+    })
+
     it('throws on garbage input', () => {
         expect(() => parseConfigJson('not json')).toThrow()
     })

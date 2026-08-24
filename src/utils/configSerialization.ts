@@ -27,10 +27,24 @@ const HASH_PREFIX = '#config='
 export const exportConfigJson = (config: SkinConfig): string => JSON.stringify(config, null, 4)
 
 export const parseConfigJson = (text: string): SkinConfig => {
-    const parsed = JSON.parse(text) as Record<string, any>
+    let parsed = JSON.parse(text) as Record<string, any>
     if (typeof parsed !== 'object' || parsed === null) {
         throw new Error('Not a skin configuration')
     }
+
+    if (parsed.config?.data && typeof parsed.config.data === 'object') {
+        const skin = parsed.skin ?? {}
+        parsed = {
+            meta: {
+                skinName: skin.name,
+                author: skin.author,
+                email: skin.email,
+                web: skin.repository,
+            },
+            ...parsed.config.data,
+        }
+    }
+
     if (
         typeof parsed.meta !== 'object' ||
         typeof parsed.title !== 'object' ||

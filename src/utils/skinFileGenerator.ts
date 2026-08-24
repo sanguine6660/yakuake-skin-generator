@@ -22,6 +22,78 @@
 import type { SkinConfig } from '../types'
 import { generateAllAssets } from './svgGenerators'
 
+const GENERATOR_NAME = 'Yakuake Skin Generator'
+const GENERATOR_URL = 'https://github.com/sanguine6660/yakuake-skin-generator'
+
+export const generateLicense = (config: SkinConfig): string => {
+    const { skinName, author } = config.meta
+    return `Skin Name: ${skinName}
+Author: ${author}
+Repository / Source Code: ${GENERATOR_URL}
+Created with: ${GENERATOR_NAME} (${GENERATOR_URL})
+
+
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+
+You are free to use, share, and adapt this skin for any purpose,
+provided that you keep this copyright notice, attribute the original creator,
+and do not claim ownership of the original creation.
+`
+}
+
+export const generateSkinReadme = (config: SkinConfig): string => {
+    const { skinName, author } = config.meta
+    return `# ${skinName} (Yakuake Skin)
+
+This skin was custom-generated using the **${GENERATOR_NAME}**.
+
+## Credits & Links
+* **Original Creator:** ${author}
+* **Source Code & Editor:** [GitHub Repository](${GENERATOR_URL})
+* **License:** CC BY 4.0
+
+---
+
+## About the Generator & How to Use
+Want to modify this skin, tweak its colors, swap icon sets, or design your own from scratch?
+
+1. Visit the online editor or clone the source repository:
+   👉 **[sanguine6660/yakuake-skin-generator](${GENERATOR_URL})**
+2. Import this skin's JSON configuration file into the editor, or tweak the live parameters visually.
+3. Export a fresh \`.tar.gz\` bundle instantly!
+
+## Installation
+Extract this folder into your local Yakuake/KDE themes directory (usually \`~/.local/share/yakuake/skins/\` or system-wide equivalent), then select it from your Yakuake appearance settings.
+`
+}
+
+export const generateMetadata = (config: SkinConfig): string => {
+    const metadata = {
+        generator: {
+            name: GENERATOR_NAME,
+            url: GENERATOR_URL,
+            version: '1.0.0',
+        },
+        skin: {
+            name: config.meta.skinName,
+            author: config.meta.author,
+            license: 'CC-BY-4.0',
+            licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
+            repository: GENERATOR_URL,
+        },
+        config: {
+            note: 'Full skin configuration state for re-importing into the editor',
+            data: {
+                global: config.global,
+                title: config.title,
+                tabs: config.tabs,
+            },
+        },
+    }
+    return JSON.stringify(metadata, null, 4)
+}
+
 const writeButtonConfig = (
     prefix: string,
     btn: { enabled: boolean; x: number; y: number; up: string; over: string; down: string }
@@ -153,6 +225,9 @@ export const prepareSkinFiles = (config: SkinConfig) => {
     }
 
     addFile('logo.svg', assets['logo.svg'])
+    addFile('LICENSE', generateLicense(config))
+    addFile('README.md', generateSkinReadme(config))
+    addFile('metadata.json', generateMetadata(config))
     addFile('title.skin', generateTitleSkin(config))
     addFile('tabs.skin', generateTabsSkin(config))
 

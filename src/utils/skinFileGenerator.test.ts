@@ -105,6 +105,47 @@ describe('prepareSkinFiles', () => {
         expect(paths).toContain('my_custom_skin/logo.svg')
         expect(paths).toContain('my_custom_skin/title.skin')
         expect(paths).toContain('my_custom_skin/tabs.skin')
+        expect(paths).toContain('my_custom_skin/LICENSE')
+        expect(paths).toContain('my_custom_skin/README.md')
+        expect(paths).toContain('my_custom_skin/metadata.json')
+    })
+
+    it('generates a LICENSE with skin name, author and CC BY 4.0', () => {
+        const { files } = prepareSkinFiles(config)
+        const license = new TextDecoder().decode(
+            files.find((file) => file.path === 'my_custom_skin/LICENSE')!.content
+        )
+        expect(license).toContain('Skin Name: My Custom Skin')
+        expect(license).toContain('Author: Your Name')
+        expect(license).toContain('Creative Commons Attribution 4.0 International')
+        expect(license).toContain('yakuake-skin-generator')
+    })
+
+    it('generates a README.md with credits and installation notes', () => {
+        const { files } = prepareSkinFiles(config)
+        const readme = new TextDecoder().decode(
+            files.find((file) => file.path === 'my_custom_skin/README.md')!.content
+        )
+        expect(readme).toContain('# My Custom Skin (Yakuake Skin)')
+        expect(readme).toContain('Original Creator:** Your Name')
+        expect(readme).toContain('~/.local/share/yakuake/skins/')
+    })
+
+    it('generates metadata.json with generator info, skin info and the config state', () => {
+        const { files } = prepareSkinFiles(config)
+        const metadata = JSON.parse(
+            new TextDecoder().decode(
+                files.find((file) => file.path === 'my_custom_skin/metadata.json')!.content
+            )
+        )
+        expect(metadata.generator.name).toBe('Yakuake Skin Generator')
+        expect(metadata.generator.version).toBe('1.0.0')
+        expect(metadata.skin.name).toBe('My Custom Skin')
+        expect(metadata.skin.author).toBe('Your Name')
+        expect(metadata.skin.license).toBe('CC-BY-4.0')
+        expect(metadata.config.data.global).toEqual(config.global)
+        expect(metadata.config.data.title).toEqual(config.title)
+        expect(metadata.config.data.tabs).toEqual(config.tabs)
     })
 
     it('only references files that exist in the archive', () => {
