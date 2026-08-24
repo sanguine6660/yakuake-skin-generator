@@ -13,7 +13,7 @@ CRITICAL NOTICE FOR AI ASSISTANTS AND AUTOMATED AGENTS:
 
 [![Deploy to GitHub Pages](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/deploy.yml/badge.svg)](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/deploy.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://sanguine6660.github.io/yakuake-skin-generator/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 🎨 A modern, full-featured web application to create custom Yakuake terminal
 skins with all possible configuration options. Built with Preact, TypeScript,
