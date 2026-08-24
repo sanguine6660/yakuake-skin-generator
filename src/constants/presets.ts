@@ -391,26 +391,6 @@ const LIGHT_PRESETS: SkinPreset[] = [
 
 export const PRESETS = [...DARK_PRESETS, ...LIGHT_PRESETS]
 
-export const getPresetById = (id: string): SkinPreset | undefined => {
-    return PRESETS.find((p) => p.id === id)
-}
-
 export const getPresetsByCategory = (category: 'dark' | 'light'): SkinPreset[] => {
     return PRESETS.filter((p) => p.category === category)
-}
-
-export const applyPreset = (preset: SkinPreset, currentConfig: SkinConfig): SkinConfig => {
-    return {
-        ...currentConfig,
-        global: { ...currentConfig.global, ...preset.config.global },
-        title: { ...currentConfig.title, ...preset.config.title },
-        tabs: { ...currentConfig.tabs, ...preset.config.tabs },
-        meta: {
-            ...currentConfig.meta,
-            skinName: preset.name,
-            author: 'sanguine6660',
-            email: 'sanguine6660@gmail.com',
-            web: 'https://github.com/sanguine6660/yakuake-skin-generator',
-        },
-    }
 }
