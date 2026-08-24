@@ -126,17 +126,21 @@ export const Preview = ({ config }: PreviewProps) => {
                 >
                     <div
                         className="absolute inset-y-0"
-                        style={{ ...tiledBackground('tabs/background_center.svg'), left: 8, right: 8 }}
+                        style={{
+                            ...tiledBackground('tabs/background_center.svg'),
+                            left: 8,
+                            right: 8,
+                        }}
                     />
                     <img
                         src={uris['tabs/background_left.svg']}
                         alt=""
-                        className="absolute left-0 top-0 h-full w-auto"
+                        className="absolute top-0 left-0 h-full w-auto"
                     />
                     <img
                         src={uris['tabs/background_right.svg']}
                         alt=""
-                        className="absolute right-0 top-0 h-full w-auto"
+                        className="absolute top-0 right-0 h-full w-auto"
                     />
 
                     {tabs.tabsEnabled && (
@@ -167,10 +171,10 @@ export const Preview = ({ config }: PreviewProps) => {
                                     const isNextToSelected =
                                         index === selectedTab + 1 || index === selectedTab - 1
                                     const bold = isSelected
-                                    const textWidth =
-                                        getTextWidth(label, bold) + 10
+                                    const textWidth = getTextWidth(label, bold) + 10
                                     const pieceSet = isSelected ? 'tab_selected' : 'tab_unselected'
-                                    const hasCorners = isSelected ||
+                                    const hasCorners =
+                                        isSelected ||
                                         (uris[`tabs/${pieceSet}_left.svg`] !== undefined &&
                                             tabs.unselectedLeft !== undefined)
 
@@ -266,12 +270,12 @@ export const Preview = ({ config }: PreviewProps) => {
                     <img
                         src={uris['title/background_left.svg']}
                         alt=""
-                        className="absolute left-0 top-0 h-full w-auto"
+                        className="absolute top-0 left-0 h-full w-auto"
                     />
                     <img
                         src={uris['title/background_right.svg']}
                         alt=""
-                        className="absolute right-0 top-0 h-full w-auto"
+                        className="absolute top-0 right-0 h-full w-auto"
                     />
 
                     <span
@@ -322,8 +326,8 @@ export const Preview = ({ config }: PreviewProps) => {
 
             <div className="mt-4 rounded-lg border border-[#1e293b] bg-[#090d16] p-3 text-xs text-gray-400">
                 <p>
-                    True WYSIWYG preview using the actual generated skin assets — hover buttons
-                    for hover/pressed states, click tabs to switch the selection.
+                    True WYSIWYG preview using the actual generated skin assets — hover buttons for
+                    hover/pressed states, click tabs to switch the selection.
                 </p>
             </div>
         </div>
