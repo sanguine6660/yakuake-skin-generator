@@ -19,13 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { SkinConfig } from '../types'
-import {
-    DEFAULT_ICON_SETS,
-    DEFAULT_TITLE_CONFIG,
-    DEFAULT_TABS_CONFIG,
-    DEFAULT_BUTTON_COLORS,
-} from './constants'
+import type { RgbColor, SkinConfig } from '../types'
+import { DEFAULT_ICON_SETS, DEFAULT_TITLE_CONFIG, DEFAULT_TABS_CONFIG } from './constants'
 
 export interface SkinPreset {
     id: string
@@ -46,28 +41,67 @@ const baseGlobal = {
     translucency: false,
 }
 
+const hexToRgb = (hex: string): RgbColor => {
+    const cleanHex = hex.replace('#', '')
+    return {
+        r: parseInt(cleanHex.substring(0, 2), 16) || 0,
+        g: parseInt(cleanHex.substring(2, 4), 16) || 0,
+        b: parseInt(cleanHex.substring(4, 6), 16) || 0,
+    }
+}
+
+interface PresetPalette {
+    bg: string
+    selected: string
+    text: string
+    dim: string
+}
+
+const createButtonState = (colors: PresetPalette) => ({
+    upBg: colors.dim,
+    upIcon: colors.text,
+    overBg: colors.selected,
+    overIcon: colors.text,
+    downBg: colors.text,
+    downIcon: colors.bg,
+})
+
 const createPresetConfig = (
-    colors: { bg: string; selected: string; text: string; dim: string },
+    colors: PresetPalette,
     borderRadius: number,
     iconLibrary: keyof typeof DEFAULT_ICON_SETS,
     textContent: string,
     textBold: boolean
-): Partial<SkinConfig> => ({
-    global: {
-        colors,
-        borderRadius,
-        iconLibrary,
-        iconSet: DEFAULT_ICON_SETS[iconLibrary],
-        buttonColors: DEFAULT_BUTTON_COLORS,
-        ...baseGlobal,
-    },
-    title: {
-        ...DEFAULT_TITLE_CONFIG,
-        textContent,
-        textBold,
-    },
-    tabs: { ...DEFAULT_TABS_CONFIG },
-})
+): Partial<SkinConfig> => {
+    const buttonState = createButtonState(colors)
+    return {
+        global: {
+            colors,
+            borderRadius,
+            iconLibrary,
+            iconSet: DEFAULT_ICON_SETS[iconLibrary],
+            buttonColors: {
+                focus: { ...buttonState },
+                config: { ...buttonState },
+                quit: { ...buttonState, downBg: '#bf616a', downIcon: '#ffffff' },
+                plus: { ...buttonState },
+                minus: { ...buttonState },
+                close: { ...buttonState },
+            },
+            ...baseGlobal,
+        },
+        title: {
+            ...DEFAULT_TITLE_CONFIG,
+            textColor: hexToRgb(colors.text),
+            textContent,
+            textBold,
+        },
+        tabs: {
+            ...DEFAULT_TABS_CONFIG,
+            selectedColor: hexToRgb(colors.text),
+        },
+    }
+}
 
 const DARK_PRESETS: SkinPreset[] = [
     {
