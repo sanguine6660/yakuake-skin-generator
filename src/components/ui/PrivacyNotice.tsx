@@ -27,7 +27,7 @@ interface PrivacyNoticeProps {
 export const PrivacyNotice = ({ onAccept, onClose }: PrivacyNoticeProps) => {
     return (
         <div
-            className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-2xl rounded-xl border border-[#1e293b] bg-[#121824] p-5 shadow-2xl"
+            className="fixed right-4 bottom-4 left-4 z-50 mx-auto max-w-2xl rounded-xl border border-[#1e293b] bg-[#121824] p-5 shadow-2xl"
             role="dialog"
             aria-label="Privacy and analytics notice"
         >
@@ -35,7 +35,7 @@ export const PrivacyNotice = ({ onAccept, onClose }: PrivacyNoticeProps) => {
                 type="button"
                 onClick={onClose}
                 aria-label="Close notice"
-                className="absolute right-3 top-3 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-800 hover:text-white"
+                className="absolute top-3 right-3 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-800 hover:text-white"
             >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                     <path
@@ -56,8 +56,8 @@ export const PrivacyNotice = ({ onAccept, onClose }: PrivacyNoticeProps) => {
                 generally cookie-free, a transient session cookie may occasionally be set depending
                 on browser state or administrative access. No cross-site tracking or personal data
                 is profiled. If you prefer to opt out entirely, feel free to block it using your
-                adblocker (e.g., uBlock Origin)—the skin generator runs 100% locally in your
-                browser and functions completely independently of analytics.
+                adblocker (e.g., uBlock Origin)—the skin generator runs 100% locally in your browser
+                and functions completely independently of analytics.
             </p>
 
             <div className="mt-4 flex justify-end">

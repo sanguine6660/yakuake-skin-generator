@@ -69,7 +69,14 @@ export const Preview = ({ config }: PreviewProps) => {
         let cancelled = false
         const warm = async () => {
             let warmed = false
-            for (const role of ['settings', 'maximize', 'close', 'plus', 'minus', 'lock'] as const) {
+            for (const role of [
+                'settings',
+                'maximize',
+                'close',
+                'plus',
+                'minus',
+                'lock',
+            ] as const) {
                 if (await warmIconMarkupCache(config, config.global.iconSet[role])) warmed = true
             }
             if (warmed && !cancelled) setIconMarkupVersion((version) => version + 1)

@@ -102,12 +102,7 @@ export const useIconLibrary = (library: IconLibrary): LibraryModule | null => {
     return lib
 }
 
-export const renderIcon = (
-    config: SkinConfig,
-    iconName: string,
-    size = 16,
-    color?: string
-) => {
+export const renderIcon = (config: SkinConfig, iconName: string, size = 16, color?: string) => {
     const lib = loadedLibraries[config.global.iconLibrary]
     if (!lib) return null
     const IconComponent = lib[iconName] || lib[Object.keys(lib)[0]]
