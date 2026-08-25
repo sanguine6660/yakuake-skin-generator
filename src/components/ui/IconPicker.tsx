@@ -19,9 +19,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useRef, useEffect } from 'preact/hooks'
+import { useState, useRef } from 'preact/hooks'
 import type { SkinConfig, IconRole } from '../../types'
 import { useIconLibrary, renderIcon } from '../../utils/iconRenderer'
+import { Popover } from './Popover'
 
 interface IconPickerProps {
     config: SkinConfig
@@ -39,16 +40,6 @@ export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerPr
     const [isOpen, setIsOpen] = useState(false)
     const [hoveredIcon, setHoveredIcon] = useState<string | null>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                setIsOpen(false)
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
 
     const displayIcon = hoveredIcon || currentIcon
 
@@ -96,32 +87,38 @@ export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerPr
                 </button>
 
                 {isOpen && (
-                    <div className="absolute top-full right-0 left-0 z-50 mt-1 max-h-72 overflow-y-auto rounded-lg border border-[#1e293b] bg-[#121824] shadow-lg">
-                        {!lib && (
-                            <div className="px-3 py-4 text-center text-xs text-gray-500">
-                                Loading icons…
-                            </div>
-                        )}
-                        {availableIcons.slice(0, 120).map((icon) => (
-                            <button
-                                key={icon}
-                                type="button"
-                                onClick={() => {
-                                    onChange(icon)
-                                    setIsOpen(false)
-                                    setHoveredIcon(null)
-                                }}
-                                onMouseEnter={() => setHoveredIcon(icon)}
-                                onMouseLeave={() => setHoveredIcon(null)}
-                                className={`flex w-full items-center gap-3 px-3 py-2 text-left text-sm ${icon === currentIcon ? 'bg-[#1e293b]' : 'hover:bg-[#1e293b]'} transition-colors`}
-                            >
-                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border border-[#1e293b] bg-[#090d16]">
-                                    {renderIcon(config, icon, 14)}
+                    <Popover
+                        triggerRef={dropdownRef}
+                        onClose={() => setIsOpen(false)}
+                        matchTriggerWidth
+                    >
+                        <div className="max-h-72 overflow-y-auto py-1">
+                            {!lib && (
+                                <div className="px-3 py-4 text-center text-xs text-white">
+                                    Loading icons…
                                 </div>
-                                <span className="truncate">{icon}</span>
-                            </button>
-                        ))}
-                    </div>
+                            )}
+                            {availableIcons.slice(0, 120).map((icon) => (
+                                <button
+                                    key={icon}
+                                    type="button"
+                                    onClick={() => {
+                                        onChange(icon)
+                                        setIsOpen(false)
+                                        setHoveredIcon(null)
+                                    }}
+                                    onMouseEnter={() => setHoveredIcon(icon)}
+                                    onMouseLeave={() => setHoveredIcon(null)}
+                                    className={`flex w-full items-center gap-3 px-3 py-2 text-left text-sm text-white ${icon === currentIcon ? 'bg-[#1e293b]' : 'hover:bg-[#1e293b]'} transition-colors`}
+                                >
+                                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border border-[#1e293b] bg-[#090d16]">
+                                        {renderIcon(config, icon, 14)}
+                                    </div>
+                                    <span className="truncate">{icon}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </Popover>
                 )}
             </div>
         </div>

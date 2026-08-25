@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { adjustHexBrightness, deriveKonsoleBackground } from './colors'
+import { adjustHexBrightness, deriveKonsoleBackground, resolveColorInput } from './colors'
 
 describe('adjustHexBrightness', () => {
     it('lightens colors', () => {
@@ -14,6 +14,30 @@ describe('adjustHexBrightness', () => {
     it('clamps at both ends', () => {
         expect(adjustHexBrightness('#ffffff', 100)).toBe('#ffffff')
         expect(adjustHexBrightness('#000000', -100)).toBe('#000000')
+    })
+})
+
+describe('resolveColorInput', () => {
+    it('accepts 6-digit hex with and without #', () => {
+        expect(resolveColorInput('#FFFF00')).toBe('#ffff00')
+        expect(resolveColorInput('ffff00')).toBe('#ffff00')
+    })
+
+    it('expands 3-digit hex', () => {
+        expect(resolveColorInput('#fff')).toBe('#ffffff')
+        expect(resolveColorInput('f0a')).toBe('#ff00aa')
+    })
+
+    it('resolves CSS named colors', () => {
+        expect(resolveColorInput('silver')).toBe('#c0c0c0')
+        expect(resolveColorInput('crimson')).toBe('#dc143c')
+        expect(resolveColorInput('RebeccaPurple')).toBe('#663399')
+    })
+
+    it('returns null for invalid input', () => {
+        expect(resolveColorInput('notacolor')).toBeNull()
+        expect(resolveColorInput('12345')).toBeNull()
+        expect(resolveColorInput('')).toBeNull()
     })
 })
 
