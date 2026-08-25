@@ -3,9 +3,7 @@ import preact from '@preact/preset-vite'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const pkg = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8')
-)
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'))
 
 export default defineConfig({
     plugins: [preact()],

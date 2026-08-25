@@ -7,7 +7,7 @@
 //! After an intentional generator change, regenerate the goldens, then run
 //! `cargo test` to confirm this suite still passes.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 const BYTE_PARITY_FILES: [&str; 39] = [

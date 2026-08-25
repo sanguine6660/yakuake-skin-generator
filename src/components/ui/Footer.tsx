@@ -122,7 +122,8 @@ export const Footer = ({ onOpenPrivacy }: FooterProps) => {
                 <div className="mt-4 flex justify-center">
                     {updater.state === 'downloading' ? (
                         <p className="text-xs text-gray-500">
-                            Downloading update{updater.pendingVersion ? ` ${updater.pendingVersion}` : ''}
+                            Downloading update
+                            {updater.pendingVersion ? ` ${updater.pendingVersion}` : ''}
                             {updater.progress > 0 ? ` — ${updater.progress}%` : '…'}
                         </p>
                     ) : updater.state === 'ready' ? (
@@ -136,7 +137,8 @@ export const Footer = ({ onOpenPrivacy }: FooterProps) => {
                             className="cursor-pointer text-xs text-gray-600 transition-colors hover:text-gray-400"
                             title={updater.errorMessage ?? undefined}
                         >
-                            {UPDATE_MESSAGES[updater.state] ?? `Check for updates (v${__APP_VERSION__})`}
+                            {UPDATE_MESSAGES[updater.state] ??
+                                `Check for updates (v${__APP_VERSION__})`}
                         </button>
                     )}
                 </div>
