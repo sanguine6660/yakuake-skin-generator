@@ -43,18 +43,19 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
     const svRef = useRef<HTMLDivElement>(null)
     const draggingRef = useRef(false)
     const hexDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const lastCommittedRef = useRef(value)
     useEffect(() => {
-        const current = hsvToHex(hsv.h, hsv.s, hsv.v)
-        if (value.toLowerCase() !== current.toLowerCase()) {
-            if (hexDebounceRef.current) clearTimeout(hexDebounceRef.current)
-            setHsv(hexToHsv(value))
-            setHexText(value.replace('#', '').toLowerCase())
-        }
+        if (value.toLowerCase() === lastCommittedRef.current.toLowerCase()) return
+        if (hexDebounceRef.current) clearTimeout(hexDebounceRef.current)
+        setHsv(hexToHsv(value))
+        setHexText(value.replace('#', '').toLowerCase())
+        lastCommittedRef.current = value
     }, [value])
 
     const commit = (h: number, s: number, v: number) => {
-        setHsv({ h, s, v })
         const hex = hsvToHex(h, s, v)
+        lastCommittedRef.current = hex
+        setHsv({ h, s, v })
         setHexText(hex.replace('#', '').toLowerCase())
         onChange(hex)
     }
@@ -112,6 +113,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
         const resolved = resolveColorInput(raw)
         if (!resolved) return false
         const next = hexToHsv(resolved)
+        lastCommittedRef.current = resolved
         setHsv(next)
         setHexText(resolved.replace('#', ''))
         onChange(resolved)
