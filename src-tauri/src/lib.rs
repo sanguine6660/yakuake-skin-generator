@@ -8,11 +8,11 @@ pub mod cli;
 pub mod config;
 pub mod generate;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct SkinFile {
     pub path: String,
     pub content: Vec<u8>,
@@ -93,12 +93,83 @@ fn install_skin(folder_name: String, files: Vec<SkinFile>) -> Result<String, Str
     Ok(format!("Skin installed to {}", base.display()))
 }
 
+/// Opens a native folder picker and returns every file of the chosen skin
+/// folder with paths relative to the folder root. Runs off the main thread
+/// because the blocking dialog requires it.
+#[tauri::command]
+async fn read_skin_folder(app: tauri::AppHandle) -> Result<Vec<SkinFile>, String> {
+    use tauri_plugin_dialog::DialogExt;
+
+    let picked = tauri::async_runtime::spawn_blocking(move || {
+        app.dialog()
+            .file()
+            .add_filter("Yakuake skin folder", &[])
+            .blocking_pick_folder()
+    })
+    .await
+    .map_err(|e| format!("Dialog failed: {e}"))?
+    .ok_or("Folder selection cancelled")?;
+
+    let dir = picked
+        .as_path()
+        .ok_or_else(|| "Selection is not a filesystem path".to_string())?
+        .to_path_buf();
+
+    if !dir.is_dir() {
+        return Err("Selected path is not a directory".into());
+    }
+
+    const MAX_FILES: usize = 4096;
+    const MAX_FILE_BYTES: u64 = 8 * 1024 * 1024;
+
+    let mut files = Vec::new();
+    let mut stack = vec![dir.clone()];
+    while let Some(current) = stack.pop() {
+        let entries = fs::read_dir(&current).map_err(|e| format!("Cannot read folder: {e}"))?;
+        for entry in entries.flatten() {
+            if files.len() >= MAX_FILES {
+                return Err("Skin folder contains too many files".into());
+            }
+            let path = entry.path();
+            let name = entry.file_name().to_string_lossy().into_owned();
+            if name.starts_with('.') {
+                continue;
+            }
+            if path.is_dir() {
+                stack.push(path);
+                continue;
+            }
+            let Ok(metadata) = entry.metadata() else {
+                continue;
+            };
+            if !metadata.is_file() || metadata.len() > MAX_FILE_BYTES {
+                continue;
+            }
+            let Ok(relative) = path.strip_prefix(&dir) else {
+                continue;
+            };
+            let content = fs::read(&path).map_err(|e| format!("Cannot read {}: {e}", name))?;
+            files.push(SkinFile {
+                path: relative.to_string_lossy().replace('\\', "/"),
+                content,
+            });
+        }
+    }
+
+    if files.is_empty() {
+        return Err("The selected folder is empty".into());
+    }
+
+    Ok(files)
+}
+
 #[cfg_attr(mobile, tauri_mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .invoke_handler(tauri::generate_handler![install_skin])
+        .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![install_skin, read_skin_folder])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

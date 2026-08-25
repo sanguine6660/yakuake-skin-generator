@@ -541,6 +541,9 @@ pub fn prepare_skin_files(
         "skin": {
             "name": config.meta.skin_name,
             "author": config.meta.author,
+            "email": config.meta.email,
+            "web": config.meta.web,
+            "icon": config.meta.icon,
             "license": "CC-BY-4.0",
             "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
             "repository": "https://github.com/sanguine6660/yakuake-skin-generator",

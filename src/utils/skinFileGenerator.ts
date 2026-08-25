@@ -85,6 +85,9 @@ export const generateMetadata = (config: SkinConfig): string => {
         skin: {
             name: config.meta.skinName,
             author: config.meta.author,
+            email: config.meta.email,
+            web: config.meta.web,
+            icon: config.meta.icon,
             license: 'CC-BY-4.0',
             licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
             repository: GENERATOR_URL,

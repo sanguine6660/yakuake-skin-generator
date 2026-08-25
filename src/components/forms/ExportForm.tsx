@@ -26,6 +26,7 @@ import {
     encodeConfigHash,
     parseConfigJson,
 } from '../../utils/configSerialization'
+import { importSkinFolder, isTauri } from '../../utils'
 
 interface ExportFormProps {
     config: SkinConfig
@@ -49,6 +50,7 @@ export const ExportForm = ({
     const accentColor = config.global.colors.text
     const skinFolder = config.meta.skinName.toLowerCase().replace(/[^a-z0-9]/g, '_')
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const folderInputRef = useRef<HTMLInputElement>(null)
     const [shareStatus, setShareStatus] = useState<{
         message: string
         type: 'success' | 'error'
@@ -84,6 +86,61 @@ export const ExportForm = ({
         } catch {
             setShareStatus({ message: 'Clipboard unavailable.', type: 'error' })
         }
+    }
+
+    const applyImportedFolder = (files: { path: string; content: Uint8Array }[]) => {
+        try {
+            const { config: imported, fidelity, warnings } = importSkinFolder(files)
+            onImportConfig(imported)
+            const detail =
+                fidelity === 'exact'
+                    ? `Configuration "${imported.meta.skinName}" restored exactly.`
+                    : `Skin "${imported.meta.skinName}" reconstructed from skin files.`
+            setShareStatus({
+                message: warnings.length > 0 ? `${detail} Notes: ${warnings.join(' ')}` : detail,
+                type: 'success',
+            })
+        } catch (error) {
+            setShareStatus({
+                message: error instanceof Error ? error.message : 'Could not import skin folder.',
+                type: 'error',
+            })
+        }
+    }
+
+    const handleImportFolderClick = async () => {
+        if (!isTauri()) {
+            folderInputRef.current?.click()
+            return
+        }
+        try {
+            const { invoke } = await import('@tauri-apps/api/core')
+            const files = await invoke<{ path: string; content: number[] }[]>('read_skin_folder')
+            if (!files) return
+            applyImportedFolder(
+                files.map((f) => ({ path: f.path, content: new Uint8Array(f.content) }))
+            )
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error)
+            if (/cancelled/i.test(message)) return
+            setShareStatus({ message, type: 'error' })
+        }
+    }
+
+    const handleFolderChange = async (event: Event) => {
+        const input = event.target as HTMLInputElement
+        const selected = Array.from(input.files ?? [])
+        input.value = ''
+        if (selected.length === 0) return
+        const files = await Promise.all(
+            selected.map(async (file) => ({
+                path:
+                    (file as File & { webkitRelativePath?: string }).webkitRelativePath ||
+                    file.name,
+                content: new Uint8Array(await file.arrayBuffer()),
+            }))
+        )
+        applyImportedFolder(files)
     }
 
     const folderStructure = `${skinFolder}/
@@ -156,10 +213,10 @@ export const ExportForm = ({
             <div className="rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
                 <h3 className="mb-3 text-lg font-semibold text-gray-200">Share & Backup</h3>
                 <p className="mb-4 text-sm text-gray-400">
-                    Move your configuration between devices or share it as a link — no archive
-                    needed.
+                    Move your configuration between devices, share it as a link, or import an
+                    existing skin folder to keep editing it.
                 </p>
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
                     <button
                         onClick={handleDownloadJson}
                         className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition hover:opacity-90"
@@ -193,6 +250,17 @@ export const ExportForm = ({
                     >
                         Copy Share Link
                     </button>
+                    <button
+                        onClick={() => void handleImportFolderClick()}
+                        className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition hover:opacity-90 xl:col-span-2"
+                        style={{
+                            backgroundColor: '#24303f',
+                            color: accentColor,
+                            border: `1px dashed ${accentColor}`,
+                        }}
+                    >
+                        Import Skin Folder ↺
+                    </button>
                 </div>
                 <input
                     ref={fileInputRef}
@@ -200,6 +268,17 @@ export const ExportForm = ({
                     accept=".json,application/json"
                     className="hidden"
                     onChange={handleFileChange}
+                />
+                <input
+                    ref={folderInputRef}
+                    type="file"
+                    className="hidden"
+                    onChange={handleFolderChange}
+                    {...({
+                        webkitdirectory: 'true',
+                        directory: 'true',
+                        multiple: true,
+                    } as unknown as Record<string, string>)}
                 />
                 {shareStatus && (
                     <p

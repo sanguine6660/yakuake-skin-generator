@@ -7,6 +7,14 @@ Complete reference for creating custom Yakuake skins. Verified against the
 A skin is a folder containing two INI-style config files (`title.skin`,
 `tabs.skin`) plus the images they reference (SVG or PNG).
 
+> **Round-trip editing:** The generator's **Export** tab can import an existing
+> skin folder back into the editor ("Import Skin Folder"). If the folder
+> contains a `metadata.json` written by this tool, the configuration — including
+> custom icons, email, web link and terminal colors — is restored exactly.
+> Foreign skins are reconstructed by parsing the `.skin` INI files and sampling
+> colors from the SVG assets; values that skins cannot store (terminal
+> background color, icon library, opacity) fall back to defaults with a notice.
+
 ---
 
 ## Folder Structure

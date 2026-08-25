@@ -170,3 +170,11 @@ export const warmIconMarkupCache = async (
     if (markup !== null) markupCache.set(key, markup)
     return markup !== null
 }
+
+/**
+ * Injects externally recovered icon markup (e.g. from an imported skin folder)
+ * directly into the cache so previews and exports reuse it verbatim.
+ */
+export const primeIconMarkupCache = (library: string, iconName: string, markup: string): void => {
+    markupCache.set(`${library}:${iconName}`, markup)
+}

@@ -39,7 +39,8 @@ export const parseConfigJson = (text: string): SkinConfig => {
                 skinName: skin.name,
                 author: skin.author,
                 email: skin.email,
-                web: skin.repository,
+                web: skin.web ?? skin.repository,
+                icon: skin.icon,
             },
             ...parsed.config.data,
         }
@@ -54,6 +55,10 @@ export const parseConfigJson = (text: string): SkinConfig => {
         throw new Error('Missing skin configuration sections')
     }
 
+    // Drop explicitly-undefined values so they cannot shadow defaults.
+    const compact = <T extends Record<string, unknown>>(obj: T): Partial<T> =>
+        Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as Partial<T>
+
     const defaults = createDefaultSkinConfig()
     const importedButtonColors = parsed.global.buttonColors ?? {}
     const mergeButtonState = (key: string) => ({
@@ -62,7 +67,7 @@ export const parseConfigJson = (text: string): SkinConfig => {
     })
 
     return {
-        meta: { ...defaults.meta, ...parsed.meta },
+        meta: { ...defaults.meta, ...compact(parsed.meta) },
         title: { ...defaults.title, ...parsed.title },
         tabs: { ...defaults.tabs, ...parsed.tabs },
         global: {

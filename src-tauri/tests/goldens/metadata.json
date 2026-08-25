@@ -7,6 +7,9 @@
     "skin": {
         "name": "Parity Skin",
         "author": "sanguine6660",
+        "email": "dev@example.com",
+        "web": "https://example.com/parity",
+        "icon": "/logo.svg",
         "license": "CC-BY-4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
         "repository": "https://github.com/sanguine6660/yakuake-skin-generator"
