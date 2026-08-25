@@ -245,6 +245,315 @@ const DARK_PRESETS: SkinPreset[] = [
             true
         ),
     },
+    {
+        id: 'solarized-dark',
+        name: 'Solarized Dark',
+        description: 'Precision low-contrast teal and blue tones',
+        previewColors: { bg: '#002b36', selected: '#073642', text: '#268bd2', dim: '#001e26' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#002b36', selected: '#073642', text: '#268bd2', dim: '#001e26' },
+            4,
+            'fa6',
+            'Solarized Dark',
+            true
+        ),
+    },
+    {
+        id: 'one-dark',
+        name: 'One Dark Pro',
+        description: 'Iconic Atom-inspired dark blue syntax theme',
+        previewColors: { bg: '#282c34', selected: '#3e4451', text: '#61afef', dim: '#21252b' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#282c34', selected: '#3e4451', text: '#61afef', dim: '#21252b' },
+            6,
+            'vsc',
+            'One Dark',
+            true
+        ),
+    },
+    {
+        id: 'monokai-pro',
+        name: 'Monokai Pro',
+        description: 'Refined dark filter with vibrant warm accents',
+        previewColors: { bg: '#2d2a2e', selected: '#403e41', text: '#ffd866', dim: '#221f22' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#2d2a2e', selected: '#403e41', text: '#ffd866', dim: '#221f22' },
+            4,
+            'lucide',
+            'Monokai Pro',
+            true
+        ),
+    },
+    {
+        id: 'synthwave-84',
+        name: "SynthWave '84",
+        description: 'Retro 80s neon glow with deep purple synth vibes',
+        previewColors: { bg: '#262335', selected: '#34294f', text: '#ff7edb', dim: '#1a1826' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#262335', selected: '#34294f', text: '#ff7edb', dim: '#1a1826' },
+            8,
+            'ri',
+            "SynthWave '84",
+            true
+        ),
+    },
+    {
+        id: 'night-owl',
+        name: 'Night Owl',
+        description: 'Deep midnight blue optimized for night owls',
+        previewColors: { bg: '#011627', selected: '#1d3b53', text: '#82aaff', dim: '#0b253a' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#011627', selected: '#1d3b53', text: '#82aaff', dim: '#0b253a' },
+            6,
+            'hi2',
+            'Night Owl',
+            true
+        ),
+    },
+    {
+        id: 'catppuccin-macchiato',
+        name: 'Catppuccin Macchiato',
+        description: 'Medium dark pastel coffee palette',
+        previewColors: { bg: '#24273a', selected: '#363a4f', text: '#f5bde6', dim: '#1e2030' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#24273a', selected: '#363a4f', text: '#f5bde6', dim: '#1e2030' },
+            6,
+            'hi2',
+            'Catppuccin Macchiato',
+            true
+        ),
+    },
+    {
+        id: 'cyberpunk',
+        name: 'Cyberpunk',
+        description: 'High-contrast high-tech electric cyan and yellow',
+        previewColors: { bg: '#120e16', selected: '#231830', text: '#00f0ff', dim: '#1c122c' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#120e16', selected: '#231830', text: '#00f0ff', dim: '#1c122c' },
+            2,
+            'si',
+            'Cyberpunk',
+            false
+        ),
+    },
+    {
+        id: 'cobalt2',
+        name: 'Cobalt2',
+        description: 'Vibrant yellow on intense blue background',
+        previewColors: { bg: '#193549', selected: '#15232d', text: '#ffc600', dim: '#0d1d29' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#193549', selected: '#15232d', text: '#ffc600', dim: '#0d1d29' },
+            6,
+            'tb',
+            'Cobalt2',
+            true
+        ),
+    },
+    {
+        id: 'ayu-dark',
+        name: 'Ayu Dark',
+        description: 'Sleek matte dark theme with golden orange accents',
+        previewColors: { bg: '#0f1419', selected: '#1f2430', text: '#ffb454', dim: '#14191f' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#0f1419', selected: '#1f2430', text: '#ffb454', dim: '#14191f' },
+            5,
+            'fi',
+            'Ayu Dark',
+            true
+        ),
+    },
+    {
+        id: 'horizon-dark',
+        name: 'Horizon Dark',
+        description: 'Warm dark space theme with crimson highlights',
+        previewColors: { bg: '#1c1e26', selected: '#232530', text: '#e95678', dim: '#16171d' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#1c1e26', selected: '#232530', text: '#e95678', dim: '#16171d' },
+            6,
+            'gi',
+            'Horizon Dark',
+            true
+        ),
+    },
+    {
+        id: 'arc-dark',
+        name: 'Arc Dark',
+        description: 'Popular Linux desktop theme with cool blue-grays',
+        previewColors: { bg: '#2f343f', selected: '#383c4a', text: '#5294e2', dim: '#22252e' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#2f343f', selected: '#383c4a', text: '#5294e2', dim: '#22252e' },
+            5,
+            'lucide',
+            'Arc Dark',
+            true
+        ),
+    },
+    {
+        id: 'material-palenight',
+        name: 'Material Palenight',
+        description: 'Soothing Material Design variant for night coding',
+        previewColors: { bg: '#292d3e', selected: '#32374d', text: '#82aaff', dim: '#1b1e2b' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#292d3e', selected: '#32374d', text: '#82aaff', dim: '#1b1e2b' },
+            6,
+            'hi2',
+            'Material Palenight',
+            true
+        ),
+    },
+    {
+        id: 'deep-space',
+        name: 'Deep Space',
+        description: 'Cosmic dark theme with icy teal highlights',
+        previewColors: { bg: '#151a21', selected: '#1b222d', text: '#4bb1b7', dim: '#0e1217' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#151a21', selected: '#1b222d', text: '#4bb1b7', dim: '#0e1217' },
+            7,
+            'ri',
+            'Deep Space',
+            true
+        ),
+    },
+    {
+        id: 'zenburn',
+        name: 'Zenburn',
+        description: 'Low-contrast, easy-on-the-eyes muted earthy palette',
+        previewColors: { bg: '#3f3f3f', selected: '#4f4f4f', text: '#dcdccc', dim: '#313131' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#3f3f3f', selected: '#4f4f4f', text: '#dcdccc', dim: '#313131' },
+            3,
+            'tb',
+            'Zenburn',
+            true
+        ),
+    },
+    {
+        id: 'matrix',
+        name: 'Matrix',
+        description: 'Classic hacker terminal with deep black and digital green',
+        previewColors: { bg: '#050505', selected: '#0f140f', text: '#00ff66', dim: '#020802' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#050505', selected: '#0f140f', text: '#00ff66', dim: '#020802' },
+            2,
+            'si',
+            'Matrix',
+            false
+        ),
+    },
+    {
+        id: 'oceanic-next',
+        name: 'Oceanic Next',
+        description: 'Deep sea inspired variant of the classic Tomorrow Night',
+        previewColors: { bg: '#1b2b34', selected: '#343d46', text: '#6699cc', dim: '#11191f' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#1b2b34', selected: '#343d46', text: '#6699cc', dim: '#11191f' },
+            6,
+            'vsc',
+            'Oceanic Next',
+            true
+        ),
+    },
+    {
+        id: 'laserwave',
+        name: 'LaserWave',
+        description: 'Darksynth aesthetic with deep indigo and blazing magenta',
+        previewColors: { bg: '#161329', selected: '#272145', text: '#eb64b9', dim: '#0e0c1a' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#161329', selected: '#272145', text: '#eb64b9', dim: '#0e0c1a' },
+            8,
+            'ai',
+            'LaserWave',
+            true
+        ),
+    },
+    {
+        id: 'duotone-dark',
+        name: 'Duotone Dark',
+        description: 'Minimalist two-tone dark scheme with warm ochre accents',
+        previewColors: { bg: '#1f2022', selected: '#2d2e31', text: '#ffc83f', dim: '#141517' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#1f2022', selected: '#2d2e31', text: '#ffc83f', dim: '#141517' },
+            4,
+            'fi',
+            'Duotone Dark',
+            true
+        ),
+    },
+    {
+        id: 'spaceduck',
+        name: 'Spaceduck',
+        description: 'Intergalactic palette with atomic purple and yellow skies',
+        previewColors: { bg: '#16172d', selected: '#292b4d', text: '#00f3bb', dim: '#0e0f1d' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#16172d', selected: '#292b4d', text: '#00f3bb', dim: '#0e0f1d' },
+            6,
+            'gi',
+            'Spaceduck',
+            true
+        ),
+    },
+    {
+        id: 'vesper',
+        name: 'Vesper',
+        description: 'Deep obsidian dark mode with muted warm amber notes',
+        previewColors: { bg: '#101010', selected: '#1c1c1c', text: '#ffc799', dim: '#080808' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#101010', selected: '#1c1c1c', text: '#ffc799', dim: '#080808' },
+            4,
+            'fa6',
+            'Vesper',
+            true
+        ),
+    },
+    {
+        id: 'tokyo-night-storm',
+        name: 'Tokyo Night Storm',
+        description:
+            'Cleaner, slightly brighter variant of Tokyo Night with a deep storm-blue background',
+        previewColors: { bg: '#24283b', selected: '#32344a', text: '#7aa2f7', dim: '#1f2335' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#24283b', selected: '#32344a', text: '#7aa2f7', dim: '#1f2335' },
+            8,
+            'ri',
+            'Tokyo Night Storm',
+            true
+        ),
+    },
+    {
+        id: 'shades-of-purple',
+        name: 'Shades of Purple',
+        description: 'Vibrant, high-contrast purple theme with neon pink and yellow accents',
+        previewColors: { bg: '#1e1e3f', selected: '#2d2b55', text: '#fad000', dim: '#151530' },
+        category: 'dark',
+        config: createPresetConfig(
+            { bg: '#1e1e3f', selected: '#2d2b55', text: '#fad000', dim: '#151530' },
+            6,
+            'vsc',
+            'Shades of Purple',
+            true
+        ),
+    },
 ]
 
 const LIGHT_PRESETS: SkinPreset[] = [
@@ -265,13 +574,13 @@ const LIGHT_PRESETS: SkinPreset[] = [
     {
         id: 'catppuccin-latte',
         name: 'Catppuccin Latte',
-        description: 'Warm coffee with creamy pastels',
-        previewColors: { bg: '#eff1f5', selected: '#e6e9ef', text: '#4c4f69', dim: '#dce0e8' },
+        description: 'Soothing pastel-infused light theme designed for maximum visual comfort',
+        previewColors: { bg: '#eff1f5', selected: '#ccd0da', text: '#1e66f5', dim: '#acb0be' },
         category: 'light',
         config: createPresetConfig(
-            { bg: '#eff1f5', selected: '#e6e9ef', text: '#4c4f69', dim: '#dce0e8' },
+            { bg: '#eff1f5', selected: '#ccd0da', text: '#1e66f5', dim: '#acb0be' },
             6,
-            'hi2',
+            'fa6',
             'Catppuccin Latte',
             true
         ),
@@ -377,14 +686,169 @@ const LIGHT_PRESETS: SkinPreset[] = [
     {
         id: 'solarized-light',
         name: 'Solarized Light',
-        description: 'Precision colors for machines and people',
-        previewColors: { bg: '#fdf6e3', selected: '#eee8d5', text: '#657b83', dim: '#93a1a1' },
+        description: 'Precision-designed low-contrast light palette with warm tones',
+        previewColors: { bg: '#fdf6e3', selected: '#eee8d5', text: '#2aa198', dim: '#93a1a1' },
         category: 'light',
         config: createPresetConfig(
-            { bg: '#fdf6e3', selected: '#eee8d5', text: '#657b83', dim: '#93a1a1' },
+            { bg: '#fdf6e3', selected: '#eee8d5', text: '#2aa198', dim: '#93a1a1' },
             4,
-            'fa6',
+            'hi2',
             'Solarized Light',
+            true
+        ),
+    },
+    {
+        id: 'one-light',
+        name: 'One Light',
+        description: 'Clean Atom light theme with soft blue highlights',
+        previewColors: { bg: '#fafafa', selected: '#eaeaeb', text: '#4078f2', dim: '#dbdbdc' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fafafa', selected: '#eaeaeb', text: '#4078f2', dim: '#dbdbdc' },
+            6,
+            'vsc',
+            'One Light',
+            true
+        ),
+    },
+    {
+        id: 'ayu-light',
+        name: 'Ayu Light',
+        description: 'Bright and clear aesthetic with soft peach accents',
+        previewColors: { bg: '#fcfcfc', selected: '#f3f4f5', text: '#f29e74', dim: '#e7e8e9' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fcfcfc', selected: '#f3f4f5', text: '#f29e74', dim: '#e7e8e9' },
+            5,
+            'fi',
+            'Ayu Light',
+            true
+        ),
+    },
+    {
+        id: 'papercolor-light',
+        name: 'PaperColor Light',
+        description:
+            'Inspired by traditional print books with crisp dark text and soft paper background',
+        previewColors: { bg: '#eeeeee', selected: '#e0e0e0', text: '#005f87', dim: '#c6c6c6' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#eeeeee', selected: '#e0e0e0', text: '#005f87', dim: '#c6c6c6' },
+            3,
+            'tb',
+            'PaperColor Light',
+            true
+        ),
+    },
+    {
+        id: 'quiet-light',
+        name: 'Quiet Light',
+        description: 'Soft pastel purple and grey muted theme',
+        previewColors: { bg: '#f5f5f5', selected: '#e0e0e0', text: '#7a3e9d', dim: '#d6d6d6' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#f5f5f5', selected: '#e0e0e0', text: '#7a3e9d', dim: '#d6d6d6' },
+            6,
+            'lucide',
+            'Quiet Light',
+            true
+        ),
+    },
+    {
+        id: 'flexoki-light',
+        name: 'Flexoki Light',
+        description: 'Inky warm paper theme for long reading sessions',
+        previewColors: { bg: '#fffcf0', selected: '#f2efdf', text: '#205ea6', dim: '#e6e4d5' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fffcf0', selected: '#f2efdf', text: '#205ea6', dim: '#e6e4d5' },
+            4,
+            'gi',
+            'Flexoki Light',
+            true
+        ),
+    },
+    {
+        id: 'horizon-light',
+        name: 'Horizon Light',
+        description: 'Warm coral and warm beige morning light',
+        previewColors: { bg: '#fdf0ed', selected: '#f9ded7', text: '#da103f', dim: '#f0cfc7' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fdf0ed', selected: '#f9ded7', text: '#da103f', dim: '#f0cfc7' },
+            6,
+            'ri',
+            'Horizon Light',
+            true
+        ),
+    },
+    {
+        id: 'material-light',
+        name: 'Material Light',
+        description: 'Google Material Design light specification',
+        previewColors: { bg: '#fafafa', selected: '#e0e0e0', text: '#6182b8', dim: '#cfcfcf' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fafafa', selected: '#e0e0e0', text: '#6182b8', dim: '#cfcfcf' },
+            6,
+            'hi2',
+            'Material Light',
+            true
+        ),
+    },
+    {
+        id: 'vivid-light',
+        name: 'Vivid Light',
+        description: 'Crisp slate-white background with electric blue text',
+        previewColors: { bg: '#f4f6f9', selected: '#e2e7f0', text: '#0088ff', dim: '#d0d7e5' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#f4f6f9', selected: '#e2e7f0', text: '#0088ff', dim: '#d0d7e5' },
+            8,
+            'ai',
+            'Vivid Light',
+            true
+        ),
+    },
+    {
+        id: 'cupcake-light',
+        name: 'Cupcake Light',
+        description: 'Playful pink and berry pastel tones',
+        previewColors: { bg: '#faf8f8', selected: '#efe2e8', text: '#d85d8e', dim: '#e5d4dc' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#faf8f8', selected: '#efe2e8', text: '#d85d8e', dim: '#e5d4dc' },
+            8,
+            'fi',
+            'Cupcake Light',
+            true
+        ),
+    },
+    {
+        id: 'monokai-light',
+        name: 'Monokai Light',
+        description: 'Clean off-white canvas with dark high-contrast accents',
+        previewColors: { bg: '#fcfcfa', selected: '#f4f4f0', text: '#2d2a2e', dim: '#e8e8e3' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fcfcfa', selected: '#f4f4f0', text: '#2d2a2e', dim: '#e8e8e3' },
+            4,
+            'lucide',
+            'Monokai Light',
+            true
+        ),
+    },
+    {
+        id: 'material-lighter',
+        name: 'Material Lighter',
+        description: 'Bright, airy variation of the popular Material Design theme',
+        previewColors: { bg: '#fafafa', selected: '#eceff1', text: '#6182b8', dim: '#cfd8dc' },
+        category: 'light',
+        config: createPresetConfig(
+            { bg: '#fafafa', selected: '#eceff1', text: '#6182b8', dim: '#cfd8dc' },
+            6,
+            'ri',
+            'Material Lighter',
             true
         ),
     },
