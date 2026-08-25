@@ -2,6 +2,12 @@ import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import fs from 'node:fs'
+import path from 'node:path'
+
+// Load icons safely from public/icons.json at build time
+const iconsPath = path.resolve(__dirname, 'public/icons.json')
+const pwaIcons = fs.existsSync(iconsPath) ? JSON.parse(fs.readFileSync(iconsPath, 'utf-8')) : []
 
 export default defineConfig({
     plugins: [
@@ -9,7 +15,7 @@ export default defineConfig({
         tailwindcss(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['logo.svg', 'PWA/ios/180.png'],
+            includeAssets: ['logo.svg', 'PWA/ios/180.png', 'icons.json'],
             manifest: {
                 name: 'Yakuake Skin Generator',
                 short_name: 'Skin Generator',
@@ -21,24 +27,7 @@ export default defineConfig({
                 lang: 'en',
                 start_url: '/yakuake-skin-generator/',
                 scope: '/yakuake-skin-generator/',
-                icons: [
-                    {
-                        src: 'PWA/android/launchericon-192x192.png',
-                        sizes: '192x192',
-                        type: 'image/png',
-                    },
-                    {
-                        src: 'PWA/android/launchericon-512x512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                    },
-                    {
-                        src: 'PWA/android/launchericon-512x512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                        purpose: 'maskable',
-                    },
-                ],
+                icons: pwaIcons,
             },
             workbox: {
                 globPatterns: [
@@ -47,6 +36,7 @@ export default defineConfig({
                     'assets/index-*.css',
                     'assets/rolldown-runtime-*.js',
                     'logo.svg',
+                    'icons.json',
                     'PWA/**/*.png',
                 ],
                 runtimeCaching: [
@@ -65,6 +55,13 @@ export default defineConfig({
                 ],
             },
         }),
+        {
+            name: 'html-base-transform',
+            transformIndexHtml(html) {
+                const base = '/yakuake-skin-generator/'
+                return html.replace(/%BASE_URL%/g, base)
+            },
+        },
     ],
     base: '/yakuake-skin-generator/',
     build: {
