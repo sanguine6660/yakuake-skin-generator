@@ -20,14 +20,7 @@
  */
 
 import type { SkinConfig, RgbColor } from '../../types'
-import {
-    ButtonConfigEditor,
-    NumberInput,
-    TextInput,
-    RgbColorInput,
-    Switch,
-    Section,
-} from '../ui'
+import { ButtonConfigEditor, NumberInput, TextInput, RgbColorInput, Switch, Section } from '../ui'
 
 interface TabsFormProps {
     config: SkinConfig
@@ -151,7 +144,7 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
             </Section>
 
             <div className="space-y-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                <h3 className="text-sm font-semibold tracking-wide text-gray-400 uppercase">
                     Tab Bar Buttons
                 </h3>
                 <ButtonConfigEditor

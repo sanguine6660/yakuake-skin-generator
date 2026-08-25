@@ -105,7 +105,7 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
             </Section>
 
             <div className="space-y-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                <h3 className="text-sm font-semibold tracking-wide text-gray-400 uppercase">
                     Title Bar Buttons
                 </h3>
                 <ButtonConfigEditor

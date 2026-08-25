@@ -368,7 +368,15 @@ export function App() {
                 <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-[1fr_420px]">
                     <div className="w-full space-y-6">
                         <TabPanel activeTab={activeTab} tabId="meta">
-                            <MetaForm meta={config.meta} onChange={updateMeta} />
+                            <MetaForm
+                                meta={config.meta}
+                                onChange={(updates) => {
+                                    updateMeta(updates)
+                                    if (updates.skinName !== undefined) {
+                                        updateTitle({ textContent: updates.skinName })
+                                    }
+                                }}
+                            />
                         </TabPanel>
 
                         <TabPanel activeTab={activeTab} tabId="global">

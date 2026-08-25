@@ -110,7 +110,7 @@ export const Preview = ({ config }: PreviewProps) => {
             <h2 className="mb-4 text-xl font-semibold text-gray-200">Live Preview</h2>
 
             <div
-                className="mx-auto max-w-md overflow-hidden rounded-lg bg-[#090d16] shadow-[0_12px_32px_rgba(0,0,0,0.55)]"
+                className="mx-auto max-w-md overflow-hidden rounded bg-[#090d16] shadow-[0_12px_32px_rgba(0,0,0,0.55)]"
                 style={{
                     border:
                         title.borderWidth > 0
@@ -314,7 +314,7 @@ export const Preview = ({ config }: PreviewProps) => {
                             fontWeight: title.textBold ? 'bold' : 'normal',
                         }}
                     >
-                        {title.textContent}
+                        {`ysg : ~bash - ${title.textContent}`}
                     </span>
 
                     {title.titleEnabled && (
@@ -332,7 +332,10 @@ export const Preview = ({ config }: PreviewProps) => {
                                 alt="Menu"
                                 title="Menu"
                                 className="absolute cursor-pointer"
-                                style={{ right: title.configBtn.x, top: title.configBtn.y }}
+                                style={{
+                                    right: title.configBtn.x,
+                                    top: title.configBtn.y,
+                                }}
                                 {...bindButton('title/config')}
                             />
                             <img
@@ -340,7 +343,10 @@ export const Preview = ({ config }: PreviewProps) => {
                                 alt="Keep Window Open"
                                 title="Keep window open when it loses focus"
                                 className="absolute cursor-pointer"
-                                style={{ right: title.focusBtn.x, top: title.focusBtn.y }}
+                                style={{
+                                    right: title.focusBtn.x,
+                                    top: title.focusBtn.y,
+                                }}
                                 {...bindButton('title/focus')}
                             />
                         </>
