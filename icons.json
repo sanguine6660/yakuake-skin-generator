@@ -1,0 +1,198 @@
+[
+    {
+        "src": "PWA/android/launchericon-48x48.png",
+        "sizes": "48x48",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/android/launchericon-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/android/launchericon-96x96.png",
+        "sizes": "96x96",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/android/launchericon-144x144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/android/launchericon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/android/launchericon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/android/launchericon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+    },
+    {
+        "src": "PWA/ios/16.png",
+        "sizes": "16x16",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/20.png",
+        "sizes": "20x20",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/29.png",
+        "sizes": "29x29",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/32.png",
+        "sizes": "32x32",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/40.png",
+        "sizes": "40x40",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/50.png",
+        "sizes": "50x50",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/57.png",
+        "sizes": "57x57",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/58.png",
+        "sizes": "58x58",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/60.png",
+        "sizes": "60x60",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/64.png",
+        "sizes": "64x64",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/72.png",
+        "sizes": "72x72",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/76.png",
+        "sizes": "76x76",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/80.png",
+        "sizes": "80x80",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/87.png",
+        "sizes": "87x87",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/100.png",
+        "sizes": "100x100",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/114.png",
+        "sizes": "114x114",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/120.png",
+        "sizes": "120x120",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/128.png",
+        "sizes": "128x128",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/152.png",
+        "sizes": "152x152",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/167.png",
+        "sizes": "167x167",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/180.png",
+        "sizes": "180x180",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/256.png",
+        "sizes": "256x256",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/ios/1024.png",
+        "sizes": "1024x1024",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/windows/SmallTile.scale-100.png",
+        "sizes": "71x71",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/windows/SmallTile.scale-200.png",
+        "sizes": "142x142",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/windows/Square150x150Logo.scale-100.png",
+        "sizes": "150x150",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/windows/Square150x150Logo.scale-200.png",
+        "sizes": "300x300",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/windows/LargeTile.scale-100.png",
+        "sizes": "310x310",
+        "type": "image/png"
+    },
+    {
+        "src": "PWA/windows/Wide310x150Logo.scale-100.png",
+        "sizes": "310x150",
+        "type": "image/png"
+    }
+]
