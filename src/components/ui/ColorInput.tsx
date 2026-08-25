@@ -80,10 +80,7 @@ export const ColorInput = ({ label, value, onChange, hint }: ColorInputProps) =>
                         title="Open color picker"
                     />
                     {pickerOpen && (
-                        <Popover
-                            triggerRef={containerRef}
-                            onClose={() => setPickerOpen(false)}
-                        >
+                        <Popover triggerRef={containerRef} onClose={() => setPickerOpen(false)}>
                             <div className="p-3">
                                 <ColorPicker value={value} onChange={onChange} />
                             </div>

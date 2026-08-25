@@ -94,10 +94,7 @@ export const RgbColorInput = ({ label, value, onChange, hint }: RgbColorInputPro
                         title="Open color picker"
                     />
                     {pickerOpen && (
-                        <Popover
-                            triggerRef={containerRef}
-                            onClose={() => setPickerOpen(false)}
-                        >
+                        <Popover triggerRef={containerRef} onClose={() => setPickerOpen(false)}>
                             <div className="p-3">
                                 <ColorPicker
                                     value={hex}
@@ -113,7 +110,7 @@ export const RgbColorInput = ({ label, value, onChange, hint }: RgbColorInputPro
                     onInput={(e) => handleInput((e.target as HTMLInputElement).value)}
                     onPaste={handlePaste}
                     spellcheck={false}
-                    className="w-full rounded-lg border border-[#1e293b] bg-[#090d16] p-1.5 font-mono text-sm lowercase text-white focus:border-[#66c2f2] focus:outline-none"
+                    className="w-full rounded-lg border border-[#1e293b] bg-[#090d16] p-1.5 font-mono text-sm text-white lowercase focus:border-[#66c2f2] focus:outline-none"
                     aria-label={label}
                 />
             </div>

@@ -20,7 +20,14 @@
  */
 
 import { useEffect, useRef, useState } from 'preact/hooks'
-import { hexToHsv, hsvToHex, hsvToHsl, hslToHsv, resolveColorInput, type Hsv } from '../../utils/colors'
+import {
+    hexToHsv,
+    hsvToHex,
+    hsvToHsl,
+    hslToHsv,
+    resolveColorInput,
+    type Hsv,
+} from '../../utils/colors'
 
 interface ColorPickerProps {
     value: string
@@ -132,9 +139,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                 className="w-full rounded-md border border-[#1e293b] bg-[#090d16] px-1 py-1.5 text-center font-mono text-xs text-white focus:border-[#66c2f2] focus:outline-none"
                 aria-label={channel.toUpperCase()}
             />
-            <span className="text-[10px] font-medium text-gray-500">
-                {channel.toUpperCase()}
-            </span>
+            <span className="text-[10px] font-medium text-gray-500">{channel.toUpperCase()}</span>
         </div>
     )
 
@@ -191,7 +196,6 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
             </div>
 
             <div className="mt-2 flex items-center gap-2">
-
                 {mode === 'hsl' ? (
                     <div className="flex flex-1 gap-1.5">
                         <div className="flex flex-1 flex-col items-center gap-0.5">
@@ -199,7 +203,9 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                                 type="text"
                                 inputMode="numeric"
                                 value={Math.round(hsl.h)}
-                                onInput={(e) => setHslChannel('h', (e.target as HTMLInputElement).value)}
+                                onInput={(e) =>
+                                    setHslChannel('h', (e.target as HTMLInputElement).value)
+                                }
                                 className="w-full rounded-md border border-[#1e293b] bg-[#090d16] p-1.5 text-center font-mono text-xs text-white focus:border-[#66c2f2] focus:outline-none"
                                 aria-label="Hue"
                             />
@@ -210,7 +216,9 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                                 type="text"
                                 inputMode="numeric"
                                 value={Math.round(hsl.s)}
-                                onInput={(e) => setHslChannel('s', (e.target as HTMLInputElement).value)}
+                                onInput={(e) =>
+                                    setHslChannel('s', (e.target as HTMLInputElement).value)
+                                }
                                 className="w-full rounded-md border border-[#1e293b] bg-[#090d16] p-1.5 text-center font-mono text-xs text-white focus:border-[#66c2f2] focus:outline-none"
                                 aria-label="Saturation"
                             />
@@ -221,7 +229,9 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                                 type="text"
                                 inputMode="numeric"
                                 value={Math.round(hsl.l)}
-                                onInput={(e) => setHslChannel('l', (e.target as HTMLInputElement).value)}
+                                onInput={(e) =>
+                                    setHslChannel('l', (e.target as HTMLInputElement).value)
+                                }
                                 className="w-full rounded-md border border-[#1e293b] bg-[#090d16] p-1.5 text-center font-mono text-xs text-white focus:border-[#66c2f2] focus:outline-none"
                                 aria-label="Lightness"
                             />
@@ -234,12 +244,10 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                         <input
                             type="text"
                             value={hexText}
-                            onInput={(e) =>
-                                handleHexInput((e.target as HTMLInputElement).value)
-                            }
+                            onInput={(e) => handleHexInput((e.target as HTMLInputElement).value)}
                             onPaste={handleHexPaste}
                             spellcheck={false}
-                            className="w-full rounded-md border border-[#1e293b] bg-[#090d16] p-1.5 font-mono text-sm lowercase text-white focus:border-[#66c2f2] focus:outline-none"
+                            className="w-full rounded-md border border-[#1e293b] bg-[#090d16] p-1.5 font-mono text-sm text-white lowercase focus:border-[#66c2f2] focus:outline-none"
                             aria-label="Hex color value"
                         />
                     </div>

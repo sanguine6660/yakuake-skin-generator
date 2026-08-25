@@ -93,7 +93,7 @@ export const Popover = ({
     const triggerRect = triggerRef.current?.getBoundingClientRect()
     const style: Record<string, string | number> = {
         top: position?.top ?? (triggerRect?.bottom ?? 0) + 6,
-        left: position?.left ?? (triggerRect?.left ?? 0),
+        left: position?.left ?? triggerRect?.left ?? 0,
         width: position?.width ?? (matchTriggerWidth ? (triggerRect?.width ?? width) : width),
         visibility: position ? 'visible' : 'hidden',
     }
