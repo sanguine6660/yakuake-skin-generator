@@ -58,9 +58,9 @@ const PresetMiniTerminal = ({
 }) => (
     <div className="overflow-hidden rounded-md border border-black/50">
         <div className="flex h-4 items-center gap-1 px-1" style={{ background: colors.bg }}>
-            <span className="h-1.5 w-1.5 rounded-[2px]" style={{ background: colors.text }} />
+            <span className="h-1.5 w-1.5 rounded-xs" style={{ background: colors.text }} />
             <span
-                className="rounded-[2px] px-1 text-[6px] leading-3"
+                className="rounded-xs px-1 text-[6px] leading-3"
                 style={{ background: colors.selected, color: colors.text }}
             >
                 tab
