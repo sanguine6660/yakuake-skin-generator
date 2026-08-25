@@ -11,42 +11,43 @@ A skin is a folder containing two INI-style config files (`title.skin`,
 
 ## Folder Structure
 
-```text
+```txt
 my-skin/
-├── logo.svg              # shown in the skin selector
-├── title.skin            # title bar (bottom bar) config
-├── tabs.skin             # tab bar (top bar) config
-├── title/                # title bar images
-│   ├── back_image.svg        tiled background
-│   ├── left_corner.svg       window corner (alpha = window mask)
-│   ├── right_corner.svg
-│   ├── focus_up.svg          buttons: up / over (hover) / down (pressed)
-│   ├── focus_over.svg
-│   ├── focus_down.svg
-│   ├── config_up.svg
-│   ├── config_over.svg
-│   ├── config_down.svg
-│   ├── quit_up.svg
-│   ├── quit_over.svg
-│   └── quit_down.svg
-└── tabs/                 # tab bar images
-    ├── back_image.svg        tiled bar background
-    ├── left_corner.svg
-    ├── right_corner.svg
-    ├── selected_back.svg     tiled selected-tab background
-    ├── unselected_back.svg   tiled unselected-tab background
-    ├── selected_left.svg     optional tab corner pieces
-    ├── selected_right.svg
-    ├── unselected_left.svg
-    ├── unselected_right.svg
-    ├── separator.svg         separator between unselected tabs
-    ├── lock.svg              "prevent closing" indicator
-    ├── plus_up.svg           new-tab button (up/over/down)
-    ├── plus_over.svg
-    ├── plus_down.svg
-    ├── minus_up.svg          tab-bar close button (up/over/down)
-    ├── minus_over.svg
-    └── minus_down.svg
+├── logo.svg                  # shown in the skin selector
+├── title.skin                # title bar (bottom bar) config
+├── tabs.skin                 # tab bar (top bar) config
+├── title/                    # title bar images
+│   ├── back_image.svg        # tiled background
+│   ├── left_corner.svg       # window corner (alpha = window mask)
+│   ├── right_corner.svg      # window corner
+│   ├── focus_up.svg          # buttons: up / over (hover) / down (pressed)
+│   ├── focus_over.svg        #
+│   ├── focus_down.svg        #
+│   ├── config_up.svg         # config button states
+│   ├── config_over.svg       #
+│   ├── config_down.svg       #
+│   ├── quit_up.svg           # quit button states
+│   ├── quit_over.svg         #
+│   └── quit_down.svg         #
+└── tabs/                     # tab bar images
+    ├── back_image.svg        # tiled bar background
+    ├── left_corner.svg       # bar corner
+    ├── right_corner.svg      # bar corner
+    ├── selected_back.svg     # tiled selected-tab background
+    ├── unselected_back.svg   # tiled unselected-tab background
+    ├── selected_left.svg     # optional tab corner pieces
+    ├── selected_right.svg    #
+    ├── unselected_left.svg   #
+    ├── unselected_right.svg  #
+    ├── separator.svg         # separator between unselected tabs
+    ├── lock.svg              # "prevent closing" indicator
+    ├── plus_up.svg           # new-tab button states (up/over/down)
+    ├── plus_over.svg         #
+    ├── plus_down.svg         #
+    ├── minus_up.svg          # tab-bar close button states (up/over/down)
+    ├── minus_over.svg        #
+    └── minus_down.svg        #
+
 ```
 
 ---

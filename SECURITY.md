@@ -19,7 +19,7 @@ stable release.
 
 | Version | Supported |
 | ------- | :-------: |
-| 0.0.0   |    ✅     |
+| 1.0.0   |    ✅     |
 
 ## Security Model & Scope
 
