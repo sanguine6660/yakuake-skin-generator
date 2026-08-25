@@ -45,7 +45,7 @@ export const Switch = ({ label, checked, onChange, disabled, config }: SwitchPro
             />
             <label
                 htmlFor={id}
-                className="absolute top-1/2 left-0 flex h-5 w-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-400 bg-white shadow-sm transition-transform duration-300 peer-checked:translate-x-[22px] peer-checked:border-green-500"
+                className="absolute top-1/2 left-0 flex h-5 w-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-400 bg-white shadow-sm transition-transform duration-300 peer-checked:translate-x-5.5 peer-checked:border-green-500"
             >
                 {checked
                     ? renderIcon(config, config.global.iconSet.maximize, 8, '#166534')

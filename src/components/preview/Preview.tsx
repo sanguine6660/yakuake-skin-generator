@@ -137,7 +137,7 @@ export const Preview = ({ config }: PreviewProps) => {
                                 ❯{' '}
                             </span>
                             <span
-                                className="inline-block h-[11px] w-[7px] animate-pulse align-middle"
+                                className="inline-block h-2.75 w-1.75 animate-pulse align-middle"
                                 style={{ backgroundColor: rgb(title.textColor) }}
                             />
                         </p>
@@ -145,7 +145,7 @@ export const Preview = ({ config }: PreviewProps) => {
                 </div>
 
                 <div
-                    className="relative h-[28px] w-full overflow-hidden"
+                    className="relative h-7 w-full overflow-hidden"
                     style={{ backgroundColor: global.colors.bg }}
                 >
                     <div
@@ -274,7 +274,7 @@ export const Preview = ({ config }: PreviewProps) => {
                 </div>
 
                 <div
-                    className="relative h-[28px] w-full overflow-hidden"
+                    className="relative h-7 w-full overflow-hidden"
                     style={{
                         backgroundColor: global.colors.bg,
                         borderTop:
@@ -303,7 +303,7 @@ export const Preview = ({ config }: PreviewProps) => {
                     />
 
                     <span
-                        className="absolute top-0 h-[28px] whitespace-nowrap"
+                        className="absolute top-0 h-7 whitespace-nowrap"
                         style={{
                             left: title.textX,
                             fontSize: '13px',

@@ -424,7 +424,7 @@ export function App() {
                         </TabPanel>
                     </div>
 
-                    <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-[420px]">
+                    <div className="mx-auto w-full space-y-6 lg:mx-0 lg:w-105">
                         <Preview config={config} />
                         <ColorPreview config={config} />
                         {privacyOpen && (

@@ -101,7 +101,7 @@ export const Popover = ({
     return createPortal(
         <div
             ref={popoverRef}
-            className="fixed z-[70] overflow-hidden rounded-xl border border-[#1e293b] bg-[#121824] shadow-xl"
+            className="fixed z-70 overflow-hidden rounded-xl border border-[#1e293b] bg-[#121824] shadow-xl"
             style={style}
             role="dialog"
         >

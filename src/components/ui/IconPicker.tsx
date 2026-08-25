@@ -45,9 +45,9 @@ export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerPr
 
     return (
         <div className="relative">
-            <label className="mb-1 block flex items-center gap-2 text-xs text-gray-400">
+            <label className="mb-1 flex items-center gap-2 text-xs text-gray-400">
                 <span>{label}</span>
-                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border border-[#1e293b] bg-[#090d16]">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-[#1e293b] bg-[#090d16]">
                     {renderIcon(config, displayIcon, 14)}
                 </div>
                 {hint && <span className="text-[10px] text-gray-600">({hint})</span>}
@@ -63,7 +63,7 @@ export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerPr
                     aria-expanded={isOpen}
                 >
                     <span className="flex min-w-0 flex-1 items-center gap-2">
-                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center">
                             {renderIcon(config, currentIcon, 14)}
                         </span>
                         <span className="truncate">{currentIcon}</span>
@@ -111,7 +111,7 @@ export const IconPicker = ({ config, role, label, onChange, hint }: IconPickerPr
                                     onMouseLeave={() => setHoveredIcon(null)}
                                     className={`flex w-full items-center gap-3 px-3 py-2 text-left text-sm text-white ${icon === currentIcon ? 'bg-[#1e293b]' : 'hover:bg-[#1e293b]'} transition-colors`}
                                 >
-                                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border border-[#1e293b] bg-[#090d16]">
+                                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-[#1e293b] bg-[#090d16]">
                                         {renderIcon(config, icon, 14)}
                                     </div>
                                     <span className="truncate">{icon}</span>

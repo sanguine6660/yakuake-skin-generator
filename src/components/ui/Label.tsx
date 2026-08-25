@@ -29,7 +29,7 @@ interface LabelProps {
 
 export const Label = ({ label, children, hint }: LabelProps) => (
     <div>
-        <label className="mb-1 block flex items-center gap-1 text-xs text-gray-400">
+        <label className="mb-1 flex items-center gap-1 text-xs text-gray-400">
             {label}
             {hint && <span className="text-[10px] text-gray-600">({hint})</span>}
         </label>
