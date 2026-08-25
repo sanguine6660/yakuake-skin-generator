@@ -19,7 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import type {
     SkinConfig,
     IconLibrary,
@@ -49,6 +49,50 @@ interface GlobalFormProps {
     onApplyPreset: (presetId: string) => void
 }
 
+const PresetMiniTerminal = ({
+    colors,
+    name,
+}: {
+    colors: { bg: string; selected: string; text: string; dim: string }
+    name: string
+}) => (
+    <div className="overflow-hidden rounded-md border border-black/50">
+        <div className="flex h-4 items-center gap-1 px-1" style={{ background: colors.bg }}>
+            <span className="h-1.5 w-1.5 rounded-[2px]" style={{ background: colors.text }} />
+            <span
+                className="rounded-[2px] px-1 text-[6px] leading-3"
+                style={{ background: colors.selected, color: colors.text }}
+            >
+                tab
+            </span>
+            <span className="text-[6px] leading-3" style={{ color: colors.text }}>
+                tab
+            </span>
+            <span className="text-[6px] leading-3" style={{ color: colors.text }}>
+                tab
+            </span>
+        </div>
+        <div className="h-5 px-1" style={{ background: colors.bg }}>
+            <span className="text-[6px] leading-5" style={{ color: colors.text }}>
+                ❯ _
+            </span>
+        </div>
+        <div
+            className="flex h-4 items-center justify-between gap-1 px-1"
+            style={{ background: colors.bg }}
+        >
+            <span className="truncate text-[6px] leading-4" style={{ color: colors.text }}>
+                {name}
+            </span>
+            <span className="flex shrink-0 gap-0.5">
+                <span className="h-1 w-1 rounded-full" style={{ background: colors.text }} />
+                <span className="h-1 w-1 rounded-full" style={{ background: colors.text }} />
+                <span className="h-1 w-1 rounded-full" style={{ background: colors.text }} />
+            </span>
+        </div>
+    </div>
+)
+
 export const GlobalForm = ({
     config,
     onIconLibraryChange,
@@ -75,6 +119,9 @@ export const GlobalForm = ({
     const lightPresets = getPresetsByCategory('light')
     const [activePresetCategory, setActivePresetCategory] = useState<'dark' | 'light'>('dark')
     const [activeModal, setActiveModal] = useState<keyof ButtonColors | null>(null)
+    const [presetSearch, setPresetSearch] = useState('')
+    const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null)
+    const [presetPage, setPresetPage] = useState(0)
 
     const BUTTON_LABELS: Record<string, string> = {
         focus: 'Focus/Maximize',
@@ -84,6 +131,30 @@ export const GlobalForm = ({
         minus: 'Minus/Close Tab',
         close: 'Close Tab (Per-Tab)',
     }
+
+    const activePresets = activePresetCategory === 'dark' ? darkPresets : lightPresets
+    const allTags = Array.from(new Set(activePresets.flatMap((preset) => preset.tags))).sort()
+
+    const search = presetSearch.toLowerCase()
+    const filteredPresets = activePresets.filter((preset) => {
+        const matchesSearch =
+            preset.name.toLowerCase().includes(search) ||
+            preset.description.toLowerCase().includes(search) ||
+            preset.tags.some((tag) => tag.toLowerCase().includes(search))
+        const matchesTag = !activeTagFilter || preset.tags.includes(activeTagFilter)
+        return matchesSearch && matchesTag
+    })
+    const presetPageSize = 8
+    const presetTotalPages = Math.max(1, Math.ceil(filteredPresets.length / presetPageSize))
+    const safePresetPage = Math.min(presetPage, presetTotalPages - 1)
+    const pagePresets = filteredPresets.slice(
+        safePresetPage * presetPageSize,
+        safePresetPage * presetPageSize + presetPageSize
+    )
+
+    useEffect(() => {
+        setPresetPage(0)
+    }, [activePresetCategory, presetSearch, activeTagFilter])
 
     return (
         <div className="space-y-6">
@@ -119,47 +190,139 @@ export const GlobalForm = ({
                         Light ({lightPresets.length})
                     </button>
                 </div>
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
-                    {(activePresetCategory === 'dark' ? darkPresets : lightPresets).map(
-                        (preset: (typeof PRESETS)[0]) => {
-                            const active = isPresetActive(preset)
-                            const isLight = activePresetCategory === 'light'
-                            const textColor = isLight ? 'text-gray-900' : 'text-white'
-                            const descColor = isLight ? 'text-gray-600' : 'text-gray-400'
-                            return (
-                                <button
-                                    key={preset.id}
-                                    type="button"
-                                    onClick={() => onApplyPreset(preset.id)}
-                                    className={`rounded-lg border p-3 text-left text-sm transition-all ${
-                                        active
-                                            ? 'border-sky-400 bg-sky-400/10 shadow-[0_0_0_1px_#66c2f2]'
-                                            : 'border-[#1e293b] hover:border-sky-400/50'
-                                    }`}
+                <input
+                    type="text"
+                    value={presetSearch}
+                    onInput={(e) => setPresetSearch((e.target as HTMLInputElement).value)}
+                    placeholder="Search presets…"
+                    className="mb-3 w-full rounded-lg border border-[#1e293b] bg-[#090d16] px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:border-[#66c2f2] focus:outline-none"
+                    aria-label="Search presets"
+                />
+                {allTags.length > 0 && (
+                    <div className="mb-3 flex flex-wrap items-center gap-1.5">
+                        <button
+                            type="button"
+                            onClick={() => setActiveTagFilter(null)}
+                            className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                                activeTagFilter === null
+                                    ? 'bg-[#66c2f2] text-[#090d16]'
+                                    : 'border border-[#1e293b] text-gray-400 hover:text-gray-200'
+                            }`}
+                        >
+                            All
+                        </button>
+                        {allTags.map((tag) => (
+                            <button
+                                key={tag}
+                                type="button"
+                                onClick={() =>
+                                    setActiveTagFilter((current) => (current === tag ? null : tag))
+                                }
+                                className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                                    activeTagFilter === tag
+                                        ? 'bg-[#66c2f2] text-[#090d16]'
+                                        : 'border border-[#1e293b] text-gray-400 hover:text-gray-200'
+                                }`}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
+                )}
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+                    {pagePresets.map((preset: (typeof PRESETS)[0]) => {
+                        const active = isPresetActive(preset)
+                        const isLight = activePresetCategory === 'light'
+                        return (
+                            <button
+                                key={preset.id}
+                                type="button"
+                                onClick={() => onApplyPreset(preset.id)}
+                                title={preset.description}
+                                className={`rounded-lg border p-2 text-left transition-all ${
+                                    active
+                                        ? 'border-sky-400 bg-sky-400/10 shadow-[0_0_0_1px_#66c2f2]'
+                                        : 'border-[#1e293b] hover:border-sky-400/50'
+                                }`}
+                            >
+                                <PresetMiniTerminal
+                                    colors={preset.previewColors}
+                                    name={preset.name}
+                                />
+                                <div
+                                    className="mt-2 rounded-md p-2"
                                     style={{
                                         background: `linear-gradient(135deg, ${preset.previewColors.bg}, ${preset.previewColors.selected})`,
                                     }}
                                 >
-                                    <div className="mb-2 flex items-center gap-2">
-                                        <div
-                                            className="h-6 w-6 shrink-0 rounded"
-                                            style={{ background: preset.previewColors.text }}
-                                        />
-                                        <span className={`truncate font-medium ${textColor}`}>
+                                    <div className="flex items-center justify-between gap-1">
+                                        <span
+                                            className={`truncate text-sm font-medium ${
+                                                isLight ? 'text-gray-900' : 'text-white'
+                                            }`}
+                                        >
                                             {preset.name}
                                         </span>
                                         {active && (
-                                            <span className="ml-auto text-xs text-sky-400">✓</span>
+                                            <span className="shrink-0 text-xs text-sky-300">✓</span>
                                         )}
                                     </div>
-                                    <p className={`truncate text-xs ${descColor}`}>
+                                    <p
+                                        className={`truncate text-[11px] ${
+                                            isLight ? 'text-gray-700' : 'text-gray-300'
+                                        }`}
+                                    >
                                         {preset.description}
                                     </p>
-                                </button>
-                            )
-                        }
-                    )}
+                                </div>
+                                <div className="mt-1.5 flex flex-wrap gap-1">
+                                    {preset.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="rounded bg-[#1e293b] px-1 py-0.5 text-[9px] text-gray-400"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </button>
+                        )
+                    })}
                 </div>
+
+                {filteredPresets.length === 0 && (
+                    <p className="py-6 text-center text-sm text-gray-500">
+                        No presets match "{presetSearch}"
+                    </p>
+                )}
+
+                {presetTotalPages > 1 && (
+                    <div className="flex items-center justify-center gap-4">
+                        <button
+                            type="button"
+                            onClick={() => setPresetPage((page) => Math.max(0, page - 1))}
+                            disabled={safePresetPage === 0}
+                            className="rounded-lg border border-[#1e293b] px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-[#66c2f2] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                            aria-label="Previous page"
+                        >
+                            ←
+                        </button>
+                        <span className="text-xs text-gray-400">
+                            Page {safePresetPage + 1} of {presetTotalPages}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setPresetPage((page) => Math.min(presetTotalPages - 1, page + 1))
+                            }
+                            disabled={safePresetPage >= presetTotalPages - 1}
+                            className="rounded-lg border border-[#1e293b] px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-[#66c2f2] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                            aria-label="Next page"
+                        >
+                            →
+                        </button>
+                    </div>
+                )}
             </Section>
 
             <Section title="Appearance">
