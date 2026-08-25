@@ -80,7 +80,7 @@ export const generateMetadata = (config: SkinConfig): string => {
         generator: {
             name: GENERATOR_NAME,
             url: GENERATOR_URL,
-            version: '1.0.0',
+            version: __APP_VERSION__,
         },
         skin: {
             name: config.meta.skinName,

@@ -21,11 +21,9 @@
 
 import { useCallback, useState } from 'preact/hooks'
 import type { SkinConfig } from '../types'
-import { createTarGz, prepareSkinFiles } from '../utils'
+import { createTarGz, prepareSkinFiles, isTauri } from '../utils'
 import { useGoatCounter } from './useGoatCounter'
 import { warmIconMarkupCache } from '../utils/iconRenderer'
-
-const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 
 let savedDirHandle: any = null
 

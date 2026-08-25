@@ -19,6 +19,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { isTauri } from '../../utils'
+import { useAppUpdater } from '../../hooks'
+import type { UpdateState } from '../../hooks'
+
 interface FooterProps {
     onOpenPrivacy: () => void
 }
@@ -30,8 +34,15 @@ const YAKUAKE_SOURCE_URL = 'https://invent.kde.org/utilities/yakuake'
 const GPL_LICENSE_URL = 'https://www.gnu.org/licenses/gpl-3.0'
 const CC_LICENSE_URL = 'https://creativecommons.org/licenses/by/4.0/'
 
+const UPDATE_MESSAGES: Partial<Record<UpdateState, string>> = {
+    checking: 'Checking for updates…',
+    uptodate: 'Up to date',
+    error: 'Update check failed',
+}
+
 export const Footer = ({ onOpenPrivacy }: FooterProps) => {
     const logoSrc = `${import.meta.env.BASE_URL}logo.svg`
+    const updater = useAppUpdater()
 
     const links: Array<{ label: string; href?: string; onClick?: () => void }> = [
         { label: 'GitHub', href: REPO_URL },
@@ -106,6 +117,30 @@ export const Footer = ({ onOpenPrivacy }: FooterProps) => {
                     )}
                 </nav>
             </div>
+
+            {isTauri() && (
+                <div className="mt-4 flex justify-center">
+                    {updater.state === 'downloading' ? (
+                        <p className="text-xs text-gray-500">
+                            Downloading update{updater.pendingVersion ? ` ${updater.pendingVersion}` : ''}
+                            {updater.progress > 0 ? ` — ${updater.progress}%` : '…'}
+                        </p>
+                    ) : updater.state === 'ready' ? (
+                        <p className="text-xs text-gray-400">
+                            Update installed — restart the app to apply it.
+                        </p>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => void updater.check()}
+                            className="cursor-pointer text-xs text-gray-600 transition-colors hover:text-gray-400"
+                            title={updater.errorMessage ?? undefined}
+                        >
+                            {UPDATE_MESSAGES[updater.state] ?? `Check for updates (v${__APP_VERSION__})`}
+                        </button>
+                    )}
+                </div>
+            )}
         </footer>
     )
 }

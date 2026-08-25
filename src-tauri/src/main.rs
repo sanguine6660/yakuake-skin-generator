@@ -6,8 +6,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 {
         // Headless CLI mode: validate, compile, --help/--version, or `gui`
-        let code =
-            yakuake_skin_generator_lib::cli::run(&args, || yakuake_skin_generator_lib::run());
+        let code = yakuake_skin_generator_lib::cli::run(&args, yakuake_skin_generator_lib::run);
         std::process::exit(code);
     }
 

@@ -22,6 +22,7 @@
 import { render } from 'preact'
 import './index.css'
 import { App } from './app.tsx'
+import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { StartupTimesRecorder, readAverageStartupTime } from './utils/startupTimes.tsx'
 
 const startedAt = performance.timeOrigin
@@ -29,7 +30,9 @@ const loadedAt = startedAt + performance.now()
 
 render(
     <>
-        <App />
+        <ErrorBoundary>
+            <App />
+        </ErrorBoundary>
         <StartupTimesRecorder start={startedAt} loaded={loadedAt} />
     </>,
     document.getElementById('app')!

@@ -2,6 +2,7 @@
 //! compile them into distributable `.tar.gz` skin archives.
 
 use clap::Parser;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 #[derive(Parser, Debug)]
@@ -34,6 +35,14 @@ pub struct Cli {
     /// Output path for the compiled archive (default: <skin name>.tar.gz)
     #[arg(short, long, value_name = "FILE", requires = "input")]
     pub output: Option<PathBuf>,
+
+    /// Install a compiled .tar.gz skin archive into ~/.local/share/yakuake/skins
+    #[arg(
+        long,
+        value_name = "ARCHIVE",
+        conflicts_with_all = ["validate", "input", "gui"]
+    )]
+    pub install: Option<PathBuf>,
 
     /// Open the graphical interface
     #[arg(long, conflicts_with_all = ["validate", "input"])]
@@ -158,6 +167,60 @@ fn compile_archive(input: &Path, output: Option<PathBuf>) -> Result<(), String> 
     Ok(())
 }
 
+fn install_archive(archive_path: &Path) -> Result<(), String> {
+    let file = std::fs::File::open(archive_path)
+        .map_err(|e| format!("Cannot read {}: {e}", archive_path.display()))?;
+    let gz = flate2::read::GzDecoder::new(file);
+    let mut archive = tar::Archive::new(gz);
+
+    let mut folder: Option<String> = None;
+    let mut files = Vec::new();
+
+    for entry in archive
+        .entries()
+        .map_err(|e| format!("Invalid archive: {e}"))?
+    {
+        let mut entry = entry.map_err(|e| format!("Invalid archive: {e}"))?;
+        let raw_path = entry
+            .path()
+            .map_err(|e| format!("Invalid archive: {e}"))?
+            .to_string_lossy()
+            .into_owned();
+        // Compiled archives nest everything under <folder>/ — strip the prefix.
+        let relative = raw_path.split_once('/').map(|(_, rest)| rest).unwrap_or("");
+        if relative.is_empty() {
+            folder = folder.or_else(|| raw_path.split('/').next().map(String::from));
+            continue;
+        }
+        if !crate::is_safe_relative_path(relative) {
+            return Err(format!("Illegal file path in archive: {raw_path}"));
+        }
+        let mut content = Vec::new();
+        entry
+            .read_to_end(&mut content)
+            .map_err(|e| format!("Failed to unpack {raw_path}: {e}"))?;
+        files.push(crate::SkinFile {
+            path: relative.to_string(),
+            content,
+        });
+    }
+
+    let folder = folder.ok_or_else(|| {
+        "Archive has no skin folder (expected a top-level <name>/ directory)".to_string()
+    })?;
+
+    let base = crate::install_skin_files(&folder, &files, None)?;
+    println!();
+    println!(
+        "✓ Installed {} files from {} → {}",
+        files.len(),
+        archive_path.display(),
+        base.display()
+    );
+    println!("Restart Yakuake and select the skin in the appearance settings.");
+    Ok(())
+}
+
 /// Runs the headless CLI. `args` must be the full argv, including the
 /// program name at index 0 (clap consumes it as the binary name).
 /// `launch_gui` opens the graphical interface.
@@ -188,6 +251,16 @@ pub fn run(args: &[String], launch_gui: impl FnOnce()) -> i32 {
 
     if let Some(input) = &cli.input {
         return match compile_archive(input, cli.output) {
+            Ok(()) => 0,
+            Err(message) => {
+                eprintln!("✗ {message}");
+                1
+            }
+        };
+    }
+
+    if let Some(archive) = &cli.install {
+        return match install_archive(archive) {
             Ok(()) => 0,
             Err(message) => {
                 eprintln!("✗ {message}");

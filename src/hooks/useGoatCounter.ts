@@ -20,6 +20,7 @@
  */
 
 import { useCallback } from 'preact/hooks'
+import { isTauri } from '../utils'
 
 declare global {
     interface Window {
@@ -88,6 +89,8 @@ const scheduleFlush = (): void => {
 
 export const useGoatCounter = () => {
     const trackEvent = useCallback((path: string, title?: string): void => {
+        // The desktop app must not phone home to analytics.
+        if (isTauri()) return
         if (typeof window === 'undefined') return
 
         if (isGoatCounterReady()) {

@@ -25,12 +25,37 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies 📥
-        run: npm i
+        run: npm ci
 
       - name: Run Unit Tests 🧪
         run: npm test
+
+      - name: Install Linux Dependencies 🐧
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev patchelf
+
+      - name: Setup Rust 🦀
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Rust Cache ⚡
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Format Check 📐
+        run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+
+      - name: Clippy 🔍
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
+
+      - name: Rust Tests & Golden Parity 🧪
+        run: cargo test --manifest-path src-tauri/Cargo.toml
 
   build:
     needs: test
@@ -75,15 +100,35 @@ jobs:
           echo "APPIMAGE_EXTRACT_AND_RUN=1" >> "$GITHUB_ENV"
 
       - name: Install dependencies 📥
-        run: npm i
+        run: npm ci
 
       - name: Build & Release 🚀
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Yakuake Skin Generator ${{ github.ref_name }}"
           releaseBody: "Desktop builds of the Yakuake Skin Generator. Install the skin archives or use the app to generate and install skins natively."
           releaseDraft: false
           prerelease: true
+
+  checksums:
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Generate SHA256 checksums 📝
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download "${{ github.ref_name }}" --repo "$GITHUB_REPOSITORY" --dir artifacts --clobber
+          cd artifacts
+          rm -f SHA256SUMS.txt
+          sha256sum * > SHA256SUMS.txt
+          gh release upload "${{ github.ref_name }}" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
+          echo "Checksums uploaded:"
+          cat SHA256SUMS.txt

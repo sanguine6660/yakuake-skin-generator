@@ -87,7 +87,11 @@ echo -e "  Bundle type:     ${BUNDLE_TYPE}"
 ok "prerequisites satisfied"
 
 step "Installing dependencies"
-npm install --no-fund
+if [ -f package-lock.json ]; then
+    npm ci --no-fund || npm install --no-fund
+else
+    npm install --no-fund
+fi
 ok "dependencies installed"
 
 if [ "$MODE" = "web" ]; then
@@ -98,6 +102,15 @@ if [ "$MODE" = "web" ]; then
 fi
 
 step "Building desktop app (this compiles the Rust backend — first run takes a while)"
+
+# Updater artifact signing: reuse the local key when present so local builds
+# can produce signed update packages exactly like release CI does.
+UPDATER_KEY="src-tauri/keys/updater.key"
+if [ -f "$UPDATER_KEY" ]; then
+    export TAURI_SIGNING_PRIVATE_KEY="$(cat "$UPDATER_KEY")"
+    export TAURI_SIGNING_PRIVATE_KEY_PASSWORD="${TAURI_SIGNING_PRIVATE_KEY_PASSWORD:-}"
+    ok "updater signing key found (${UPDATER_KEY})"
+fi
 
 # Arch and other rolling-release distros ship system libraries that the
 # AppImage tooling cannot strip — skip stripping and extract instead of

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="ylogo-bg" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b4252"/>
+      <stop offset="1" stop-color="#1e2233"/>
+    </linearGradient>
+    <linearGradient id="ylogo-accent" x1="12" y1="10" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8eeaff"/>
+      <stop offset="1" stop-color="#48a4d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="11" fill="url(#ylogo-bg)"/>
+  <rect x="1.25" y="1.25" width="45.5" height="45.5" rx="9.75" stroke="url(#ylogo-accent)" stroke-width="2.5"/>
+  <path d="M16 12 L24 18.5 L32 12" stroke="url(#ylogo-accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M13.5 26 L20 31.5 L13.5 37" stroke="#66c2f2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24.5 37 H35" stroke="#66c2f2" stroke-width="3.5" stroke-linecap="round"/>
+</svg>

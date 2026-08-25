@@ -38,7 +38,12 @@ if (-not $Web) {
 Ok "prerequisites satisfied"
 
 Step "Installing dependencies"
-npm install --no-fund
+if (Test-Path package-lock.json) {
+    npm ci --no-fund
+    if ($LASTEXITCODE -ne 0) { npm install --no-fund }
+} else {
+    npm install --no-fund
+}
 Ok "dependencies installed"
 
 if ($Web) {
@@ -49,6 +54,15 @@ if ($Web) {
 }
 
 Step "Building desktop app (this compiles the Rust backend - first run takes a while)"
+
+# Updater artifact signing: reuse the local key when present so local builds
+# can produce signed update packages exactly like release CI does.
+$updaterKey = "src-tauri\keys\updater.key"
+if (Test-Path $updaterKey) {
+    $env:TAURI_SIGNING_PRIVATE_KEY = Get-Content $updaterKey -Raw
+    if (-not $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD) { $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = "" }
+    Ok "updater signing key found ($updaterKey)"
+}
 npm run tauri build
 
 Step "Installing"

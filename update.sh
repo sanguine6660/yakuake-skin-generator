@@ -35,7 +35,11 @@ LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
 echo -e "  at ${GREEN}${NEW_COMMIT}${NC} (last tag: ${LAST_TAG})"
 
 step "Refreshing dependencies"
-npm install --no-fund
+if [ -f package-lock.json ]; then
+    npm ci --no-fund || npm install --no-fund
+else
+    npm install --no-fund
+fi
 ok "dependencies refreshed"
 
 step "Rebuilding and reinstalling"

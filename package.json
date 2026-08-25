@@ -14,10 +14,13 @@
         "tauri": "tauri",
         "tauri:dev": "tauri dev",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "test:parity": "UPDATE_PARITY_GOLDENS=0 vitest run src/utils/parity.test.ts",
+        "test:parity:update": "UPDATE_PARITY_GOLDENS=1 vitest run src/utils/parity.test.ts"
     },
     "dependencies": {
         "@tauri-apps/api": "^2.11.1",
+        "@tauri-apps/plugin-updater": "^2.10.1",
         "preact": "^10.29.8",
         "preact-render-to-string": "^6.7.0",
         "react-icons": "^5.7.0"

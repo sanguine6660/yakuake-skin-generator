@@ -21,12 +21,13 @@
             }
         ],
         "security": {
-            "csp": null
+            "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: asset: http://asset.localhost https://asset.localhost; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://abacus.jasoncameron.dev"
         }
     },
     "bundle": {
         "active": true,
         "targets": "all",
+        "createUpdaterArtifacts": true,
         "icon": [
             "icons/32x32.png",
             "icons/128x128.png",
@@ -34,5 +35,13 @@
             "icons/icon.icns",
             "icons/icon.ico"
         ]
+    },
+    "plugins": {
+        "updater": {
+            "endpoints": [
+                "https://github.com/sanguine6660/yakuake-skin-generator/releases/latest/download/latest.json"
+            ],
+            "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ4N0MwNEZCRTU1QUZFMkYKUldRdi9scmwrd1I4U0FTUkdSMDY5RWc5ajVQN0pvQkxvTXpGOStMZS9xSUgxQStzdHlOc0V1WFQK"
+        }
     }
 }

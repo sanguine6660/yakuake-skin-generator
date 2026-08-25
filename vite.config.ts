@@ -15,6 +15,9 @@ const baseUrl = isTauri ? './' : '/yakuake-skin-generator/'
 const iconsPath = path.resolve(__dirname, 'public/icons.json')
 const pwaIcons = fs.existsSync(iconsPath) ? JSON.parse(fs.readFileSync(iconsPath, 'utf-8')) : []
 
+// Single source of truth for the app version, injected as __APP_VERSION__
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'))
+
 export default defineConfig(() => ({
     clearScreen: false,
     server: {
@@ -22,6 +25,9 @@ export default defineConfig(() => ({
         strictPort: true,
     },
     envPrefix: ['VITE_', 'TAURI_ENV_'],
+    define: {
+        __APP_VERSION__: JSON.stringify(pkg.version),
+    },
     plugins: [
         preact(),
         tailwindcss(),
@@ -74,7 +80,15 @@ export default defineConfig(() => ({
         {
             name: 'html-base-transform',
             transformIndexHtml(html) {
-                return html.replace(/%BASE_URL%/g, baseUrl)
+                let result = html.replace(/%BASE_URL%/g, baseUrl)
+                if (isTauri) {
+                    // The desktop app must not phone home to analytics.
+                    result = result.replace(
+                        /[ \t]*<!-- Goat Counter Tracking -->\s*<script[^>]*gc\.zgo\.at[^>]*>\s*<\/script>\s*/i,
+                        ''
+                    )
+                }
+                return result
             },
         },
     ],

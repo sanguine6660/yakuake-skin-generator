@@ -5,6 +5,8 @@
 use crate::config::SkinConfig;
 use std::collections::BTreeMap;
 
+pub const GENERATOR_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 pub fn adjust_hex_brightness(hex: &str, amount: i32) -> String {
     let clean = hex.trim_start_matches('#');
     let num = i32::from_str_radix(clean, 16).unwrap_or(0);
@@ -198,7 +200,9 @@ pub fn generate_all(
     );
 
     // title backgrounds
-    let title_translucent = t.bg_translucent || g.translucency;
+    // Mirrors the TypeScript generator: translucency is decided per bar
+    // (global.translucency is a preview-only concern there).
+    let title_translucent = t.bg_translucent;
     files.insert(
         "title/background_center.svg".into(),
         generate_background_center(&g.colors.bg, 28, title_translucent),
@@ -238,13 +242,13 @@ pub fn generate_all(
             };
             files.insert(
                 format!("title/{prefix}_{state}.svg"),
-                generate_button_svg(markup.as_deref(), bg, ic, 20, 16, true, fallback),
+                generate_button_svg(markup.as_deref(), bg, ic, 20, 14, true, fallback),
             );
         }
     }
 
     // tabs backgrounds
-    let tabs_translucent = tabs.bg_translucent || g.translucency;
+    let tabs_translucent = tabs.bg_translucent;
     files.insert(
         "tabs/background_center.svg".into(),
         generate_background_center(&g.colors.bg, 28, tabs_translucent),
@@ -502,9 +506,10 @@ pub fn generate_license(config: &SkinConfig) -> String {
 }
 
 pub fn generate_skin_readme(config: &SkinConfig) -> String {
+    let name = &config.meta.skin_name;
+    let author = &config.meta.author;
     format!(
-        "# {} (Yakuake Skin)\n\nThis skin was custom-generated using the **Yakuake Skin Generator**.\n\n## Credits & Links\n* **Original Creator:** {}\n* **Source Code & Editor:** [GitHub Repository](https://github.com/sanguine6660/yakuake-skin-generator)\n* **License:** CC BY 4.0\n\n---\n\n## Installation\nExtract this folder into your local Yakuake/KDE themes directory (usually `~/.local/share/yakuake/skins/` or system-wide equivalent), then select it from your Yakuake appearance settings.\n",
-        config.meta.skin_name, config.meta.author
+        "# {name} (Yakuake Skin)\n\nThis skin was custom-generated using the **Yakuake Skin Generator**.\n\n## Credits & Links\n* **Original Creator:** {author}\n* **Source Code & Editor:** [GitHub Repository](https://github.com/sanguine6660/yakuake-skin-generator)\n* **License:** CC BY 4.0\n\n---\n\n## About the Generator & How to Use\nWant to modify this skin, tweak its colors, swap icon sets, or design your own from scratch?\n\n1. Visit the online editor or clone the source repository:\n   👉 **[sanguine6660/yakuake-skin-generator](https://github.com/sanguine6660/yakuake-skin-generator)**\n2. Import this skin's JSON configuration file into the editor, or tweak the live parameters visually.\n3. Export a fresh `.tar.gz` bundle instantly!\n\n## Installation\nExtract this folder into your local Yakuake/KDE themes directory (usually `~/.local/share/yakuake/skins/` or system-wide equivalent), then select it from your Yakuake appearance settings.\n"
     )
 }
 
@@ -531,7 +536,7 @@ pub fn prepare_skin_files(
         "generator": {
             "name": "Yakuake Skin Generator",
             "url": "https://github.com/sanguine6660/yakuake-skin-generator",
-            "version": "1.0.0",
+            "version": GENERATOR_VERSION,
         },
         "skin": {
             "name": config.meta.skin_name,

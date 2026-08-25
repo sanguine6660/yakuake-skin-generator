@@ -21,5 +21,7 @@
 
 export { useSkinConfig } from './useSkinConfig'
 export { useSkinExport } from './useSkinExport'
+export { useAppUpdater } from './useAppUpdater'
+export type { UpdateState } from './useAppUpdater'
 export { useSessionStorage } from './useSessionStorage'
 export { useLocalStorage } from './useLocalStorage'
