@@ -1,6 +1,6 @@
 /**
  * @file src/components/ui/ButtonConfigEditor.tsx
- * @description Editor component for button configuration - enabled state, position, and image paths
+ * @description Compact collapsible editor card for button configuration - enabled toggle, position and optional custom image paths
  * @copyright Copyright (C) 2026 sanguine6660
  * @since 1.0.0
  * @license GPL-3.0-or-later
@@ -19,6 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useState } from 'preact/hooks'
 import type { SkinConfig, ButtonConfig } from '../../types'
 import { NumberInput, TextInput, Switch } from '../ui'
 
@@ -34,45 +35,55 @@ export const ButtonConfigEditor = ({
     label,
     onChange,
     globalConfig,
-}: ButtonConfigEditorProps) => (
-    <div className="rounded-lg border border-[#1e293b] bg-[#090d16] p-4">
-        <div className="mb-3 flex items-center justify-between">
-            <h4 className="font-medium text-white capitalize">{label} Button</h4>
-            <Switch
-                label="Enabled"
-                checked={config.enabled}
-                onChange={(v) => onChange({ enabled: v })}
-                config={globalConfig}
-            />
-        </div>
+}: ButtonConfigEditorProps) => {
+    const [showImages, setShowImages] = useState(false)
 
-        <div
-            className={`grid grid-cols-1 gap-4 md:grid-cols-3 ${!config.enabled ? 'pointer-events-none opacity-50' : ''}`}
-        >
-            <div className="space-y-3 md:col-span-2">
-                <div className="grid grid-cols-2 gap-4">
-                    <TextInput
-                        label="Up Image"
-                        value={config.up}
-                        onChange={(v) => onChange({ up: v })}
-                        placeholder="up_image.svg"
+    return (
+        <div className="rounded-lg border border-[#1e293b] bg-[#090d16] p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <h4 className="text-sm font-medium text-white">{label}</h4>
+                <div className="flex items-center gap-2">
+                    <Switch
+                        label="Enabled"
+                        checked={config.enabled}
+                        onChange={(v) => onChange({ enabled: v })}
+                        config={globalConfig}
                     />
-                    <TextInput
-                        label="Over Image"
-                        value={config.over}
-                        onChange={(v) => onChange({ over: v })}
-                        placeholder="over_image.svg"
-                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowImages((open) => !open)}
+                        aria-expanded={showImages}
+                        className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium transition-colors ${
+                            showImages
+                                ? 'border-[#66c2f2] text-[#66c2f2]'
+                                : 'border-[#1e293b] text-gray-400 hover:text-gray-200'
+                        }`}
+                    >
+                        Images
+                        <svg
+                            width="10"
+                            height="10"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            className={`transition-transform ${showImages ? 'rotate-180' : ''}`}
+                        >
+                            <path
+                                d="M3,4 L6,7 L9,4"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
                 </div>
-                <TextInput
-                    label="Down Image"
-                    value={config.down}
-                    onChange={(v) => onChange({ down: v })}
-                    placeholder="down_image.svg"
-                />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div
+                className={`mt-4 grid grid-cols-2 gap-4 ${
+                    !config.enabled ? 'pointer-events-none opacity-50' : ''
+                }`}
+            >
                 <NumberInput
                     label="X Position"
                     value={config.x}
@@ -88,6 +99,34 @@ export const ButtonConfigEditor = ({
                     max={50}
                 />
             </div>
+
+            {showImages && (
+                <div className="mt-4 space-y-3 border-t border-[#1e293b] pt-4">
+                    <p className="text-[11px] text-gray-500">
+                        Custom image paths — leave unchanged to use the generated assets.
+                    </p>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <TextInput
+                            label="Up Image"
+                            value={config.up}
+                            onChange={(v) => onChange({ up: v })}
+                            placeholder="up_image.svg"
+                        />
+                        <TextInput
+                            label="Over Image"
+                            value={config.over}
+                            onChange={(v) => onChange({ over: v })}
+                            placeholder="over_image.svg"
+                        />
+                    </div>
+                    <TextInput
+                        label="Down Image"
+                        value={config.down}
+                        onChange={(v) => onChange({ down: v })}
+                        placeholder="down_image.svg"
+                    />
+                </div>
+            )}
         </div>
-    </div>
-)
+    )
+}

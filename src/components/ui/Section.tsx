@@ -1,6 +1,6 @@
 /**
  * @file src/components/ui/Section.tsx
- * @description Reusable section container component with title and optional color/icon
+ * @description Reusable card section component with title, optional description and optional color/icon
  * @copyright Copyright (C) 2026 sanguine6660
  * @since 1.0.0
  * @license GPL-3.0-or-later
@@ -23,16 +23,18 @@ import type { ComponentChildren } from 'preact'
 
 interface SectionProps {
     title: string
+    description?: string
     children: ComponentChildren
     color?: string
     iconColor?: string
 }
 
-export const Section = ({ title, children, color, iconColor }: SectionProps) => (
+export const Section = ({ title, description, children, color, iconColor }: SectionProps) => (
     <section className="rounded-xl border border-[#1e293b] bg-[#121824] p-6 shadow-xl">
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-200">
+        <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-gray-200">
             <span style={{ color: color || iconColor }}>{title}</span>
         </h2>
-        <div>{children}</div>
+        {description && <p className="mb-4 text-xs text-gray-500">{description}</p>}
+        <div className={description ? '' : 'mt-4'}>{children}</div>
     </section>
 )

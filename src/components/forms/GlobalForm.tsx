@@ -29,7 +29,7 @@ import type {
 } from '../../types'
 import { ICON_LIBRARIES, ICON_ROLES, PRESETS, getPresetsByCategory } from '../../constants'
 import { deriveKonsoleBackground } from '../../utils/colors'
-import { ColorInput, NumberInput, SelectInput, Switch } from '../ui'
+import { ColorInput, NumberInput, SelectInput, Switch, Section } from '../ui'
 import { IconPicker } from '../ui/IconPicker'
 import { ButtonStateModal } from './ButtonStateModal'
 
@@ -87,7 +87,7 @@ export const GlobalForm = ({
 
     return (
         <div className="space-y-6">
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Presets</h3>
+            <Section title="Presets" description="One click applies a full theme — colors, title text and button states">
             <div className="mb-3 flex gap-2" role="tablist">
                 <button
                     type="button"
@@ -158,6 +158,9 @@ export const GlobalForm = ({
                 )}
             </div>
 
+            </Section>
+
+            <Section title="Appearance">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <SelectInput
                     label="Icon Library"
@@ -195,8 +198,9 @@ export const GlobalForm = ({
                     config={config}
                 />
             </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Color Palette</h3>
+            <Section title="Color Palette">
             <div className="grid grid-cols-2 gap-4">
                 <ColorInput
                     label="Background"
@@ -228,11 +232,9 @@ export const GlobalForm = ({
                     hint="preview only"
                 />
             </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Button State Colors</h3>
-            <p className="mb-4 text-sm text-gray-400">
-                Click a button to customize its up/over/down state colors.
-            </p>
+            <Section title="Button State Colors" description="Click a button to customize its up/over/down state colors">
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {(['focus', 'config', 'quit', 'plus', 'minus', 'close'] as const).map((btn) => (
                     <button
@@ -262,8 +264,9 @@ export const GlobalForm = ({
                     </button>
                 ))}
             </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Icon Selection</h3>
+            <Section title="Icon Selection" description="Pick the icon for each button role from the active library">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {ICON_ROLES.map(({ key, label }) => (
                     <IconPicker
@@ -275,6 +278,7 @@ export const GlobalForm = ({
                     />
                 ))}
             </div>
+            </Section>
 
             {activeModal && (
                 <ButtonStateModal

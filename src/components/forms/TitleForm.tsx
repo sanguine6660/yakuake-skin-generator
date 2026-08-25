@@ -20,7 +20,7 @@
  */
 
 import type { SkinConfig, RgbColor } from '../../types'
-import { NumberInput, TextInput, RgbColorInput, Switch, ButtonConfigEditor } from '../ui'
+import { NumberInput, TextInput, RgbColorInput, Switch, ButtonConfigEditor, Section } from '../ui'
 
 interface TitleFormProps {
     config: SkinConfig
@@ -33,76 +33,81 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
 
     return (
         <div className="space-y-6">
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Border</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <RgbColorInput
-                    label="Border Color"
-                    value={title.borderColor}
-                    onChange={(v) => onRgbColorChange('borderColor', v)}
-                />
-                <NumberInput
-                    label="Border Width"
-                    value={title.borderWidth}
-                    onChange={(v) => onChange({ borderWidth: v })}
-                    min={0}
-                    max={20}
-                />
-            </div>
+            <Section title="Title Bar" description="Enable or disable the bottom title bar">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Switch
+                        label="Enable Title Bar"
+                        checked={title.titleEnabled ?? true}
+                        onChange={(v) => onChange({ titleEnabled: v })}
+                        config={config}
+                    />
+                    <Switch
+                        label="Translucent Background"
+                        checked={title.bgTranslucent ?? false}
+                        onChange={(v) => onChange({ bgTranslucent: v })}
+                        config={config}
+                    />
+                </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Title Text</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <NumberInput
-                    label="X Position"
-                    value={title.textX}
-                    onChange={(v) => onChange({ textX: v })}
-                    min={0}
-                    max={200}
-                />
-                <NumberInput
-                    label="Y Position"
-                    value={title.textY}
-                    onChange={(v) => onChange({ textY: v })}
-                    min={0}
-                    max={50}
-                />
-                <RgbColorInput
-                    label="Text Color"
-                    value={title.textColor}
-                    onChange={(v) => onRgbColorChange('textColor', v)}
-                />
-                <TextInput
-                    label="Text Content"
-                    value={title.textContent}
-                    onChange={(v) => onChange({ textContent: v })}
-                />
-            </div>
-            <Switch
-                label="Bold Text"
-                checked={title.textBold}
-                onChange={(v) => onChange({ textBold: v })}
-                config={config}
-            />
+            <Section title="Border">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <RgbColorInput
+                        label="Border Color"
+                        value={title.borderColor}
+                        onChange={(v) => onRgbColorChange('borderColor', v)}
+                    />
+                    <NumberInput
+                        label="Border Width"
+                        value={title.borderWidth}
+                        onChange={(v) => onChange({ borderWidth: v })}
+                        min={0}
+                        max={20}
+                    />
+                </div>
+            </Section>
 
-            <h3 className="mt-6 mb-3 text-lg font-semibold text-gray-200">
-                Background Translucency
-            </h3>
-            <Switch
-                label="Enable Translucent Background"
-                checked={title.bgTranslucent ?? false}
-                onChange={(v) => onChange({ bgTranslucent: v })}
-                config={config}
-            />
+            <Section title="Title Text">
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <NumberInput
+                            label="X Position"
+                            value={title.textX}
+                            onChange={(v) => onChange({ textX: v })}
+                            min={0}
+                            max={200}
+                        />
+                        <NumberInput
+                            label="Y Position"
+                            value={title.textY}
+                            onChange={(v) => onChange({ textY: v })}
+                            min={0}
+                            max={50}
+                        />
+                        <RgbColorInput
+                            label="Text Color"
+                            value={title.textColor}
+                            onChange={(v) => onRgbColorChange('textColor', v)}
+                        />
+                        <TextInput
+                            label="Text Content"
+                            value={title.textContent}
+                            onChange={(v) => onChange({ textContent: v })}
+                        />
+                    </div>
+                    <Switch
+                        label="Bold Text"
+                        checked={title.textBold}
+                        onChange={(v) => onChange({ textBold: v })}
+                        config={config}
+                    />
+                </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Title Bar Enabled</h3>
-            <Switch
-                label="Enable Title Bar"
-                checked={title.titleEnabled ?? true}
-                onChange={(v) => onChange({ titleEnabled: v })}
-                config={config}
-            />
-
-            <div className="space-y-6">
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Focus/Maximize Button</h3>
+            <div className="space-y-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                    Title Bar Buttons
+                </h3>
                 <ButtonConfigEditor
                     config={config.title.focusBtn}
                     label="Focus/Maximize"
@@ -111,8 +116,6 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                     }
                     globalConfig={config}
                 />
-
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Config/Settings Button</h3>
                 <ButtonConfigEditor
                     config={config.title.configBtn}
                     label="Config/Settings"
@@ -121,8 +124,6 @@ export const TitleForm = ({ config, onChange, onRgbColorChange }: TitleFormProps
                     }
                     globalConfig={config}
                 />
-
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Quit/Close Button</h3>
                 <ButtonConfigEditor
                     config={config.title.quitBtn}
                     label="Quit/Close"

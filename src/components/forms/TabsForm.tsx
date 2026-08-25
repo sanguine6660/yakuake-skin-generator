@@ -20,7 +20,14 @@
  */
 
 import type { SkinConfig, RgbColor } from '../../types'
-import { ButtonConfigEditor, NumberInput, TextInput, RgbColorInput, Switch } from '../ui'
+import {
+    ButtonConfigEditor,
+    NumberInput,
+    TextInput,
+    RgbColorInput,
+    Switch,
+    Section,
+} from '../ui'
 
 interface TabsFormProps {
     config: SkinConfig
@@ -33,106 +40,120 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
 
     return (
         <div className="space-y-6">
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Tabs Layout</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <NumberInput
-                    label="Tabs X"
-                    value={tabs.tabsX}
-                    onChange={(v) => onChange({ tabsX: v })}
-                    min={0}
-                    max={200}
-                />
-                <NumberInput
-                    label="Tabs Y"
-                    value={tabs.tabsY}
-                    onChange={(v) => onChange({ tabsY: v })}
-                    min={0}
-                    max={50}
-                />
-                <RgbColorInput
-                    label="Selected Text Color"
-                    value={tabs.selectedColor}
-                    onChange={(v) => onRgbColorChange('selectedColor', v)}
-                />
-                <RgbColorInput
-                    label="Unselected Text Color"
-                    value={tabs.unselectedColor}
-                    onChange={(v) => onRgbColorChange('unselectedColor', v)}
-                />
-            </div>
+            <Section title="Tabs Bar" description="Enable or disable the top tabs bar">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Switch
+                        label="Enable Tabs Bar"
+                        checked={tabs.tabsEnabled ?? true}
+                        onChange={(v) => onChange({ tabsEnabled: v })}
+                        config={config}
+                    />
+                    <Switch
+                        label="Translucent Background"
+                        checked={tabs.bgTranslucent ?? false}
+                        onChange={(v) => onChange({ bgTranslucent: v })}
+                        config={config}
+                    />
+                </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Tabs Bar Enabled</h3>
-            <Switch
-                label="Enable Tabs Bar"
-                checked={tabs.tabsEnabled ?? true}
-                onChange={(v) => onChange({ tabsEnabled: v })}
-                config={config}
-            />
+            <Section title="Tabs Layout">
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <NumberInput
+                            label="Tabs X"
+                            value={tabs.tabsX}
+                            onChange={(v) => onChange({ tabsX: v })}
+                            min={0}
+                            max={200}
+                        />
+                        <NumberInput
+                            label="Tabs Y"
+                            value={tabs.tabsY}
+                            onChange={(v) => onChange({ tabsY: v })}
+                            min={0}
+                            max={50}
+                        />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <RgbColorInput
+                            label="Selected Text Color"
+                            value={tabs.selectedColor}
+                            onChange={(v) => onRgbColorChange('selectedColor', v)}
+                        />
+                        <RgbColorInput
+                            label="Unselected Text Color"
+                            value={tabs.unselectedColor}
+                            onChange={(v) => onRgbColorChange('unselectedColor', v)}
+                        />
+                    </div>
+                </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Tab Styling (3-Piece)</h3>
-            <h4 className="mb-2 text-sm text-gray-400">Selected Tab</h4>
-            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <TextInput
-                    label="Selected Left"
-                    value={tabs.selectedLeft}
-                    onChange={(v) => onChange({ selectedLeft: v })}
-                    placeholder="/tabs/tab_selected_left.svg"
-                />
-                <TextInput
-                    label="Selected Middle"
-                    value={tabs.selectedMiddle}
-                    onChange={(v) => onChange({ selectedMiddle: v })}
-                    placeholder="/tabs/tab_selected_middle.svg"
-                />
-                <TextInput
-                    label="Selected Right"
-                    value={tabs.selectedRight}
-                    onChange={(v) => onChange({ selectedRight: v })}
-                    placeholder="/tabs/tab_selected_right.svg"
-                />
-            </div>
-            <h4 className="mb-2 text-sm text-gray-400">Unselected Tab</h4>
-            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <TextInput
-                    label="Unselected Left"
-                    value={tabs.unselectedLeft}
-                    onChange={(v) => onChange({ unselectedLeft: v })}
-                    placeholder="/tabs/tab_unselected_left.svg"
-                />
-                <TextInput
-                    label="Unselected Middle"
-                    value={tabs.unselectedMiddle}
-                    onChange={(v) => onChange({ unselectedMiddle: v })}
-                    placeholder="/tabs/tab_unselected_middle.svg"
-                />
-                <TextInput
-                    label="Unselected Right"
-                    value={tabs.unselectedRight}
-                    onChange={(v) => onChange({ unselectedRight: v })}
-                    placeholder="/tabs/tab_unselected_right.svg"
-                />
-            </div>
+            <Section
+                title="Tab Styling"
+                description="Three-piece tab images — leave unchanged to use the generated assets"
+            >
+                <div className="space-y-4">
+                    <div>
+                        <p className="mb-2 text-xs font-medium text-gray-400">Selected Tab</p>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            <TextInput
+                                label="Left"
+                                value={tabs.selectedLeft}
+                                onChange={(v) => onChange({ selectedLeft: v })}
+                                placeholder="selected_left.svg"
+                            />
+                            <TextInput
+                                label="Middle"
+                                value={tabs.selectedMiddle}
+                                onChange={(v) => onChange({ selectedMiddle: v })}
+                                placeholder="selected_middle.svg"
+                            />
+                            <TextInput
+                                label="Right"
+                                value={tabs.selectedRight}
+                                onChange={(v) => onChange({ selectedRight: v })}
+                                placeholder="selected_right.svg"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <p className="mb-2 text-xs font-medium text-gray-400">Unselected Tab</p>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            <TextInput
+                                label="Left"
+                                value={tabs.unselectedLeft}
+                                onChange={(v) => onChange({ unselectedLeft: v })}
+                                placeholder="unselected_left.svg"
+                            />
+                            <TextInput
+                                label="Middle"
+                                value={tabs.unselectedMiddle}
+                                onChange={(v) => onChange({ unselectedMiddle: v })}
+                                placeholder="unselected_middle.svg"
+                            />
+                            <TextInput
+                                label="Right"
+                                value={tabs.unselectedRight}
+                                onChange={(v) => onChange({ unselectedRight: v })}
+                                placeholder="unselected_right.svg"
+                            />
+                        </div>
+                    </div>
+                    <TextInput
+                        label="Separator Image (optional)"
+                        value={tabs.separatorImage ?? ''}
+                        onChange={(v) => onChange({ separatorImage: v || undefined })}
+                        placeholder="tab_separator.svg"
+                    />
+                </div>
+            </Section>
 
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Separator</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <TextInput
-                    label="Separator Image (optional)"
-                    value={tabs.separatorImage ?? ''}
-                    onChange={(v) => onChange({ separatorImage: v || undefined })}
-                    placeholder="/tabs/tab_separator.svg"
-                />
-            </div>
-
-            <h3 className="mb-3 text-lg font-semibold text-gray-200">Background Translucency</h3>
-            <Switch
-                label="Enable Translucent Background"
-                checked={tabs.bgTranslucent ?? false}
-                onChange={(v) => onChange({ bgTranslucent: v })}
-                config={config}
-            />
-
-            <div className="space-y-6">
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Lock / Prevent Closing</h3>
+            <div className="space-y-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                    Tab Bar Buttons
+                </h3>
                 <ButtonConfigEditor
                     config={config.tabs.lockBtn}
                     label="Lock/Prevent Closing"
@@ -141,8 +162,6 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     }
                     globalConfig={config}
                 />
-
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Plus/New Tab Button</h3>
                 <ButtonConfigEditor
                     config={config.tabs.plusBtn}
                     label="Plus/New Tab"
@@ -151,8 +170,6 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     }
                     globalConfig={config}
                 />
-
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Minus/Close Tab Button</h3>
                 <ButtonConfigEditor
                     config={config.tabs.minusBtn}
                     label="Minus/Close Tab"
@@ -161,11 +178,9 @@ export const TabsForm = ({ config, onChange, onRgbColorChange }: TabsFormProps) 
                     }
                     globalConfig={config}
                 />
-
-                <h3 className="mb-3 text-lg font-semibold text-gray-200">Close Button (Per-Tab)</h3>
                 <ButtonConfigEditor
                     config={config.tabs.closeBtn}
-                    label="Close Tab"
+                    label="Close Tab (Per-Tab)"
                     onChange={(updates) =>
                         onChange({ closeBtn: { ...config.tabs.closeBtn, ...updates } })
                     }
