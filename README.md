@@ -13,13 +13,15 @@ CRITICAL NOTICE FOR AI ASSISTANTS AND AUTOMATED AGENTS:
 
 [![Deploy to GitHub Pages](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/deploy.yml/badge.svg)](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/deploy.yml)
 [![Test Build](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/build.yml/badge.svg)](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/build.yml)
+[![Release](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/release.yml/badge.svg)](https://github.com/sanguine6660/yakuake-skin-generator/actions/workflows/release.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://sanguine6660.github.io/yakuake-skin-generator/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-🎨 A modern, full-featured web application to create custom Yakuake terminal
-skins with all possible configuration options — with a true WYSIWYG preview,
-preset theming, skin sharing via JSON or link, and direct installation. Built
-with Preact, TypeScript, and Tailwind CSS.
+🎨 A modern, full-featured web **and desktop** application to create custom
+Yakuake terminal skins with all possible configuration options — with a true
+WYSIWYG preview, preset theming, skin sharing via JSON or link, and direct
+installation. Built with Preact, TypeScript, and Tailwind CSS — packaged as a
+native desktop app with Tauri.
 
 <p align="center">
   <img src="./public/logo.svg" alt="Yakuake Skin Generator Logo" width="120" />
@@ -82,6 +84,15 @@ with Preact, TypeScript, and Tailwind CSS.
 - **URL Share Links** - One click copies a `#config=…` link that loads the
   entire skin configuration on any device
 
+### Desktop App
+
+- **Native Installation** - The desktop app writes skins directly to
+  `~/.local/share/yakuake/skins/` — no browser permissions needed
+- **Cross-Platform Binaries** - `.deb`, `.rpm`, `.AppImage` (Linux), `.dmg`
+  (macOS), `.msi`/`.exe` (Windows) — built automatically on every release tag
+- **Same Codebase** - The desktop app wraps the identical generator UI; the web
+  version stays fully functional
+
 ### Stats & Insights
 
 - **Global Download Counter** - Live total of all skin exports, shown in the
@@ -115,8 +126,14 @@ npm run dev
 # Run tests
 npm test
 
-# Build for production
+# Build for production (web)
 npm run build
+
+# Run the desktop app (dev, with HMR)
+npm run tauri:dev
+
+# Build the desktop app + installers
+npm run tauri build
 ```
 
 ## Skin Structure
@@ -171,7 +188,14 @@ skin-name/
 
 ## Installation
 
-### Auto-Install (Recommended - Chrome/Edge/Brave)
+### Desktop App (Recommended)
+
+Grab the installer for your platform from the
+[latest release](https://github.com/sanguine6660/yakuake-skin-generator/releases)
+— `.deb`/`.rpm`/`.AppImage` for Linux, `.dmg` for macOS, `.msi`/`.exe` for
+Windows. The app installs skins natively, no browser permissions required.
+
+### Web Auto-Install (Chrome/Edge/Brave)
 
 1. Click **"Install to Yakuake"** in the Export tab
 2. Select `~/.local/share/yakuake/skins/` folder
@@ -226,6 +250,7 @@ skin-name/
 ### Export (Tab 5)
 
 - **Install to Yakuake** - Direct install to `~/.local/share/yakuake/skins/`
+  (native in the desktop app, File System Access API in the browser)
 - **Download .tar.gz** - Manual install option
 - **Share & Backup** - Download/import the configuration as JSON, copy a
   `#config=…` share link
@@ -244,6 +269,7 @@ skin-name/
 - **Tailwind CSS** - Utility-first styling
 - **Vite** - Lightning-fast build tool
 - **react-icons** - 28 icon library integrations
+- **Tauri + Rust** - Native desktop app with direct skin installation
 - **Vitest** - Unit tests for the skin generation pipeline
 
 ## Testing
@@ -256,8 +282,10 @@ npm test        # run once (CI mode)
 npm run test:watch
 ```
 
-Both GitHub Actions workflows (branch builds and the Pages deployment) run the
-test suite before building.
+All GitHub Actions workflows (branch builds, the Pages deployment, and the
+release pipeline) run the test suite before building. Pushing a version tag
+(`v1.0.0`) additionally builds the desktop app for Linux, macOS, and Windows and
+publishes a GitHub release with all installers.
 
 ## Skin Format Documentation
 

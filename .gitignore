@@ -25,3 +25,6 @@ dist-ssr
 ignored/
 
 package-lock.json
+
+# Tauri
+src-tauri/target/

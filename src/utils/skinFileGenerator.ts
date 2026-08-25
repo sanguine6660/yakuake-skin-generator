@@ -21,6 +21,7 @@
 
 import type { SkinConfig } from '../types'
 import { generateAllAssets } from './svgGenerators'
+import { getIconMarkup } from './iconRenderer'
 
 const GENERATOR_NAME = 'Yakuake Skin Generator'
 const GENERATOR_URL = 'https://github.com/sanguine6660/yakuake-skin-generator'
@@ -69,6 +70,12 @@ Extract this folder into your local Yakuake/KDE themes directory (usually \`~/.l
 }
 
 export const generateMetadata = (config: SkinConfig): string => {
+    const icons: Record<string, string> = {}
+    for (const role of ['settings', 'maximize', 'close', 'plus', 'minus', 'lock'] as const) {
+        const markup = getIconMarkup(config, config.global.iconSet[role])
+        if (markup) icons[role] = markup
+    }
+
     const metadata = {
         generator: {
             name: GENERATOR_NAME,
@@ -89,6 +96,7 @@ export const generateMetadata = (config: SkinConfig): string => {
                 title: config.title,
                 tabs: config.tabs,
             },
+            icons,
         },
     }
     return JSON.stringify(metadata, null, 4)

@@ -25,6 +25,8 @@ import { createTarGz, prepareSkinFiles } from '../utils'
 import { useGoatCounter } from './useGoatCounter'
 import { warmIconMarkupCache } from '../utils/iconRenderer'
 
+const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+
 let savedDirHandle: any = null
 
 export const useSkinExport = () => {
@@ -63,6 +65,27 @@ export const useSkinExport = () => {
                 await warmIconMarkupCache(config, config.global.iconSet.lock)
 
                 const { files, folderName } = prepareSkinFiles(config)
+
+                if (isTauri()) {
+                    setInstallStatus({
+                        message: 'Installing skin natively via Tauri...',
+                        type: 'info',
+                    })
+                    const { invoke } = await import('@tauri-apps/api/core')
+                    const message = await invoke<string>('install_skin', {
+                        folderName,
+                        files: files.map((file) => ({
+                            path: file.path,
+                            content: Array.from(file.content),
+                        })),
+                    })
+                    setInstallStatus({
+                        message: `${message}. Restart Yakuake.`,
+                        type: 'success',
+                    })
+                    trackEvent('skin-install-tauri', `Install Tauri: ${folderName}`)
+                    return true
+                }
 
                 if (!('showDirectoryPicker' in window)) {
                     await createTarGz(files, `${folderName}.tar.gz`)

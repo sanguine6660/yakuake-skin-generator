@@ -5,65 +5,80 @@ import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'node:fs'
 import path from 'node:path'
 
+// The Tauri CLI sets TAURI_ENV_* for beforeDevCommand/beforeBuildCommand.
+// Inside the desktop app the frontend is served from a custom protocol at
+// the origin root and must not register a service worker.
+const isTauri = process.env.TAURI_ENV_PLATFORM !== undefined
+const baseUrl = isTauri ? './' : '/yakuake-skin-generator/'
+
 // Load icons safely from public/icons.json at build time
 const iconsPath = path.resolve(__dirname, 'public/icons.json')
 const pwaIcons = fs.existsSync(iconsPath) ? JSON.parse(fs.readFileSync(iconsPath, 'utf-8')) : []
 
-export default defineConfig({
+export default defineConfig(() => ({
+    clearScreen: false,
+    server: {
+        port: 4000,
+        strictPort: true,
+    },
+    envPrefix: ['VITE_', 'TAURI_ENV_'],
     plugins: [
         preact(),
         tailwindcss(),
-        VitePWA({
-            registerType: 'autoUpdate',
-            includeAssets: ['logo.svg', 'PWA/ios/180.png', 'icons.json'],
-            manifest: {
-                name: 'Yakuake Skin Generator',
-                short_name: 'Skin Generator',
-                description:
-                    'Create, customize, and export custom Yakuake terminal skins with live preview, presets, and 28 icon libraries.',
-                theme_color: '#66c2f2',
-                background_color: '#090d16',
-                display: 'standalone',
-                lang: 'en',
-                start_url: '/yakuake-skin-generator/',
-                scope: '/yakuake-skin-generator/',
-                icons: pwaIcons,
-            },
-            workbox: {
-                globPatterns: [
-                    'index.html',
-                    'assets/index-*.js',
-                    'assets/index-*.css',
-                    'assets/rolldown-runtime-*.js',
-                    'logo.svg',
-                    'icons.json',
-                    'PWA/**/*.png',
-                ],
-                runtimeCaching: [
-                    {
-                        urlPattern: /assets\/icon-.+\.js$/,
-                        handler: 'CacheFirst',
-                        options: {
-                            cacheName: 'icon-libraries',
-                            expiration: {
-                                maxEntries: 40,
-                                maxAgeSeconds: 60 * 60 * 24 * 90,
-                            },
-                            cacheableResponse: { statuses: [200] },
-                        },
-                    },
-                ],
-            },
-        }),
+        ...(isTauri
+            ? []
+            : [
+                  VitePWA({
+                      registerType: 'autoUpdate',
+                      includeAssets: ['logo.svg', 'PWA/ios/180.png', 'icons.json'],
+                      manifest: {
+                          name: 'Yakuake Skin Generator',
+                          short_name: 'Skin Generator',
+                          description:
+                              'Create, customize, and export custom Yakuake terminal skins with live preview, presets, and 28 icon libraries.',
+                          theme_color: '#66c2f2',
+                          background_color: '#090d16',
+                          display: 'standalone',
+                          lang: 'en',
+                          start_url: '/yakuake-skin-generator/',
+                          scope: '/yakuake-skin-generator/',
+                          icons: pwaIcons,
+                      },
+                      workbox: {
+                          globPatterns: [
+                              'index.html',
+                              'assets/index-*.js',
+                              'assets/index-*.css',
+                              'assets/rolldown-runtime-*.js',
+                              'logo.svg',
+                              'icons.json',
+                              'PWA/**/*.png',
+                          ],
+                          runtimeCaching: [
+                              {
+                                  urlPattern: /assets\/icon-.+\.js$/,
+                                  handler: 'CacheFirst',
+                                  options: {
+                                      cacheName: 'icon-libraries',
+                                      expiration: {
+                                          maxEntries: 40,
+                                          maxAgeSeconds: 60 * 60 * 24 * 90,
+                                      },
+                                      cacheableResponse: { statuses: [200] },
+                                  },
+                              },
+                          ],
+                      },
+                  }),
+              ]),
         {
             name: 'html-base-transform',
             transformIndexHtml(html) {
-                const base = '/yakuake-skin-generator/'
-                return html.replace(/%BASE_URL%/g, base)
+                return html.replace(/%BASE_URL%/g, baseUrl)
             },
         },
     ],
-    base: '/yakuake-skin-generator/',
+    base: baseUrl,
     build: {
         chunkSizeWarningLimit: 8096,
         rollupOptions: {
@@ -80,4 +95,4 @@ export default defineConfig({
             },
         },
     },
-})
+}))
