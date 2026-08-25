@@ -19,6 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useRef } from 'preact/hooks'
 import { Label } from './Label'
 import type { RgbColor } from '../../types'
 
@@ -35,6 +36,17 @@ const rgbToHex = (color: RgbColor): string => {
 
 export const RgbColorInput = ({ label, value, onChange, hint }: RgbColorInputProps) => {
     const hex = rgbToHex(value)
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const handleSwatchInput = (newValue: string) => {
+        if (debounceRef.current) clearTimeout(debounceRef.current)
+        debounceRef.current = setTimeout(() => {
+            const r = parseInt(newValue.slice(1, 3), 16)
+            const g = parseInt(newValue.slice(3, 5), 16)
+            const b = parseInt(newValue.slice(5, 7), 16)
+            onChange({ r, g, b })
+        }, 120)
+    }
 
     return (
         <Label label={label} hint={hint}>
@@ -42,13 +54,7 @@ export const RgbColorInput = ({ label, value, onChange, hint }: RgbColorInputPro
                 <input
                     type="color"
                     value={hex}
-                    onChange={(e) => {
-                        const v = e.currentTarget.value
-                        const r = parseInt(v.slice(1, 3), 16)
-                        const g = parseInt(v.slice(3, 5), 16)
-                        const b = parseInt(v.slice(5, 7), 16)
-                        onChange({ r, g, b })
-                    }}
+                    onChange={(e) => handleSwatchInput(e.currentTarget.value)}
                     className="h-9 w-9 cursor-pointer border-0 bg-transparent"
                 />
                 <input

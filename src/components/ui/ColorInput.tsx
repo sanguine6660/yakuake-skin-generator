@@ -19,6 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useRef } from 'preact/hooks'
 import { Label } from './Label'
 
 interface ColorInputProps {
@@ -28,21 +29,30 @@ interface ColorInputProps {
     hint?: string
 }
 
-export const ColorInput = ({ label, value, onChange, hint }: ColorInputProps) => (
-    <Label label={label} hint={hint}>
-        <div className="flex gap-2">
-            <input
-                type="color"
-                value={value}
-                onChange={(e) => onChange(e.currentTarget.value)}
-                className="h-9 w-9 cursor-pointer border-0 bg-transparent"
-            />
-            <input
-                type="text"
-                value={value}
-                onInput={(e) => onChange(e.currentTarget.value)}
-                className="w-full rounded-lg border border-[#1e293b] bg-[#090d16] p-1.5 font-mono text-sm text-white"
-            />
-        </div>
-    </Label>
-)
+export const ColorInput = ({ label, value, onChange, hint }: ColorInputProps) => {
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const handleSwatchInput = (newValue: string) => {
+        if (debounceRef.current) clearTimeout(debounceRef.current)
+        debounceRef.current = setTimeout(() => onChange(newValue), 120)
+    }
+
+    return (
+        <Label label={label} hint={hint}>
+            <div className="flex gap-2">
+                <input
+                    type="color"
+                    value={value}
+                    onChange={(e) => handleSwatchInput(e.currentTarget.value)}
+                    className="h-9 w-9 cursor-pointer border-0 bg-transparent"
+                />
+                <input
+                    type="text"
+                    value={value}
+                    onInput={(e) => onChange(e.currentTarget.value)}
+                    className="w-full rounded-lg border border-[#1e293b] bg-[#090d16] p-1.5 font-mono text-sm text-white"
+                />
+            </div>
+        </Label>
+    )
+}

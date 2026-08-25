@@ -19,7 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useCallback, useEffect } from 'preact/hooks'
+import { useState, useCallback } from 'preact/hooks'
 import type {
     SkinConfig,
     SkinMeta,
@@ -42,12 +42,6 @@ const hexToRgb = (hex: string): RgbColor => {
 
 export const useSkinConfig = (initialConfig?: SkinConfig) => {
     const [config, setConfig] = useState<SkinConfig>(initialConfig ?? createDefaultSkinConfig())
-
-    useEffect(() => {
-        if (initialConfig) {
-            setConfig(initialConfig)
-        }
-    }, [initialConfig])
 
     const updateMeta = useCallback((updates: Partial<SkinMeta>) => {
         setConfig((prev) => ({

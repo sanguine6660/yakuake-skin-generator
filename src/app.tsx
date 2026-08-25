@@ -60,6 +60,7 @@ export function App() {
     )
     const {
         config,
+        setConfig,
         updateMeta,
         updateGlobal,
         updateTitle,
@@ -124,7 +125,10 @@ export function App() {
     })
 
     useEffect(() => {
-        setSavedConfig(config)
+        const timer = setTimeout(() => {
+            setSavedConfig(config)
+        }, 300)
+        return () => clearTimeout(timer)
     }, [config])
 
     useEffect(() => {
@@ -188,7 +192,7 @@ export function App() {
 
     const handleResetToDefault = () => {
         trackEvent('reset-default')
-        setSavedConfig(defaultConfig)
+        setConfig(defaultConfig)
         if (typeof window !== 'undefined') {
             sessionStorage.setItem('yakuake-active-tab', 'global')
         }
@@ -274,28 +278,10 @@ export function App() {
 
     const handleLoadSkin = (savedConfigData: SkinConfig) => {
         trackEvent('skin-loaded')
-        Object.entries(savedConfigData.global || {}).forEach(([key, value]) => {
-            if (key === 'iconSet' && typeof value === 'object') {
-                updateGlobal({ iconSet: value as any })
-            } else if (key === 'colors' && typeof value === 'object') {
-                updateGlobal({ colors: { ...config.global.colors, ...(value as any) } })
-            } else if (key === 'buttonColors' && typeof value === 'object') {
-                updateGlobal({ buttonColors: value as any })
-            } else {
-                updateGlobal({ [key]: value } as any)
-            }
-        })
-        Object.entries(savedConfigData.title || {}).forEach(([key, value]) => {
-            updateTitle({ [key]: value } as any)
-        })
-        Object.entries(savedConfigData.tabs || {}).forEach(([key, value]) => {
-            updateTabs({ [key]: value } as any)
-        })
-        updateMeta({
-            skinName: savedConfigData.meta.skinName,
-            author: 'sanguine6660',
-            email: 'sanguine6660@gmail.com',
-            web: 'https://github.com/sanguine6660/yakuake-skin-generator',
+        setConfig({
+            ...createDefaultSkinConfig(),
+            ...savedConfigData,
+            meta: { ...createDefaultSkinConfig().meta, ...savedConfigData.meta },
         })
     }
 
