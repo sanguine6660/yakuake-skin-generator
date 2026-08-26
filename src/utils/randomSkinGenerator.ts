@@ -22,11 +22,39 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DEFAULT_ICON_SETS } from '../constants'
+import { DEFAULT_ICON_SETS, SKIN_ATTRIBUTION } from '../constants'
 import type { IconLibrary, SkinConfig } from '../types'
 import { deriveKonsoleBackground, hslToHsv, hsvToHex } from './colors'
 
 type Rng = () => number
+
+// ---- Roll history ---------------------------------------------------------------
+
+export interface RandomSkinHistoryEntry {
+    id: string
+    /** Title-bar name of the rolled skin */
+    name: string
+    appliedAt: number
+    config: SkinConfig
+}
+
+export const RANDOM_HISTORY_LIMIT = 10
+
+let historyCounter = 0
+
+/** Prepends a roll to the history (newest first), capped at the limit. */
+export const pushRandomSkinEntry = (
+    history: RandomSkinHistoryEntry[],
+    entry: Omit<RandomSkinHistoryEntry, 'id'>,
+    limit: number = RANDOM_HISTORY_LIMIT
+): RandomSkinHistoryEntry[] => {
+    historyCounter += 1
+    const withId: RandomSkinHistoryEntry = {
+        ...entry,
+        id: `${entry.appliedAt.toString(36)}-${historyCounter}`,
+    }
+    return [withId, ...history].slice(0, limit)
+}
 
 const range = (rng: Rng, min: number, max: number): number => min + rng() * (max - min)
 const pick = <T>(rng: Rng, items: readonly T[]): T =>
@@ -231,6 +259,13 @@ export const generateRandomSkin = (base: SkinConfig, rng: Rng = Math.random): Sk
 
     return {
         ...base,
+        meta: {
+            ...base.meta,
+            skinName: name,
+            author: SKIN_ATTRIBUTION.author,
+            email: SKIN_ATTRIBUTION.email,
+            web: SKIN_ATTRIBUTION.web,
+        },
         global: {
             ...base.global,
             colors: {

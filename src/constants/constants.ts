@@ -305,6 +305,16 @@ export const DEFAULT_META: SkinMeta = {
     icon: '/logo.svg',
 }
 
+/**
+ * Attribution stamped onto generated/applied skins (presets and randomizer).
+ * CC BY 4.0 requires crediting the original creator when skins are shared.
+ */
+export const SKIN_ATTRIBUTION = {
+    author: 'sanguine6660',
+    email: 'sanguine6660@gmail.com',
+    web: 'https://github.com/sanguine6660/yakuake-skin-generator',
+} as const
+
 export const DEFAULT_RGB_COLORS = {
     bg: { r: 30, g: 34, b: 51 } as RgbColor,
     selected: { r: 59, g: 66, b: 82 } as RgbColor,

@@ -12,7 +12,12 @@ import { describe, expect, it } from 'vitest'
 import { DEFAULT_ICON_SETS } from '../constants'
 import { createDefaultSkinConfig } from '../constants'
 import type { IconLibrary, SkinConfig } from '../types'
-import { contrastRatio, generateRandomSkin, generateSkinName } from './randomSkinGenerator'
+import {
+    contrastRatio,
+    generateRandomSkin,
+    generateSkinName,
+    pushRandomSkinEntry,
+} from './randomSkinGenerator'
 
 /** Deterministic PRNG (mulberry32) for reproducible tests. */
 const mulberry32 =
@@ -98,19 +103,27 @@ describe('generateRandomSkin', () => {
             ...base,
             title: { ...base.title, focusBtn: { ...base.title.focusBtn, x: 42, y: 9 } },
             tabs: { ...base.tabs, plusBtn: { ...base.tabs.plusBtn, x: 17 } },
-            meta: { ...base.meta, skinName: 'Keep Me' },
         }
         const skin = generateRandomSkin(customized, mulberry32(5))
         expect(skin.title.focusBtn.x).toBe(42)
         expect(skin.title.focusBtn.y).toBe(9)
         expect(skin.tabs.plusBtn.x).toBe(17)
-        expect(skin.meta.skinName).toBe('Keep Me')
     })
 
-    it('writes the generated name into the title bar', () => {
+    it('applies the generated name to both title bar and metadata', () => {
         const skin = generateRandomSkin(base, mulberry32(11))
         expect(skin.title.textContent.trim().length).toBeGreaterThan(2)
-        expect(skin.title.textContent).not.toBe(base.title.textContent)
+        expect(skin.meta.skinName).toBe(skin.title.textContent)
+        expect(skin.meta.skinName).not.toBe(base.meta.skinName)
+    })
+
+    it('stamps tool attribution onto author, email and website', () => {
+        for (let seed = 0; seed < 10; seed++) {
+            const { meta } = generateRandomSkin(base, mulberry32(seed))
+            expect(meta.author).toBe('sanguine6660')
+            expect(meta.email).toBe('sanguine6660@gmail.com')
+            expect(meta.web).toBe('https://github.com/sanguine6660/yakuake-skin-generator')
+        }
     })
 })
 
@@ -129,5 +142,38 @@ describe('generateSkinName', () => {
             const name = generateSkinName((seed * 37) % 360, 65, seed % 2 === 0, mulberry32(seed))
             expect(name.length).toBeGreaterThan(2)
         }
+    })
+})
+
+describe('pushRandomSkinEntry', () => {
+    const entry = (name: string) => ({
+        name,
+        appliedAt: 1000,
+        config: createDefaultSkinConfig(),
+    })
+
+    it('prepends the newest entry', () => {
+        const history = pushRandomSkinEntry([], entry('first'))
+        const next = pushRandomSkinEntry(history, entry('second'))
+        expect(next[0].name).toBe('second')
+        expect(next[1].name).toBe('first')
+    })
+
+    it('caps the history at the limit (default 10)', () => {
+        let history = [] as ReturnType<typeof pushRandomSkinEntry>
+        for (let i = 0; i < 25; i++) {
+            history = pushRandomSkinEntry(history, entry(`roll-${i}`))
+        }
+        expect(history).toHaveLength(10)
+        expect(history[0].name).toBe('roll-24')
+        expect(history.at(-1)!.name).toBe('roll-15')
+    })
+
+    it('assigns unique ids and never mutates the input array', () => {
+        const original = pushRandomSkinEntry([], entry('a'))
+        const snapshot = structuredClone(original)
+        const next = pushRandomSkinEntry(original, entry('b'))
+        expect(original).toEqual(snapshot)
+        expect(next[0].id).not.toBe(next[1].id)
     })
 })

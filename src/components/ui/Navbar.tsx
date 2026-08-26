@@ -19,7 +19,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useRef, useState } from 'preact/hooks'
 import type { SkinConfig } from '../../types'
+import type { RandomSkinHistoryEntry } from '../../utils/randomSkinGenerator'
+import { Popover } from './Popover'
 
 interface NavbarProps {
     config: SkinConfig
@@ -27,6 +30,9 @@ interface NavbarProps {
     onTabChange: (tab: string) => void
     onResetToDefault: () => void
     onRandomizeSkin: () => void
+    randomHistory: RandomSkinHistoryEntry[]
+    onRestoreRandomSkin: (entry: RandomSkinHistoryEntry) => void
+    onClearRandomHistory: () => void
 }
 
 const NAV_TABS = [
@@ -34,7 +40,7 @@ const NAV_TABS = [
     { id: 'title', label: 'Title Bar' },
     { id: 'tabs', label: 'Tabs Bar' },
     { id: 'skins', label: 'My Skins' },
-    { id: 'export', label: 'Export' },
+    { id: 'export', label: 'Import/Export' },
     { id: 'meta', label: 'Metadata' },
 ] as const
 
@@ -48,9 +54,14 @@ export const Navbar = ({
     onTabChange,
     onResetToDefault,
     onRandomizeSkin,
+    randomHistory,
+    onRestoreRandomSkin,
+    onClearRandomHistory,
 }: NavbarProps) => {
     const accentColor = config.global.colors.text
     const logoSrc = `${import.meta.env.BASE_URL}logo.svg`
+    const [historyOpen, setHistoryOpen] = useState(false)
+    const historyTriggerRef = useRef<HTMLButtonElement>(null)
 
     return (
         <nav
@@ -125,6 +136,112 @@ export const Navbar = ({
                                 <circle cx="12" cy="12" r="1" fill="currentColor" />
                             </svg>
                         </button>
+                        <button
+                            type="button"
+                            ref={historyTriggerRef}
+                            onClick={() => setHistoryOpen((open) => !open)}
+                            className={`relative rounded-lg p-2 transition-colors hover:bg-gray-800 ${
+                                historyOpen ? 'text-sky-400' : 'text-gray-400 hover:text-white'
+                            }`}
+                            title="Previously rolled skins"
+                            aria-label="Previously rolled skins"
+                        >
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                                <path d="M12 7v5l4 2" />
+                            </svg>
+                        </button>
+                        {historyOpen && historyTriggerRef.current && (
+                            <Popover
+                                triggerRef={historyTriggerRef}
+                                onClose={() => setHistoryOpen(false)}
+                                width={280}
+                            >
+                                <div className="p-2">
+                                    <div className="flex items-center justify-between px-2 py-1">
+                                        <span className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                                            Rolled skins
+                                        </span>
+                                        {randomHistory.length > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={onClearRandomHistory}
+                                                className="text-[11px] text-gray-500 transition-colors hover:text-red-400"
+                                            >
+                                                Clear all
+                                            </button>
+                                        )}
+                                    </div>
+                                    {randomHistory.length === 0 ? (
+                                        <div className="px-2 pt-1 pb-3 text-center">
+                                            <p className="text-sm text-gray-400">No rolls yet</p>
+                                            <p className="mt-1 text-xs text-gray-600">
+                                                Hit the dice to roll your first random theme.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="max-h-72 space-y-1 overflow-y-auto">
+                                            {randomHistory.map((entry) => {
+                                                const c = entry.config.global.colors
+                                                return (
+                                                    <button
+                                                        key={entry.id}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            onRestoreRandomSkin(entry)
+                                                            setHistoryOpen(false)
+                                                        }}
+                                                        className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-gray-800/70"
+                                                    >
+                                                        <span className="flex shrink-0 overflow-hidden rounded-md border border-black/50">
+                                                            <span
+                                                                className="h-6 w-3"
+                                                                style={{ background: c.bg }}
+                                                            />
+                                                            <span
+                                                                className="h-6 w-3"
+                                                                style={{ background: c.selected }}
+                                                            />
+                                                            <span
+                                                                className="h-6 w-3"
+                                                                style={{ background: c.dim }}
+                                                            />
+                                                            <span
+                                                                className="h-6 w-3"
+                                                                style={{ background: c.text }}
+                                                            />
+                                                        </span>
+                                                        <span className="min-w-0 flex-1">
+                                                            <span className="block truncate text-sm text-gray-200">
+                                                                {entry.name}
+                                                            </span>
+                                                            <span className="block text-[11px] text-gray-500">
+                                                                {new Date(
+                                                                    entry.appliedAt
+                                                                ).toLocaleTimeString([], {
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                })}
+                                                            </span>
+                                                        </span>
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </Popover>
+                        )}
                         <button
                             type="button"
                             onClick={onResetToDefault}

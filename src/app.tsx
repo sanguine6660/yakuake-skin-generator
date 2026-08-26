@@ -48,12 +48,20 @@ import { PrivacyNotice } from './components/ui/PrivacyNotice'
 import { TabPanel } from './components/ui/Tabs'
 import { ExportForm } from './components/forms/ExportForm'
 import { SkinSavesManager } from './components/forms/SkinSavesManager'
-import { PRESETS, ICON_LIBRARIES, createDefaultSkinConfig } from './constants'
+import { PRESETS, ICON_LIBRARIES, SKIN_ATTRIBUTION, createDefaultSkinConfig } from './constants'
 import { decodeConfigHash } from './utils/configSerialization'
-import { generateRandomSkin } from './utils/randomSkinGenerator'
+import {
+    generateRandomSkin,
+    pushRandomSkinEntry,
+    type RandomSkinHistoryEntry,
+} from './utils/randomSkinGenerator'
 
 export function App() {
     const defaultConfig = createDefaultSkinConfig()
+    const [randomHistory, setRandomHistory] = useLocalStorage<RandomSkinHistoryEntry[]>(
+        'yakuake-random-skin-history',
+        []
+    )
 
     const [savedConfig, setSavedConfig] = useSessionStorage<SkinConfig>(
         'yakuake-skin-config',
@@ -202,8 +210,23 @@ export function App() {
 
     const handleRandomizeSkin = () => {
         trackEvent('skin-randomized')
-        setConfig((prev) => generateRandomSkin(prev))
+        const next = generateRandomSkin(config)
+        setConfig(next)
+        setRandomHistory((history) =>
+            pushRandomSkinEntry(history, {
+                name: next.title.textContent,
+                appliedAt: Date.now(),
+                config: next,
+            })
+        )
     }
+
+    const handleRestoreRandomSkin = (entry: RandomSkinHistoryEntry) => {
+        trackEvent('skin-random-restored')
+        setConfig(entry.config)
+    }
+
+    const handleClearRandomHistory = () => setRandomHistory([])
 
     const handleColorChange = (
         section: 'global' | 'title' | 'tabs',
@@ -258,9 +281,9 @@ export function App() {
             })
             updateMeta({
                 skinName: preset.name,
-                author: 'sanguine6660',
-                email: 'sanguine6660@gmail.com',
-                web: 'https://github.com/sanguine6660/yakuake-skin-generator',
+                author: SKIN_ATTRIBUTION.author,
+                email: SKIN_ATTRIBUTION.email,
+                web: SKIN_ATTRIBUTION.web,
             })
             setPresetUsage((prev) => ({ ...prev, [preset.id]: (prev[preset.id] ?? 0) + 1 }))
             trackEvent(`preset:${preset.id}`, `${preset.name} (${preset.category})`)
@@ -334,6 +357,9 @@ export function App() {
                     onTabChange={handleTabChange}
                     onResetToDefault={handleResetToDefault}
                     onRandomizeSkin={handleRandomizeSkin}
+                    randomHistory={randomHistory}
+                    onRestoreRandomSkin={handleRestoreRandomSkin}
+                    onClearRandomHistory={handleClearRandomHistory}
                 />
 
                 {installStatus && (
