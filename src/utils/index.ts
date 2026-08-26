@@ -22,6 +22,7 @@
 export * from './environment'
 export * from './iconPaths'
 export * from './randomTheme'
+export * from './randomSkinGenerator'
 export * from './svgGenerators'
 export * from './tarUtils'
 export * from './skinFileGenerator'

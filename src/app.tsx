@@ -50,6 +50,7 @@ import { ExportForm } from './components/forms/ExportForm'
 import { SkinSavesManager } from './components/forms/SkinSavesManager'
 import { PRESETS, ICON_LIBRARIES, createDefaultSkinConfig } from './constants'
 import { decodeConfigHash } from './utils/configSerialization'
+import { generateRandomSkin } from './utils/randomSkinGenerator'
 
 export function App() {
     const defaultConfig = createDefaultSkinConfig()
@@ -199,6 +200,11 @@ export function App() {
         setActiveTab('global')
     }
 
+    const handleRandomizeSkin = () => {
+        trackEvent('skin-randomized')
+        setConfig((prev) => generateRandomSkin(prev))
+    }
+
     const handleColorChange = (
         section: 'global' | 'title' | 'tabs',
         colorKey: string,
@@ -327,6 +333,7 @@ export function App() {
                     activeTab={activeTab}
                     onTabChange={handleTabChange}
                     onResetToDefault={handleResetToDefault}
+                    onRandomizeSkin={handleRandomizeSkin}
                 />
 
                 {installStatus && (
