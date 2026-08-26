@@ -34,7 +34,7 @@ import { useSkinExport } from './hooks/useSkinExport'
 import { useSessionStorage } from './hooks/useSessionStorage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useGoatCounter } from './hooks/useGoatCounter'
-import { useDownloadCounter } from './hooks/useDownloadCounter'
+import { useGlobalStats } from './hooks/useGlobalStats'
 import { MetaForm } from './components/forms/MetaForm'
 import { GlobalForm } from './components/forms/GlobalForm'
 import { TitleForm } from './components/forms/TitleForm'
@@ -83,7 +83,7 @@ export function App() {
 
     const { downloadSkin, installToYakuake, installStatus, clearStatus } = useSkinExport()
     const { trackEvent } = useGoatCounter()
-    const { totalDownloads, incrementDownload } = useDownloadCounter()
+    const { stats: globalStats, incrementStat } = useGlobalStats()
 
     const [exportCount, setExportCount] = useLocalStorage<number>('yakuake-export-count', 0)
     const [savedSkins] = useLocalStorage<Record<string, SavedSkin>>('yakuake-skin-saves', {})
@@ -146,6 +146,12 @@ export function App() {
         }
     }, [activeTab])
 
+    // Count one anonymous app open per session load.
+    useEffect(() => {
+        incrementStat('app-opens')
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     // Listener für localStorage-Änderungen, um den Saved-Skins-Zähler aktuell zu halten
     useEffect(() => {
         const updateSkinsCount = () => {
@@ -173,7 +179,7 @@ export function App() {
         const success = await downloadSkin(config)
         if (success) {
             setExportCount((count) => count + 1)
-            void incrementDownload()
+            incrementStat('downloads')
         }
     }
 
@@ -181,7 +187,7 @@ export function App() {
         const success = await installToYakuake(config)
         if (success) {
             setExportCount((count) => count + 1)
-            void incrementDownload()
+            incrementStat('downloads')
         }
     }
 
@@ -211,6 +217,7 @@ export function App() {
     const handleRandomizeSkin = () => {
         trackEvent('skin-randomized')
         const next = generateRandomSkin(config)
+        incrementStat('random-skins')
         setConfig(next)
         setRandomHistory((history) =>
             pushRandomSkinEntry(history, {
@@ -286,12 +293,14 @@ export function App() {
                 web: SKIN_ATTRIBUTION.web,
             })
             setPresetUsage((prev) => ({ ...prev, [preset.id]: (prev[preset.id] ?? 0) + 1 }))
+            incrementStat('presets-applied')
             trackEvent(`preset:${preset.id}`, `${preset.name} (${preset.category})`)
         }
     }
 
     const handleSaveSkin = (name: string) => {
         trackEvent('skin-saved')
+        incrementStat('skins-saved')
         const saved = localStorage.getItem('yakuake-skin-saves')
         const saves = saved ? JSON.parse(saved) : {}
         const existing = saves[name]
@@ -448,6 +457,7 @@ export function App() {
                                 downloadSkin={handleDownloadSkin}
                                 installToYakuake={handleInstallToYakuake}
                                 onImportConfig={handleLoadSkin}
+                                onImportTracked={() => incrementStat('imports')}
                                 installStatus={installStatus}
                                 clearStatus={clearStatus}
                                 savedSkins={savedSkins}
@@ -479,7 +489,19 @@ export function App() {
                         )}
 
                         <StatsPreview
-                            totalDownloads={totalDownloads}
+                            totalDownloads={globalStats.downloads}
+                            globalStats={[
+                                {
+                                    value: globalStats['random-skins'],
+                                    label: 'Random Skins Rolled',
+                                },
+                                { value: globalStats.imports, label: 'Skins Imported' },
+                                {
+                                    value: globalStats['presets-applied'],
+                                    label: 'Presets Applied',
+                                },
+                                { value: globalStats['app-opens'], label: 'App Opens' },
+                            ]}
                             exportCount={exportCount}
                             savedSkinsCount={savedSkinsCount}
                             favoritePreset={topPresetName}

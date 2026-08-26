@@ -27,12 +27,14 @@ import {
     parseConfigJson,
 } from '../../utils/configSerialization'
 import { importSkinFolder, isTauri } from '../../utils'
+import { trackEvent } from '../../hooks/useGoatCounter'
 
 interface ExportFormProps {
     config: SkinConfig
     downloadSkin: (config: SkinConfig) => void
     installToYakuake: (config: SkinConfig) => void
     onImportConfig: (config: SkinConfig) => void
+    onImportTracked: () => void
     installStatus: { message: string; type: 'success' | 'error' | 'info' } | null
     clearStatus: () => void
     savedSkins: Record<string, SavedSkin>
@@ -43,6 +45,7 @@ export const ExportForm = ({
     downloadSkin,
     installToYakuake,
     onImportConfig,
+    onImportTracked,
     installStatus,
     clearStatus,
     savedSkins,
@@ -68,6 +71,8 @@ export const ExportForm = ({
         try {
             const imported = parseConfigJson(await file.text())
             onImportConfig(imported)
+            trackEvent('config-import-json', 'Configuration restored from JSON')
+            onImportTracked()
             setShareStatus({
                 message: `Configuration "${imported.meta.skinName}" imported.`,
                 type: 'success',
@@ -92,6 +97,15 @@ export const ExportForm = ({
         try {
             const { config: imported, fidelity, warnings } = importSkinFolder(files)
             onImportConfig(imported)
+            if (fidelity === 'exact') {
+                trackEvent('config-import-folder-exact', 'Skin folder restored via metadata.json')
+            } else {
+                trackEvent(
+                    'config-import-folder-reconstructed',
+                    'Skin folder reconstructed from .skin files'
+                )
+            }
+            onImportTracked()
             const detail =
                 fidelity === 'exact'
                     ? `Configuration "${imported.meta.skinName}" restored exactly.`

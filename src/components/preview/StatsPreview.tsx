@@ -19,8 +19,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { formatStatCount } from '../../utils/globalStats'
+
+interface GlobalStatTile {
+    value: number | null
+    label: string
+}
+
 interface StatsPreviewProps {
     totalDownloads?: number | null
+    globalStats?: GlobalStatTile[]
     exportCount?: number
     savedSkinsCount?: number
     favoritePreset?: string
@@ -31,6 +39,7 @@ interface StatsPreviewProps {
 
 export const StatsPreview = ({
     totalDownloads,
+    globalStats = [],
     exportCount = 0,
     savedSkinsCount = 0,
     favoritePreset,
@@ -76,6 +85,24 @@ export const StatsPreview = ({
                     <span className="mt-1 text-xs text-gray-400">Total Skin Downloads</span>
                     <span className="text-[10px] text-gray-500">by everyone, all time</span>
                 </div>
+                {globalStats.length > 0 && (
+                    <>
+                        {globalStats.map(({ value, label }) => (
+                            <div
+                                key={label}
+                                className="flex flex-col items-center justify-center rounded-lg border border-[#1e293b] bg-[#0d1117] p-3"
+                            >
+                                <span className="text-lg font-bold text-gray-200">
+                                    {formatStatCount(value)}
+                                </span>
+                                <span className="text-[10px] text-gray-500">{label}</span>
+                            </div>
+                        ))}
+                        <p className="col-span-2 text-center text-[10px] text-gray-600">
+                            community counters — anonymous, integer only
+                        </p>
+                    </>
+                )}
                 {stats.map(({ value, label, caption, color }) => (
                     <div
                         key={label}
