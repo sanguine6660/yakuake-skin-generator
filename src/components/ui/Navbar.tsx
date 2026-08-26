@@ -33,6 +33,10 @@ interface NavbarProps {
     randomHistory: RandomSkinHistoryEntry[]
     onRestoreRandomSkin: (entry: RandomSkinHistoryEntry) => void
     onClearRandomHistory: () => void
+    onUndo: () => void
+    onRedo: () => void
+    canUndo: boolean
+    canRedo: boolean
 }
 
 const NAV_TABS = [
@@ -57,6 +61,10 @@ export const Navbar = ({
     randomHistory,
     onRestoreRandomSkin,
     onClearRandomHistory,
+    onUndo,
+    onRedo,
+    canUndo,
+    canRedo,
 }: NavbarProps) => {
     const accentColor = config.global.colors.text
     const logoSrc = `${import.meta.env.BASE_URL}logo.svg`
@@ -113,6 +121,59 @@ export const Navbar = ({
                     </div>
 
                     <div className="ml-auto flex items-center gap-2 sm:ml-0">
+                        {[
+                            {
+                                label: 'Undo',
+                                shortcut: 'Ctrl+Z',
+                                enabled: canUndo,
+                                action: onUndo,
+                                icon: (
+                                    <>
+                                        <path d="M9 14 4 9l5-5" />
+                                        <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+                                    </>
+                                ),
+                            },
+                            {
+                                label: 'Redo',
+                                shortcut: 'Ctrl+Shift+Z',
+                                enabled: canRedo,
+                                action: onRedo,
+                                icon: (
+                                    <>
+                                        <path d="m15 14 5-5-5-5" />
+                                        <path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13" />
+                                    </>
+                                ),
+                            },
+                        ].map(({ label, shortcut, enabled, action, icon }) => (
+                            <button
+                                key={label}
+                                type="button"
+                                onClick={enabled ? action : undefined}
+                                disabled={!enabled}
+                                className={`rounded-lg p-2 transition-colors ${
+                                    enabled
+                                        ? 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                        : 'cursor-default text-gray-700'
+                                }`}
+                                title={`${label} (${shortcut})`}
+                                aria-label={`${label} last change`}
+                            >
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    {icon}
+                                </svg>
+                            </button>
+                        ))}
                         <button
                             type="button"
                             onClick={onRandomizeSkin}

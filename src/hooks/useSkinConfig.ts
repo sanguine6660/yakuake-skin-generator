@@ -31,6 +31,13 @@ import type {
 } from '../types'
 import { createDefaultSkinConfig, DEFAULT_ICON_SETS } from '../constants'
 import { deriveKonsoleBackground } from '../utils/colors'
+import {
+    initHistory,
+    pushEdit,
+    redo as historyRedo,
+    undo as historyUndo,
+} from '../utils/configHistory'
+import type { HistoryState } from '../utils/configHistory'
 
 const hexToRgb = (hex: string): RgbColor => {
     const cleanHex = hex.replace('#', '')
@@ -41,7 +48,36 @@ const hexToRgb = (hex: string): RgbColor => {
 }
 
 export const useSkinConfig = (initialConfig?: SkinConfig) => {
-    const [config, setConfig] = useState<SkinConfig>(initialConfig ?? createDefaultSkinConfig())
+    const [history, setHistory] = useState<HistoryState>(() =>
+        initHistory(initialConfig ?? createDefaultSkinConfig())
+    )
+    const config = history.present
+
+    /**
+     * Central mutation entry point. Accepts a value or an updater function;
+     * rapid successive calls are coalesced into one undo step (see
+     * configHistory.ts). Pass `false` to force a standalone entry.
+     */
+    const setConfig = useCallback(
+        (value: SkinConfig | ((prev: SkinConfig) => SkinConfig), coalesce = true) => {
+            setHistory((h) => {
+                const next =
+                    typeof value === 'function'
+                        ? (value as (prev: SkinConfig) => SkinConfig)(h.present)
+                        : value
+                return pushEdit(h, next, Date.now(), coalesce)
+            })
+        },
+        []
+    )
+
+    const undo = useCallback(() => {
+        setHistory((h) => historyUndo(h) ?? h)
+    }, [])
+
+    const redo = useCallback(() => {
+        setHistory((h) => historyRedo(h) ?? h)
+    }, [])
 
     const updateMeta = useCallback((updates: Partial<SkinMeta>) => {
         setConfig((prev) => ({
@@ -168,6 +204,10 @@ export const useSkinConfig = (initialConfig?: SkinConfig) => {
     return {
         config,
         setConfig,
+        canUndo: history.past.length > 0,
+        canRedo: history.future.length > 0,
+        undo,
+        redo,
         updateMeta,
         updateGlobal,
         updateTitle,

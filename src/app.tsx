@@ -70,6 +70,10 @@ export function App() {
     const {
         config,
         setConfig,
+        canUndo,
+        canRedo,
+        undo,
+        redo,
         updateMeta,
         updateGlobal,
         updateTitle,
@@ -151,6 +155,34 @@ export function App() {
         incrementStat('app-opens')
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    // Global undo/redo shortcuts. Skips form fields so text inputs keep their
+    // native undo behavior.
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (!(event.ctrlKey || event.metaKey) || event.altKey) return
+            const target = event.target as HTMLElement | null
+            if (
+                target &&
+                (target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.tagName === 'SELECT' ||
+                    target.isContentEditable)
+            ) {
+                return
+            }
+            const key = event.key.toLowerCase()
+            if (key === 'z' && !event.shiftKey) {
+                event.preventDefault()
+                undo()
+            } else if ((key === 'z' && event.shiftKey) || key === 'y') {
+                event.preventDefault()
+                redo()
+            }
+        }
+        window.addEventListener('keydown', onKeyDown)
+        return () => window.removeEventListener('keydown', onKeyDown)
+    }, [undo, redo])
 
     // Listener für localStorage-Änderungen, um den Saved-Skins-Zähler aktuell zu halten
     useEffect(() => {
@@ -369,6 +401,10 @@ export function App() {
                     randomHistory={randomHistory}
                     onRestoreRandomSkin={handleRestoreRandomSkin}
                     onClearRandomHistory={handleClearRandomHistory}
+                    onUndo={undo}
+                    onRedo={redo}
+                    canUndo={canUndo}
+                    canRedo={canRedo}
                 />
 
                 {installStatus && (
