@@ -149,6 +149,28 @@ export interface TabsConfig {
     lockBtn: ButtonConfig
 }
 
+/** A Konsole colorscheme: 20 slots in three intensities + general settings. */
+export interface TerminalColorscheme {
+    /** Master switch: emit/sync the companion scheme (default true) */
+    enabled?: boolean
+    /** Shown in Konsole's scheme dropdown; defaults to "<skin name> Terminal" */
+    description?: string
+    /** 0–100 (emitted as 0.0–1.0) */
+    opacity: number
+
+    background: RgbColor
+    backgroundIntense: RgbColor
+    backgroundFaint: RgbColor
+    foreground: RgbColor
+    foregroundIntense: RgbColor
+    foregroundFaint: RgbColor
+
+    /** ANSI slots 0–7 (black, red, green, yellow, blue, magenta, cyan, white) */
+    ansi: RgbColor[]
+    ansiIntense: RgbColor[]
+    ansiFaint: RgbColor[]
+}
+
 export interface ButtonStateColors {
     upBg: string
     upIcon: string
@@ -186,6 +208,8 @@ export interface SkinConfig {
         opacity: number
         translucency: boolean
     }
+    /** Konsole companion scheme; derived from the palette when absent */
+    terminal?: TerminalColorscheme
 }
 
 export type ConfigSection = 'meta' | 'global' | 'title' | 'tabs'

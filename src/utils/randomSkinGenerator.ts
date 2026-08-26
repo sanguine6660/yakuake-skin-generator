@@ -25,6 +25,7 @@
 import { DEFAULT_ICON_SETS, SKIN_ATTRIBUTION } from '../constants'
 import type { IconLibrary, SkinConfig } from '../types'
 import { deriveKonsoleBackground, hslToHsv, hsvToHex } from './colors'
+import { deriveColorscheme } from './konsoleScheme'
 
 type Rng = () => number
 
@@ -257,7 +258,7 @@ export const generateRandomSkin = (base: SkinConfig, rng: Rng = Math.random): Sk
         downIcon: '#ffffff',
     }
 
-    return {
+    const assembled: SkinConfig = {
         ...base,
         meta: {
             ...base.meta,
@@ -299,4 +300,11 @@ export const generateRandomSkin = (base: SkinConfig, rng: Rng = Math.random): Sk
             selectedColor: hexToRgbTuple(palette.text),
         },
     }
+
+    // Every roll also comes with a matching full ANSI terminal palette.
+    const skin: SkinConfig = {
+        ...assembled,
+        terminal: deriveColorscheme(assembled),
+    }
+    return skin
 }

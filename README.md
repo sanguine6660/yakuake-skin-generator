@@ -36,6 +36,8 @@ packaged as a native desktop app with Tauri.
 - **28 icon libraries**, selectable per role, baked into the button assets
 - **Round-trip editing** — import any existing skin folder back into the editor;
   skins made with this tool are restored exactly
+- **Matching Konsole color schemes** — every export ships a derived
+  `.colorscheme` (full ANSI 0–15); fully editable in the new Terminal tab
 - **Sharing** — `.tar.gz` export, JSON backup, `#config=…` links
 - **Desktop app** — native installation, CLI (`--validate`, `--compile`,
   `--install`), auto-updates, installers for Linux/macOS/Windows

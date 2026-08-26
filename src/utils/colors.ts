@@ -259,3 +259,46 @@ export const hsvToHex = (h: number, s: number, v: number): string => {
     }
     return `#${channel(5)}${channel(3)}${channel(1)}`
 }
+
+// ---- WCAG contrast -------------------------------------------------------------
+
+export const relativeLuminance = (hex: string): number => {
+    const clean = hex.replace('#', '')
+    const channel = (i: number) => {
+        const raw = parseInt(clean.slice(i * 2, i * 2 + 2), 16) / 255
+        return raw <= 0.03928 ? raw / 12.92 : ((raw + 0.055) / 1.055) ** 2.4
+    }
+    return 0.2126 * channel(0) + 0.7152 * channel(1) + 0.0722 * channel(2)
+}
+
+/** WCAG contrast ratio between two hex colors (range 1 … 21). */
+export const contrastRatio = (a: string, b: string): number => {
+    const la = relativeLuminance(a)
+    const lb = relativeLuminance(b)
+    const [lighter, darker] = la >= lb ? [la, lb] : [lb, la]
+    return (lighter + 0.05) / (darker + 0.05)
+}
+
+/**
+ * Nudges an HSL accent's lightness until it reaches the target contrast ratio
+ * against `backgroundHex`. `stepUp` moves toward lighter values on dark
+ * backgrounds and toward darker values on light backgrounds.
+ */
+export const ensureContrast = (
+    accent: { h: number; s: number; l: number },
+    backgroundHex: string,
+    stepUp: boolean,
+    target = 4.5,
+    maxIterations = 12
+): { h: number; s: number; l: number } => {
+    let tuned = { ...accent }
+    for (
+        let i = 0;
+        i < maxIterations &&
+        contrastRatio(hsvToHex(hslToHsv(tuned).h, hslToHsv(tuned).s, hslToHsv(tuned).v), backgroundHex) < target;
+        i++
+    ) {
+        tuned = { ...tuned, l: Math.min(96, Math.max(4, tuned.l + (stepUp ? 2.5 : -2.5))) }
+    }
+    return tuned
+}

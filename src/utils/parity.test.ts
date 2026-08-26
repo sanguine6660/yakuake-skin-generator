@@ -27,6 +27,7 @@ const GOLDENS_DIR = path.join(REPO_ROOT, 'src-tauri', 'tests', 'goldens')
 const config = JSON.parse(readFileSync(FIXTURE_PATH, 'utf-8')) as SkinConfig
 
 const BYTE_PARITY_FILES = [
+    'parity_skin.colorscheme',
     'LICENSE',
     'README.md',
     'title.skin',

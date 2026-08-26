@@ -51,8 +51,13 @@ const rgb = (color: RgbColor): string => `rgb(${color.r}, ${color.g}, ${color.b}
 export const Preview = ({ config }: PreviewProps) => {
     const { global, title, tabs } = config
 
-    const konsoleBackground =
-        global.colors.konsoleBackground ?? deriveKonsoleBackground(global.colors.bg)
+    // Companion scheme (when enabled) drives the terminal body rendering.
+    const scheme =
+        config.terminal && config.terminal.enabled !== false ? config.terminal : undefined
+
+    const konsoleBackground = scheme
+        ? rgb(scheme.background)
+        : (global.colors.konsoleBackground ?? deriveKonsoleBackground(global.colors.bg))
 
     const [buttonStates, setButtonStates] = useState<Record<string, ButtonState | undefined>>({})
     const [selectedTab, setSelectedTab] = useState(0)
@@ -123,24 +128,60 @@ export const Preview = ({ config }: PreviewProps) => {
                     style={{ backgroundColor: konsoleBackground, height: 132 }}
                 >
                     <div className="flex h-full flex-col justify-center gap-1 font-mono text-[11px] leading-relaxed">
-                        <p className="m-0" style={{ color: rgb(tabs.selectedColor) }}>
-                            <span style={{ color: rgb(title.textColor), fontWeight: 'bold' }}>
-                                ❯{' '}
-                            </span>
-                            generate-skin --name "{title.textContent}"
-                        </p>
-                        <p className="m-0" style={{ color: global.colors.dim }}>
-                            ✓ skin files generated successfully
-                        </p>
-                        <p className="m-0" style={{ color: rgb(tabs.selectedColor) }}>
-                            <span style={{ color: rgb(title.textColor), fontWeight: 'bold' }}>
-                                ❯{' '}
-                            </span>
-                            <span
-                                className="inline-block h-2.75 w-1.75 animate-pulse align-middle"
-                                style={{ backgroundColor: rgb(title.textColor) }}
-                            />
-                        </p>
+                        {scheme ? (
+                            <>
+                                <p className="m-0" style={{ color: rgb(scheme.foregroundIntense) }}>
+                                    ❯ ls --color=auto ~/skins/
+                                </p>
+                                <p className="m-0">
+                                    <span style={{ color: rgb(scheme.ansi[4]) }}>themes/</span>{' '}
+                                    <span style={{ color: rgb(scheme.ansi[2]) }}>build.sh*</span>{' '}
+                                    <span style={{ color: rgb(scheme.ansi[1]) }}>error.log</span>
+                                </p>
+                                <p className="m-0" style={{ color: rgb(scheme.foregroundFaint) }}>
+                                    ✓ 3 items — palette verified
+                                </p>
+                                <p className="m-0" style={{ color: rgb(scheme.foreground) }}>
+                                    <span
+                                        style={{
+                                            color: rgb(scheme.foregroundIntense),
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        ❯{' '}
+                                    </span>
+                                    <span
+                                        className="inline-block h-2.75 w-1.75 animate-pulse align-middle"
+                                        style={{ backgroundColor: rgb(scheme.foregroundIntense) }}
+                                    />
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <p className="m-0" style={{ color: rgb(tabs.selectedColor) }}>
+                                    <span
+                                        style={{ color: rgb(title.textColor), fontWeight: 'bold' }}
+                                    >
+                                        ❯{' '}
+                                    </span>
+                                    generate-skin --name "{title.textContent}"
+                                </p>
+                                <p className="m-0" style={{ color: global.colors.dim }}>
+                                    ✓ skin files generated successfully
+                                </p>
+                                <p className="m-0" style={{ color: rgb(tabs.selectedColor) }}>
+                                    <span
+                                        style={{ color: rgb(title.textColor), fontWeight: 'bold' }}
+                                    >
+                                        ❯{' '}
+                                    </span>
+                                    <span
+                                        className="inline-block h-2.75 w-1.75 animate-pulse align-middle"
+                                        style={{ backgroundColor: rgb(title.textColor) }}
+                                    />
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
 

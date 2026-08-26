@@ -42,6 +42,7 @@ import { TabsForm } from './components/forms/TabsForm'
 import { Preview } from './components/preview/Preview'
 import { ColorPreview } from './components/preview/ColorPreview'
 import { StatsPreview } from './components/preview/StatsPreview'
+import { TerminalForm } from './components/forms/TerminalForm'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
 import { PrivacyNotice } from './components/ui/PrivacyNotice'
@@ -55,6 +56,7 @@ import {
     pushRandomSkinEntry,
     type RandomSkinHistoryEntry,
 } from './utils/randomSkinGenerator'
+import { deriveColorscheme } from './utils/konsoleScheme'
 
 export function App() {
     const defaultConfig = createDefaultSkinConfig()
@@ -80,6 +82,8 @@ export function App() {
         updateTabs,
         setIconLibrary,
         setIcon,
+        updateTerminal,
+        setAnsiSlot,
         setColor,
         setButtonColor,
         setRgbColor,
@@ -262,7 +266,15 @@ export function App() {
 
     const handleRestoreRandomSkin = (entry: RandomSkinHistoryEntry) => {
         trackEvent('skin-random-restored')
-        setConfig(entry.config)
+        // Pre-1.2 history entries carry no scheme - backfill one so the
+        // preview and the enabled switch always have a defined state.
+        setConfig({
+            ...entry.config,
+            terminal: entry.config.terminal ?? {
+                ...deriveColorscheme(entry.config),
+                enabled: true,
+            },
+        })
     }
 
     const handleClearRandomHistory = () => setRandomHistory([])
@@ -324,6 +336,15 @@ export function App() {
                 email: SKIN_ATTRIBUTION.email,
                 web: SKIN_ATTRIBUTION.web,
             })
+            updateTerminal(
+                deriveColorscheme({
+                    ...config,
+                    global: { ...config.global, ...(preset.config.global ?? {}) },
+                    title: { ...config.title, ...(preset.config.title ?? {}) },
+                    tabs: { ...config.tabs, ...(preset.config.tabs ?? {}) },
+                    meta: { ...config.meta, skinName: preset.name },
+                })
+            )
             setPresetUsage((prev) => ({ ...prev, [preset.id]: (prev[preset.id] ?? 0) + 1 }))
             incrementStat('presets-applied')
             trackEvent(`preset:${preset.id}`, `${preset.name} (${preset.category})`)
@@ -497,6 +518,17 @@ export function App() {
                                 installStatus={installStatus}
                                 clearStatus={clearStatus}
                                 savedSkins={savedSkins}
+                            />
+                        </TabPanel>
+
+                        <TabPanel activeTab={activeTab} tabId="terminal">
+                            <TerminalForm
+                                config={config}
+                                onUpdate={(updates) => updateTerminal(updates ?? {})}
+                                onAnsiSlotChange={setAnsiSlot}
+                                onDeriveFromPalette={() =>
+                                    updateTerminal(deriveColorscheme(config))
+                                }
                             />
                         </TabPanel>
 

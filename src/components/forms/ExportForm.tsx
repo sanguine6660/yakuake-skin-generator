@@ -157,11 +157,17 @@ export const ExportForm = ({
         applyImportedFolder(files)
     }
 
+    const includeScheme = config.terminal?.enabled !== false
     const folderStructure = `${skinFolder}/
 ├── logo.svg
 ├── LICENSE
 ├── README.md
-├── metadata.json
+├── metadata.json${
+        includeScheme
+            ? `
+├── ${skinFolder}.colorscheme   ← copy to ~/.local/share/konsole/`
+            : ''
+    }
 ├── title.skin
 ├── tabs.skin
 ├── title/
@@ -458,6 +464,24 @@ export const ExportForm = ({
                                 <code className="font-mono">tabs.skin</code> directly inside — not
                                 nested in a subfolder.
                             </p>
+                            {includeScheme && (
+                                <div className="mt-2 rounded-lg border border-sky-700/40 bg-sky-900/20 p-3">
+                                    <p className="text-xs font-medium text-sky-300">
+                                        Bonus: matching terminal colors
+                                    </p>
+                                    <p className="mt-1 text-xs text-gray-400">
+                                        Also copy{' '}
+                                        <code className="font-mono text-sky-300">
+                                            {skinFolder}.colorscheme
+                                        </code>{' '}
+                                        from the archive to{' '}
+                                        <code className="font-mono text-gray-300">
+                                            ~/.local/share/konsole/
+                                        </code>
+                                        , then pick it in Yakuake under Appearance → Color scheme.
+                                    </p>
+                                </div>
+                            )}
                         </div>
                         <div>
                             <p className="font-medium text-white">3. Apply the Skin in Yakuake</p>

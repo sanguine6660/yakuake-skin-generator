@@ -5,6 +5,7 @@
 //! user's Yakuake skins directory.
 
 pub mod cli;
+pub mod colorscheme;
 pub mod config;
 pub mod generate;
 

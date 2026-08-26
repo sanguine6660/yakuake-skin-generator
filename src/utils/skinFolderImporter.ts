@@ -28,6 +28,7 @@ import type { SkinConfig } from '../types'
 import { createDefaultSkinConfig } from '../constants'
 import { parseConfigJson } from './configSerialization'
 import { primeIconMarkupCache } from './iconRenderer'
+import { deriveColorscheme, parseColorschemeIni } from './konsoleScheme'
 
 export interface SkinFolderFile {
     /** Path relative to the skin folder root, e.g. `title/focus_up.svg` */
@@ -205,7 +206,8 @@ export const prettifyFolderName = (folder: string): string =>
  * paths by anchoring on known skin entries.
  */
 export const relativizePaths = (paths: string[]): Map<string, string> => {
-    const anchor = /^(?:title(?:\/|\.skin$)|tabs(?:\/|\.skin$)|metadata\.json$|logo\.svg$)/
+    const anchor =
+        /^(?:title(?:\/|\.skin$)|tabs(?:\/|\.skin$)|metadata\.json$|logo\.svg$|[^/]+\.colorscheme$)/
     const result = new Map<string, string>()
 
     for (const original of paths) {
@@ -444,9 +446,22 @@ export const importSkinFolder = (
     }
 
     const warnings: string[] = []
-    return {
-        config: reconstructFromIni(files, folderName, warnings),
-        fidelity: 'reconstructed',
-        warnings,
+    const reconstructed = reconstructFromIni(files, folderName, warnings)
+
+    // A shipped .colorscheme companion wins over palette derivation.
+    const schemeEntry = [...files.entries()].find(([rel]) => rel.endsWith('.colorscheme'))
+    if (schemeEntry) {
+        try {
+            reconstructed.terminal = parseColorschemeIni(
+                decoder.decode(schemeEntry[1].content),
+                deriveColorscheme(reconstructed)
+            )
+        } catch {
+            warnings.push(
+                'The included .colorscheme file could not be parsed — derived one instead.'
+            )
+        }
     }
+
+    return { config: reconstructed, fidelity: 'reconstructed', warnings }
 }

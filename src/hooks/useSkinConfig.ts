@@ -28,6 +28,7 @@ import type {
     RgbColor,
     ButtonColors,
     ButtonStateColors,
+    TerminalColorscheme,
 } from '../types'
 import { createDefaultSkinConfig, DEFAULT_ICON_SETS } from '../constants'
 import { deriveKonsoleBackground } from '../utils/colors'
@@ -38,6 +39,13 @@ import {
     undo as historyUndo,
 } from '../utils/configHistory'
 import type { HistoryState } from '../utils/configHistory'
+
+// Lazy import cycle breaker: deriveColorscheme lives in konsoleScheme which
+// imports nothing from this hook, so a static import is safe.
+import { deriveColorscheme } from '../utils/konsoleScheme'
+
+const deriveTerminalFallback = (config: SkinConfig): TerminalColorscheme =>
+    deriveColorscheme(config)
 
 const hexToRgb = (hex: string): RgbColor => {
     const cleanHex = hex.replace('#', '')
@@ -201,9 +209,35 @@ export const useSkinConfig = (initialConfig?: SkinConfig) => {
         []
     )
 
+    const updateTerminal = useCallback((updates: Partial<TerminalColorscheme>) => {
+        setConfig(
+            (prev) => ({
+                ...prev,
+                terminal: {
+                    ...(prev.terminal ?? deriveTerminalFallback(prev)),
+                    ...updates,
+                },
+            }),
+            false
+        )
+    }, [])
+
+    type AnsiVariant = keyof Pick<TerminalColorscheme, 'ansi' | 'ansiIntense' | 'ansiFaint'>
+
+    const setAnsiSlot = useCallback((variant: AnsiVariant, index: number, color: RgbColor) => {
+        setConfig((prev) => {
+            const current = prev.terminal ?? deriveTerminalFallback(prev)
+            const list = [...current[variant]]
+            list[index] = color
+            return { ...prev, terminal: { ...current, [variant]: list } }
+        }, false)
+    }, [])
+
     return {
         config,
         setConfig,
+        updateTerminal,
+        setAnsiSlot,
         canUndo: history.past.length > 0,
         canRedo: history.future.length > 0,
         undo,

@@ -29,6 +29,7 @@ import type {
     ButtonColors,
 } from '../types'
 import { deriveKonsoleBackground } from '../utils/colors'
+import { deriveColorscheme } from '../utils/konsoleScheme'
 
 export const ICON_LIBRARIES: Record<IconLibrary, string> = {
     lucide: 'Lucide',
@@ -447,23 +448,29 @@ export const DEFAULT_BUTTON_COLORS: ButtonColors = {
     close: { ...DEFAULT_BUTTON_STATE },
 }
 
-export const createDefaultSkinConfig = (): SkinConfig => ({
-    meta: DEFAULT_META,
-    title: DEFAULT_TITLE_CONFIG,
-    tabs: DEFAULT_TABS_CONFIG,
-    global: {
-        iconLibrary: 'lucide',
-        iconSet: DEFAULT_ICON_SETS.lucide,
-        colors: {
-            bg: '#1e2233',
-            selected: '#3b4252',
-            text: '#66c2f2',
-            dim: '#232834',
-            konsoleBackground: deriveKonsoleBackground('#1e2233'),
+export const createDefaultSkinConfig = (): SkinConfig => {
+    const config: SkinConfig = {
+        meta: DEFAULT_META,
+        title: DEFAULT_TITLE_CONFIG,
+        tabs: DEFAULT_TABS_CONFIG,
+        global: {
+            iconLibrary: 'lucide',
+            iconSet: DEFAULT_ICON_SETS.lucide,
+            colors: {
+                bg: '#1e2233',
+                selected: '#3b4252',
+                text: '#66c2f2',
+                dim: '#232834',
+                konsoleBackground: deriveKonsoleBackground('#1e2233'),
+            },
+            buttonColors: DEFAULT_BUTTON_COLORS,
+            borderRadius: 0,
+            opacity: 100,
+            translucency: false,
         },
-        buttonColors: DEFAULT_BUTTON_COLORS,
-        borderRadius: 0,
-        opacity: 100,
-        translucency: false,
-    },
-})
+    }
+
+    // Every config carries an explicit, enabled companion scheme so previews,
+    // exports and the enable-switch always have a defined state.
+    return { ...config, terminal: { ...deriveColorscheme(config), enabled: true } }
+}

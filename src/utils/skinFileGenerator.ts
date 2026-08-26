@@ -22,6 +22,7 @@
 import type { SkinConfig } from '../types'
 import { generateAllAssets } from './svgGenerators'
 import { getIconMarkup } from './iconRenderer'
+import { colorschemeForConfig, deriveColorscheme } from './konsoleScheme'
 
 const GENERATOR_NAME = 'Yakuake Skin Generator'
 const GENERATOR_URL = 'https://github.com/sanguine6660/yakuake-skin-generator'
@@ -98,6 +99,7 @@ export const generateMetadata = (config: SkinConfig): string => {
                 global: config.global,
                 title: config.title,
                 tabs: config.tabs,
+                terminal: config.terminal ?? deriveColorscheme(config),
             },
             icons,
         },
@@ -253,6 +255,8 @@ export const prepareSkinFiles = (config: SkinConfig) => {
     addFile('metadata.json', generateMetadata(config))
     addFile('title.skin', generateTitleSkin(config))
     addFile('tabs.skin', generateTabsSkin(config))
+    // Companion Konsole scheme — users copy this one to ~/.local/share/konsole/
+    addFile(`${folderName}.colorscheme`, colorschemeForConfig(config))
 
     for (const [path, content] of Object.entries(assets)) {
         if (!['logo.svg', 'title.skin', 'tabs.skin'].includes(path)) {

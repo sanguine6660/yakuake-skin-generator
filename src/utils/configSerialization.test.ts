@@ -6,9 +6,21 @@ import {
     decodeConfigHash,
 } from './configSerialization'
 import { createDefaultSkinConfig } from '../constants'
+import { deriveColorscheme } from './konsoleScheme'
 import type { SkinConfig } from '../types'
 
 const config = createDefaultSkinConfig()
+
+it('defaults always ship an enabled terminal scheme', () => {
+    expect(config.terminal).toBeDefined()
+    expect(config.terminal?.enabled).toBe(true)
+})
+
+/** parseConfigJson now always yields a terminal scheme (derived when absent). */
+const expectParsed = (parsed: SkinConfig, expected: SkinConfig) => {
+    expect(parsed).toEqual({ ...expected, terminal: deriveColorscheme(expected) })
+    return parsed
+}
 
 describe('exportConfigJson', () => {
     it('produces valid JSON containing the skin name', () => {
@@ -20,7 +32,8 @@ describe('exportConfigJson', () => {
 describe('parseConfigJson', () => {
     it('round-trips a full configuration', () => {
         const parsed = parseConfigJson(exportConfigJson(config))
-        expect(parsed).toEqual(config)
+        expectParsed(parsed, config)
+        expect(parsed.terminal?.description).toBe(`${config.meta.skinName} Terminal`)
     })
 
     it('fills missing sections from defaults', () => {
@@ -77,7 +90,7 @@ describe('config hash sharing', () => {
     it('round-trips a configuration through the hash', () => {
         const hash = encodeConfigHash(config)
         expect(hash.startsWith('#config=')).toBe(true)
-        expect(decodeConfigHash(hash)).toEqual(config)
+        expectParsed(decodeConfigHash(hash)!, config)
     })
 
     it('survives unicode skin names', () => {

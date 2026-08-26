@@ -117,6 +117,14 @@ describe('generateRandomSkin', () => {
         expect(skin.meta.skinName).not.toBe(base.meta.skinName)
     })
 
+    it('rolls an explicitly enabled terminal scheme', () => {
+        for (let seed = 0; seed < 8; seed++) {
+            const skin = generateRandomSkin(base, mulberry32(seed))
+            expect(skin.terminal?.enabled).toBe(true)
+            expect(skin.terminal?.ansi).toHaveLength(8)
+        }
+    })
+
     it('stamps tool attribution onto author, email and website', () => {
         for (let seed = 0; seed < 10; seed++) {
             const { meta } = generateRandomSkin(base, mulberry32(seed))

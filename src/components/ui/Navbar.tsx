@@ -43,6 +43,7 @@ const NAV_TABS = [
     { id: 'global', label: 'Global' },
     { id: 'title', label: 'Title Bar' },
     { id: 'tabs', label: 'Tabs Bar' },
+    { id: 'terminal', label: 'Terminal' },
     { id: 'skins', label: 'My Skins' },
     { id: 'export', label: 'Import/Export' },
     { id: 'meta', label: 'Metadata' },

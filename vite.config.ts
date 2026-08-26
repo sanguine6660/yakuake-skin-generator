@@ -41,7 +41,7 @@ export default defineConfig(() => ({
                           name: 'Yakuake Skin Generator',
                           short_name: 'Skin Generator',
                           description:
-                              'Create, customize, and export custom Yakuake terminal skins with live preview, presets, and 28 icon libraries.',
+                              'Create custom Yakuake terminal skins with live WYSIWYG preview, 60+ presets, random themes, round-trip skin folder import and matching Konsole color schemes.',
                           theme_color: '#66c2f2',
                           background_color: '#090d16',
                           display: 'standalone',

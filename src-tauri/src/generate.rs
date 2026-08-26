@@ -2,8 +2,16 @@
 //! `svgGenerators` and `skinFileGenerator` modules, producing byte-identical
 //! output for the same configuration.
 
+use crate::colorscheme::{derive_colorscheme, generate_colorscheme_text};
 use crate::config::SkinConfig;
 use std::collections::BTreeMap;
+
+fn sanitize_folder_name_for_file(name: &str) -> String {
+    name.to_lowercase().replace(
+        |c: char| !c.is_ascii_lowercase() && !c.is_ascii_digit() && c != '_' && c != '-',
+        "_",
+    )
+}
 
 pub const GENERATOR_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -605,6 +613,19 @@ pub fn prepare_skin_files(
 
     files.insert("title.skin".into(), generate_title_skin(config));
     files.insert("tabs.skin".into(), generate_tabs_skin(config));
+
+    // Companion Konsole scheme (derived when the config carries none).
+    let scheme = config
+        .terminal
+        .clone()
+        .unwrap_or_else(|| derive_colorscheme(config));
+    files.insert(
+        format!(
+            "{}.colorscheme",
+            sanitize_folder_name_for_file(&config.meta.skin_name)
+        ),
+        generate_colorscheme_text(&scheme),
+    );
 
     files
 }

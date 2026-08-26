@@ -21,6 +21,7 @@
 
 import type { SkinConfig } from '../types'
 import { createDefaultSkinConfig } from '../constants'
+import { deriveColorscheme } from './konsoleScheme'
 
 const HASH_PREFIX = '#config='
 
@@ -66,7 +67,7 @@ export const parseConfigJson = (text: string): SkinConfig => {
         ...importedButtonColors[key],
     })
 
-    return {
+    const result: SkinConfig = {
         meta: { ...defaults.meta, ...compact(parsed.meta) },
         title: { ...defaults.title, ...parsed.title },
         tabs: { ...defaults.tabs, ...parsed.tabs },
@@ -85,6 +86,10 @@ export const parseConfigJson = (text: string): SkinConfig => {
             },
         },
     }
+
+    // A stored scheme round-trips; otherwise one is derived from the palette.
+    result.terminal = parsed.terminal ?? deriveColorscheme(result)
+    return result
 }
 
 export const encodeConfigHash = (config: SkinConfig): string =>

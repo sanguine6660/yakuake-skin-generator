@@ -350,6 +350,44 @@ impl Default for GlobalConfig {
     }
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase", default)]
+pub struct TerminalColorscheme {
+    /// Master switch: emit/sync the companion scheme (None = enabled).
+    pub enabled: Option<bool>,
+    pub description: Option<String>,
+    /// 0-100
+    pub opacity: i32,
+    pub background: RgbColor,
+    pub background_intense: RgbColor,
+    pub background_faint: RgbColor,
+    pub foreground: RgbColor,
+    pub foreground_intense: RgbColor,
+    pub foreground_faint: RgbColor,
+    pub ansi: Vec<RgbColor>,
+    pub ansi_intense: Vec<RgbColor>,
+    pub ansi_faint: Vec<RgbColor>,
+}
+
+impl Default for TerminalColorscheme {
+    fn default() -> Self {
+        TerminalColorscheme {
+            enabled: None,
+            description: None,
+            opacity: 100,
+            background: RgbColor::default(),
+            background_intense: RgbColor::default(),
+            background_faint: RgbColor::default(),
+            foreground: RgbColor::default(),
+            foreground_intense: RgbColor::default(),
+            foreground_faint: RgbColor::default(),
+            ansi: vec![RgbColor::default(); 8],
+            ansi_intense: vec![RgbColor::default(); 8],
+            ansi_faint: vec![RgbColor::default(); 8],
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase", default)]
 pub struct SkinConfig {
@@ -357,6 +395,7 @@ pub struct SkinConfig {
     pub title: TitleConfig,
     pub tabs: TabsConfig,
     pub global: GlobalConfig,
+    pub terminal: Option<TerminalColorscheme>,
 }
 
 /// A parsed skin metadata file: the configuration plus per-role icon markup

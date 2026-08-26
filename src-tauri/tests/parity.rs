@@ -10,7 +10,8 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-const BYTE_PARITY_FILES: [&str; 39] = [
+const BYTE_PARITY_FILES: [&str; 40] = [
+    "parity_skin.colorscheme",
     "LICENSE",
     "README.md",
     "title.skin",
