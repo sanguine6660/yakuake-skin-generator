@@ -413,20 +413,22 @@ export function App() {
     return (
         <div className="min-h-screen bg-[#090d16] font-sans text-white">
             <div className="w-full px-4 py-8 md:px-6 lg:px-8">
-                <Navbar
-                    config={config}
-                    activeTab={activeTab}
-                    onTabChange={handleTabChange}
-                    onResetToDefault={handleResetToDefault}
-                    onRandomizeSkin={handleRandomizeSkin}
-                    randomHistory={randomHistory}
-                    onRestoreRandomSkin={handleRestoreRandomSkin}
-                    onClearRandomHistory={handleClearRandomHistory}
-                    onUndo={undo}
-                    onRedo={redo}
-                    canUndo={canUndo}
-                    canRedo={canRedo}
-                />
+                <div className="pb-6 xl:sticky xl:top-0 xl:z-40 xl:-mx-8 xl:bg-[#090d16]/90 xl:px-8 xl:backdrop-blur-md">
+                    <Navbar
+                        config={config}
+                        activeTab={activeTab}
+                        onTabChange={handleTabChange}
+                        onResetToDefault={handleResetToDefault}
+                        onRandomizeSkin={handleRandomizeSkin}
+                        randomHistory={randomHistory}
+                        onRestoreRandomSkin={handleRestoreRandomSkin}
+                        onClearRandomHistory={handleClearRandomHistory}
+                        onUndo={undo}
+                        onRedo={redo}
+                        canUndo={canUndo}
+                        canRedo={canRedo}
+                    />
+                </div>
 
                 {installStatus && (
                     <div
@@ -543,7 +545,7 @@ export function App() {
                         </TabPanel>
                     </div>
 
-                    <div className="mx-auto w-full space-y-6 lg:sticky lg:top-6 lg:mx-0 lg:w-105 lg:self-start">
+                    <div className="mx-auto w-full space-y-6 lg:sticky lg:top-6 lg:mx-0 lg:w-105 lg:self-start xl:top-26">
                         <Preview config={config} />
                         <ColorPreview config={config} />
                         {privacyOpen && (
