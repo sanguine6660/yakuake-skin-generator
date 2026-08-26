@@ -28,6 +28,7 @@ import type {
     ButtonStateColors,
 } from '../../types'
 import { ICON_LIBRARIES, ICON_ROLES, PRESETS, getPresetsByCategory } from '../../constants'
+import { pickRandomItem } from '../../utils'
 import { deriveKonsoleBackground } from '../../utils/colors'
 import { ColorInput, NumberInput, SelectInput, Switch, Section } from '../ui'
 import { IconPicker } from '../ui/IconPicker'
@@ -122,6 +123,24 @@ export const GlobalForm = ({
     const [presetSearch, setPresetSearch] = useState('')
     const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null)
     const [presetPage, setPresetPage] = useState(0)
+    const [lastRandomName, setLastRandomName] = useState<string | null>(null)
+
+    const handleRandomize = () => {
+        // Respect the active category tab plus any search/tag filters; fall
+        // back to the whole category when filters hide everything. Never
+        // repeat the currently applied preset while alternatives remain.
+        const pool = filteredPresets.length > 0 ? filteredPresets : activePresets
+        const picked = pickRandomItem(pool, (preset) => isPresetActive(preset))
+        if (!picked) return
+        onApplyPreset(picked.id)
+        setLastRandomName(picked.name)
+    }
+
+    useEffect(() => {
+        if (!lastRandomName) return
+        const timer = setTimeout(() => setLastRandomName(null), 4000)
+        return () => clearTimeout(timer)
+    }, [lastRandomName])
 
     const BUTTON_LABELS: Record<string, string> = {
         focus: 'Focus/Maximize',
@@ -162,33 +181,70 @@ export const GlobalForm = ({
                 title="Presets"
                 description="One click applies a full theme — colors, title text and button states"
             >
-                <div className="mb-3 flex gap-2" role="tablist">
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={activePresetCategory === 'dark'}
-                        onClick={() => setActivePresetCategory('dark')}
-                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                            activePresetCategory === 'dark'
-                                ? 'border border-sky-400/50 bg-sky-400/10 text-sky-400'
-                                : 'border border-[#1e293b] text-gray-400 hover:text-gray-200'
-                        }`}
-                    >
-                        Dark ({darkPresets.length})
-                    </button>
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={activePresetCategory === 'light'}
-                        onClick={() => setActivePresetCategory('light')}
-                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                            activePresetCategory === 'light'
-                                ? 'border border-amber-400/50 bg-amber-400/10 text-amber-400'
-                                : 'border border-[#1e293b] text-gray-400 hover:text-gray-200'
-                        }`}
-                    >
-                        Light ({lightPresets.length})
-                    </button>
+                <div className="mb-3 flex items-center justify-between gap-2">
+                    <div className="flex gap-2" role="tablist">
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={activePresetCategory === 'dark'}
+                            onClick={() => setActivePresetCategory('dark')}
+                            className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                                activePresetCategory === 'dark'
+                                    ? 'border border-sky-400/50 bg-sky-400/10 text-sky-400'
+                                    : 'border border-[#1e293b] text-gray-400 hover:text-gray-200'
+                            }`}
+                        >
+                            Dark ({darkPresets.length})
+                        </button>
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={activePresetCategory === 'light'}
+                            onClick={() => setActivePresetCategory('light')}
+                            className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                                activePresetCategory === 'light'
+                                    ? 'border border-amber-400/50 bg-amber-400/10 text-amber-400'
+                                    : 'border border-[#1e293b] text-gray-400 hover:text-gray-200'
+                            }`}
+                        >
+                            Light ({lightPresets.length})
+                        </button>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        {lastRandomName && (
+                            <span
+                                className="text-xs text-gray-500"
+                                role="status"
+                                aria-live="polite"
+                            >
+                                Rolled: <span className="text-gray-300">{lastRandomName}</span>
+                            </span>
+                        )}
+                        <button
+                            type="button"
+                            onClick={handleRandomize}
+                            title="Apply a random theme from the curated pool"
+                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#1e293b] px-3.5 py-2 text-sm font-medium text-gray-300 transition-all hover:border-sky-400/50 hover:bg-sky-400/10 hover:text-sky-400"
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <rect x="3" y="3" width="18" height="18" rx="4" />
+                                <circle cx="8.5" cy="8.5" r="1" fill="currentColor" />
+                                <circle cx="15.5" cy="15.5" r="1" fill="currentColor" />
+                                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                            </svg>
+                            Randomize
+                        </button>
+                    </div>
                 </div>
                 <input
                     type="text"
