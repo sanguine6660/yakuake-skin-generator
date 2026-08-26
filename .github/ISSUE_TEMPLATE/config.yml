@@ -14,7 +14,7 @@ contact_links:
     url: https://discord.gg/NyVgCKu8WD
     about: Ask anything about creating or installing skins.
   - name: 📖 Skin Format Documentation
-    url: https://github.com/sanguine6660/yakuake-skin-generator/blob/main/WIKI.md
+    url: https://github.com/sanguine6660/yakuake-skin-generator/wiki
     about: How the Yakuake skin format works — useful before filing issues about generated skins.
   - name: 🐙 Yakuake Itself
     url: https://invent.kde.org/utilities/yakuake

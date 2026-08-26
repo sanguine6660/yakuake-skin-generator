@@ -107,18 +107,27 @@ export const generateMetadata = (config: SkinConfig): string => {
 
 const writeButtonConfig = (
     prefix: string,
-    btn: { enabled: boolean; x: number; y: number; up: string; over: string; down: string }
+    btn: {
+        enabled: boolean
+        x: number
+        y: number
+        anchor?: 'left' | 'right'
+        atEndOfTabs?: boolean
+        up: string
+        over: string
+        down: string
+    },
+    {
+        includeAnchor = false,
+        includeAtEndOfTabs = false,
+    }: { includeAnchor?: boolean; includeAtEndOfTabs?: boolean } = {}
 ): string[] => {
     if (!btn.enabled) return []
-    return [
-        '',
-        `[${prefix}Button]`,
-        `x=${btn.x}`,
-        `y=${btn.y}`,
-        `up_image=${btn.up}`,
-        `over_image=${btn.over}`,
-        `down_image=${btn.down}`,
-    ]
+    const lines = ['', `[${prefix}Button]`, `x=${btn.x}`, `y=${btn.y}`]
+    if (includeAnchor) lines.push(`anchor=${btn.anchor ?? 'right'}`)
+    lines.push(`up_image=${btn.up}`, `over_image=${btn.over}`, `down_image=${btn.down}`)
+    if (includeAtEndOfTabs) lines.push(`at_end_of_tabs=${btn.atEndOfTabs ? 'true' : 'false'}`)
+    return lines
 }
 
 export const generateTitleSkin = (config: SkinConfig): string => {
@@ -148,6 +157,7 @@ export const generateTitleSkin = (config: SkinConfig): string => {
         `blue=${textColor.b}`,
         `text=${title.textContent}`,
         `bold=${title.textBold ? 'true' : 'false'}`,
+        `centered=${title.centered ? 'true' : 'false'}`,
         '',
         '[Background]',
         `back_image=${title.bgCenter}`,
@@ -156,9 +166,9 @@ export const generateTitleSkin = (config: SkinConfig): string => {
     ]
 
     if (title.titleEnabled) {
-        lines.push(...writeButtonConfig('Focus', title.focusBtn))
-        lines.push(...writeButtonConfig('Config', title.configBtn))
-        lines.push(...writeButtonConfig('Quit', title.quitBtn))
+        lines.push(...writeButtonConfig('Focus', title.focusBtn, { includeAnchor: true }))
+        lines.push(...writeButtonConfig('Config', title.configBtn, { includeAnchor: true }))
+        lines.push(...writeButtonConfig('Quit', title.quitBtn, { includeAnchor: true }))
     }
 
     return lines.filter(Boolean).join('\n')
@@ -189,15 +199,17 @@ export const generateTabsSkin = (config: SkinConfig): string => {
         `unselected_background=${tabs.unselectedMiddle}`,
         `unselected_left_corner=${tabs.unselectedLeft}`,
         `unselected_right_corner=${tabs.unselectedRight}`,
+        `selected_text_bold=${tabs.selectedTextBold ? 'true' : 'false'}`,
     ]
 
     if (tabs.tabsEnabled && tabs.lockEnabled && tabs.lockBtn.enabled) {
         lines.push(
             `prevent_closing_image=${tabs.preventClosingImage}`,
-            `prevent_closing_image_x=${tabs.lockBtn.x}`,
-            `prevent_closing_image_y=${tabs.lockBtn.y}`
+            `prevent_closing_image_x=${tabs.preventClosingImageX ?? tabs.lockBtn.x}`,
+            `prevent_closing_image_y=${tabs.preventClosingImageY ?? tabs.lockBtn.y}`
         )
     }
+    lines.push(`compact=${tabs.compact ? 'true' : 'false'}`)
 
     if (tabs.tabsEnabled) {
         lines.push(
@@ -209,7 +221,7 @@ export const generateTabsSkin = (config: SkinConfig): string => {
         )
 
         if (tabs.plusBtn.enabled) {
-            lines.push(...writeButtonConfig('Plus', tabs.plusBtn))
+            lines.push(...writeButtonConfig('Plus', tabs.plusBtn, { includeAtEndOfTabs: true }))
         }
         if (tabs.minusBtn.enabled) {
             lines.push(...writeButtonConfig('Minus', tabs.minusBtn))

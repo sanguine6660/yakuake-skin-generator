@@ -331,6 +331,7 @@ export const DEFAULT_TITLE_CONFIG = {
     textColor: DEFAULT_RGB_COLORS.text,
     textContent: 'My Custom Skin',
     textBold: true,
+    centered: false,
     bgCenter: '/title/background_center.svg',
     bgLeft: '/title/background_left.svg',
     bgRight: '/title/background_right.svg',
@@ -338,6 +339,7 @@ export const DEFAULT_TITLE_CONFIG = {
     titleEnabled: true,
     focusBtn: {
         enabled: true,
+        anchor: 'right' as const,
         x: 88,
         y: 4,
         up: '/title/focus_up.svg',
@@ -346,6 +348,7 @@ export const DEFAULT_TITLE_CONFIG = {
     },
     configBtn: {
         enabled: true,
+        anchor: 'right' as const,
         x: 58,
         y: 4,
         up: '/title/config_up.svg',
@@ -354,6 +357,7 @@ export const DEFAULT_TITLE_CONFIG = {
     },
     quitBtn: {
         enabled: true,
+        anchor: 'right' as const,
         x: 28,
         y: 4,
         up: '/title/quit_up.svg',
@@ -377,8 +381,10 @@ export const DEFAULT_TABS_CONFIG = {
     unselectedRight: '/tabs/tab_unselected_right.svg',
 
     preventClosingImage: '/tabs/lock.svg',
-    preventClosingX: 0,
-    preventClosingY: 8,
+    preventClosingImageX: 0,
+    preventClosingImageY: 8,
+    selectedTextBold: true,
+    compact: false,
     lockEnabled: true,
 
     bgCenter: '/tabs/background_center.svg',
@@ -392,6 +398,7 @@ export const DEFAULT_TABS_CONFIG = {
         enabled: true,
         x: 2,
         y: 6,
+        atEndOfTabs: false,
         up: '/tabs/plus_up.svg',
         over: '/tabs/plus_over.svg',
         down: '/tabs/plus_down.svg',

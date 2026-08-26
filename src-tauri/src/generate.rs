@@ -365,19 +365,48 @@ pub fn generate_all(
     files
 }
 
-fn write_button_config(prefix: &str, btn: &crate::config::ButtonConfig) -> Vec<String> {
+fn write_button_config(
+    prefix: &str,
+    btn: &crate::config::ButtonConfig,
+    include_anchor: bool,
+    include_at_end_of_tabs: bool,
+) -> Vec<String> {
     if !btn.enabled {
         return vec![];
     }
-    vec![
+    let mut lines = vec![
         String::new(),
         format!("[{prefix}Button]"),
         format!("x={}", btn.x),
         format!("y={}", btn.y),
-        format!("up_image={}", btn.up),
-        format!("over_image={}", btn.over),
-        format!("down_image={}", btn.down),
-    ]
+    ];
+    if include_anchor {
+        lines.push(format!(
+            "anchor={}",
+            btn.anchor.as_deref().unwrap_or("right")
+        ));
+    }
+    lines.push(format!("up_image={}", btn.up));
+    lines.push(format!("over_image={}", btn.over));
+    lines.push(format!("down_image={}", btn.down));
+    if include_at_end_of_tabs {
+        lines.push(format!(
+            "at_end_of_tabs={}",
+            if btn.at_end_of_tabs.unwrap_or(false) {
+                "true"
+            } else {
+                "false"
+            }
+        ));
+    }
+    lines
+}
+
+fn is_true(value: Option<bool>) -> &'static str {
+    match value {
+        Some(true) => "true",
+        _ => "false",
+    }
 }
 
 pub fn generate_title_skin(config: &SkinConfig) -> String {
@@ -411,6 +440,7 @@ pub fn generate_title_skin(config: &SkinConfig) -> String {
         format!("blue={}", title.text_color.b),
         format!("text={}", title.text_content),
         format!("bold={}", title.text_bold),
+        format!("centered={}", is_true(Some(title.centered))),
         String::new(),
         "[Background]".to_string(),
         format!("back_image={}", title.bg_center),
@@ -418,9 +448,14 @@ pub fn generate_title_skin(config: &SkinConfig) -> String {
         format!("right_corner={}", title.bg_right),
     ]);
     if title.title_enabled {
-        lines.extend(write_button_config("Focus", &title.focus_btn));
-        lines.extend(write_button_config("Config", &title.config_btn));
-        lines.extend(write_button_config("Quit", &title.quit_btn));
+        lines.extend(write_button_config("Focus", &title.focus_btn, true, false));
+        lines.extend(write_button_config(
+            "Config",
+            &title.config_btn,
+            true,
+            false,
+        ));
+        lines.extend(write_button_config("Quit", &title.quit_btn, true, false));
     }
     lines
         .into_iter()
@@ -465,14 +500,19 @@ pub fn generate_tabs_skin(config: &SkinConfig) -> String {
         format!("unselected_background={}", tabs.unselected_middle),
         format!("unselected_left_corner={}", tabs.unselected_left),
         format!("unselected_right_corner={}", tabs.unselected_right),
+        format!(
+            "selected_text_bold={}",
+            is_true(Some(tabs.selected_text_bold))
+        ),
     ]);
     if tabs.tabs_enabled && tabs.lock_enabled && tabs.lock_btn.enabled {
         lines.extend([
             format!("prevent_closing_image={}", tabs.prevent_closing_image),
             format!("prevent_closing_image_x={}", tabs.lock_btn.x),
-            format!("prevent_closing_image_y={}", tabs.lock_btn.y),
+            format!("prevent_closing_image_y={}", tabs.prevent_closing_image_y),
         ]);
     }
+    lines.push(format!("compact={}", is_true(Some(tabs.compact))));
     if tabs.tabs_enabled {
         lines.extend([
             String::new(),
@@ -482,13 +522,13 @@ pub fn generate_tabs_skin(config: &SkinConfig) -> String {
             format!("right_corner={}", tabs.bg_right),
         ]);
         if tabs.plus_btn.enabled {
-            lines.extend(write_button_config("Plus", &tabs.plus_btn));
+            lines.extend(write_button_config("Plus", &tabs.plus_btn, false, true));
         }
         if tabs.minus_btn.enabled {
-            lines.extend(write_button_config("Minus", &tabs.minus_btn));
+            lines.extend(write_button_config("Minus", &tabs.minus_btn, false, false));
         }
         if tabs.close_btn.enabled {
-            lines.extend(write_button_config("Close", &tabs.close_btn));
+            lines.extend(write_button_config("Close", &tabs.close_btn, false, false));
         }
     }
     lines

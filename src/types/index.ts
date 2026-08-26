@@ -78,6 +78,10 @@ export interface ButtonConfig {
     enabled: boolean
     x: number
     y: number
+    /** Title buttons only: side from which `x` is measured (Yakuake default: right) */
+    anchor?: 'left' | 'right'
+    /** PlusButton only: follow the last tab instead of a fixed position */
+    atEndOfTabs?: boolean
     up: string
     over: string
     down: string
@@ -94,6 +98,8 @@ export interface TitleConfig {
     textColor: RgbColor
     textContent: string
     textBold: boolean
+    /** Center the text horizontally when it fits (Yakuake `[Text] centered`) */
+    centered?: boolean
 
     bgCenter: string
     bgLeft: string
@@ -124,8 +130,10 @@ export interface TabsConfig {
     unselectedRight: string
 
     preventClosingImage: string
-    preventClosingX: number
-    preventClosingY: number
+    preventClosingImageX?: number
+    preventClosingImageY?: number
+    selectedTextBold?: boolean
+    compact?: boolean
     lockEnabled: boolean
 
     bgCenter: string

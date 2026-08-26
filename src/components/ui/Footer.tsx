@@ -29,7 +29,7 @@ interface FooterProps {
 
 const REPO_URL = 'https://github.com/sanguine6660/yakuake-skin-generator'
 const ISSUES_URL = `${REPO_URL}/issues`
-const WIKI_URL = `${REPO_URL}/blob/main/WIKI.md`
+const WIKI_URL = `${REPO_URL}/wiki`
 const YAKUAKE_SOURCE_URL = 'https://invent.kde.org/utilities/yakuake'
 const GPL_LICENSE_URL = 'https://www.gnu.org/licenses/gpl-3.0'
 const CC_LICENSE_URL = 'https://creativecommons.org/licenses/by/4.0/'

@@ -194,7 +194,7 @@ export const Preview = ({ config }: PreviewProps) => {
                                     const isSelected = index === selectedTab
                                     const isNextToSelected =
                                         index === selectedTab + 1 || index === selectedTab - 1
-                                    const bold = isSelected
+                                    const bold = isSelected && (tabs.selectedTextBold ?? true)
                                     const textWidth = getTextWidth(label, bold) + 10
                                     const pieceSet = isSelected ? 'tab_selected' : 'tab_unselected'
                                     const hasCorners =
@@ -305,7 +305,9 @@ export const Preview = ({ config }: PreviewProps) => {
                     <span
                         className="absolute top-0 h-7 whitespace-nowrap"
                         style={{
-                            left: title.textX,
+                            ...(title.centered
+                                ? { left: '50%', translate: '-50% 0' }
+                                : { left: title.textX }),
                             fontSize: '13px',
                             fontFamily: 'system-ui, sans-serif',
                             lineHeight: '28px',
@@ -324,7 +326,12 @@ export const Preview = ({ config }: PreviewProps) => {
                                 alt="Quit"
                                 title="Quit"
                                 className="absolute cursor-pointer"
-                                style={{ right: title.quitBtn.x, top: title.quitBtn.y }}
+                                style={{
+                                    ...(title.quitBtn.anchor === 'left'
+                                        ? { left: title.quitBtn.x }
+                                        : { right: title.quitBtn.x }),
+                                    top: title.quitBtn.y,
+                                }}
                                 {...bindButton('title/quit')}
                             />
                             <img
@@ -333,7 +340,9 @@ export const Preview = ({ config }: PreviewProps) => {
                                 title="Menu"
                                 className="absolute cursor-pointer"
                                 style={{
-                                    right: title.configBtn.x,
+                                    ...(title.configBtn.anchor === 'left'
+                                        ? { left: title.configBtn.x }
+                                        : { right: title.configBtn.x }),
                                     top: title.configBtn.y,
                                 }}
                                 {...bindButton('title/config')}
@@ -344,7 +353,9 @@ export const Preview = ({ config }: PreviewProps) => {
                                 title="Keep window open when it loses focus"
                                 className="absolute cursor-pointer"
                                 style={{
-                                    right: title.focusBtn.x,
+                                    ...(title.focusBtn.anchor === 'left'
+                                        ? { left: title.focusBtn.x }
+                                        : { right: title.focusBtn.x }),
                                     top: title.focusBtn.y,
                                 }}
                                 {...bindButton('title/focus')}

@@ -17,6 +17,7 @@ green=194
 blue=242
 text=Parity Terminal
 bold=false
+centered=true
 [Background]
 back_image=/title/background_center.svg
 left_corner=/title/background_left.svg
@@ -24,18 +25,21 @@ right_corner=/title/background_right.svg
 [FocusButton]
 x=90
 y=5
+anchor=left
 up_image=/title/focus_up.svg
 over_image=/title/focus_over.svg
 down_image=/title/focus_down.svg
 [ConfigButton]
 x=60
 y=5
+anchor=right
 up_image=/title/config_up.svg
 over_image=/title/config_over.svg
 down_image=/title/config_down.svg
 [QuitButton]
 x=30
 y=5
+anchor=right
 up_image=/title/quit_up.svg
 over_image=/title/quit_over.svg
 down_image=/title/quit_down.svg

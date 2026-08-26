@@ -17,9 +17,11 @@ selected_right_corner=/tabs/tab_selected_right.svg
 unselected_background=/tabs/tab_unselected_middle.svg
 unselected_left_corner=/tabs/tab_unselected_left.svg
 unselected_right_corner=/tabs/tab_unselected_right.svg
+selected_text_bold=false
 prevent_closing_image=/tabs/lock.svg
 prevent_closing_image_x=2
 prevent_closing_image_y=9
+compact=true
 [Background]
 back_image=/tabs/background_center.svg
 left_corner=/tabs/background_left.svg
@@ -30,6 +32,7 @@ y=6
 up_image=/tabs/plus_up.svg
 over_image=/tabs/plus_over.svg
 down_image=/tabs/plus_down.svg
+at_end_of_tabs=true
 [MinusButton]
 x=44
 y=6

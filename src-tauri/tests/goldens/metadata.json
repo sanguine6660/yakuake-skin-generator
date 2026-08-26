@@ -2,7 +2,7 @@
     "generator": {
         "name": "Yakuake Skin Generator",
         "url": "https://github.com/sanguine6660/yakuake-skin-generator",
-        "version": "1.0.0"
+        "version": "1.1.0"
     },
     "skin": {
         "name": "Parity Skin",
@@ -115,7 +115,8 @@
                     "y": 5,
                     "up": "/title/focus_up.svg",
                     "over": "/title/focus_over.svg",
-                    "down": "/title/focus_down.svg"
+                    "down": "/title/focus_down.svg",
+                    "anchor": "left"
                 },
                 "configBtn": {
                     "enabled": true,
@@ -132,7 +133,8 @@
                     "up": "/title/quit_up.svg",
                     "over": "/title/quit_over.svg",
                     "down": "/title/quit_down.svg"
-                }
+                },
+                "centered": true
             },
             "tabs": {
                 "tabsX": 38,
@@ -177,7 +179,8 @@
                     "y": 6,
                     "up": "/tabs/plus_up.svg",
                     "over": "/tabs/plus_over.svg",
-                    "down": "/tabs/plus_down.svg"
+                    "down": "/tabs/plus_down.svg",
+                    "atEndOfTabs": true
                 },
                 "minusBtn": {
                     "enabled": true,
@@ -194,7 +197,9 @@
                     "up": "/tabs/close_up.svg",
                     "over": "/tabs/close_over.svg",
                     "down": "/tabs/close_down.svg"
-                }
+                },
+                "selectedTextBold": false,
+                "compact": true
             }
         },
         "icons": {}

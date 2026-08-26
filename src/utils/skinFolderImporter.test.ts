@@ -160,6 +160,16 @@ describe('importSkinFolder — reconstruction from INI + assets', () => {
         expect(imported.config.tabs.bgTranslucent).toBe(true)
     })
 
+    it('recovers documented format extras (centered, anchor, bold, compact)', () => {
+        const { config } = imported
+        expect(config.title.centered).toBe(true)
+        expect(config.title.focusBtn.anchor).toBe('left')
+        expect(config.title.configBtn.anchor).toBe('right')
+        expect(config.tabs.selectedTextBold).toBe(false)
+        expect(config.tabs.compact).toBe(true)
+        expect(config.tabs.plusBtn.atEndOfTabs).toBe(true)
+    })
+
     it('restores button geometry, image paths and enabled state', () => {
         expect(imported.config.title.focusBtn).toMatchObject({
             enabled: true,

@@ -25,34 +25,52 @@
         },
         "buttonColors": {
             "focus": {
-                "upBg": "#1f2937", "upIcon": "#66c2f2",
-                "overBg": "#273449", "overIcon": "#8ed0f7",
-                "downBg": "#111827", "downIcon": "#4a9fd4"
+                "upBg": "#1f2937",
+                "upIcon": "#66c2f2",
+                "overBg": "#273449",
+                "overIcon": "#8ed0f7",
+                "downBg": "#111827",
+                "downIcon": "#4a9fd4"
             },
             "config": {
-                "upBg": "#1f2937", "upIcon": "#94a3b8",
-                "overBg": "#273449", "overIcon": "#cbd5e1",
-                "downBg": "#111827", "downIcon": "#64748b"
+                "upBg": "#1f2937",
+                "upIcon": "#94a3b8",
+                "overBg": "#273449",
+                "overIcon": "#cbd5e1",
+                "downBg": "#111827",
+                "downIcon": "#64748b"
             },
             "quit": {
-                "upBg": "#1f2937", "upIcon": "#f87171",
-                "overBg": "#3b1520", "overIcon": "#fca5a5",
-                "downBg": "#111827", "downIcon": "#dc2626"
+                "upBg": "#1f2937",
+                "upIcon": "#f87171",
+                "overBg": "#3b1520",
+                "overIcon": "#fca5a5",
+                "downBg": "#111827",
+                "downIcon": "#dc2626"
             },
             "plus": {
-                "upBg": "#1f2937", "upIcon": "#66c2f2",
-                "overBg": "#273449", "overIcon": "#8ed0f7",
-                "downBg": "#111827", "downIcon": "#4a9fd4"
+                "upBg": "#1f2937",
+                "upIcon": "#66c2f2",
+                "overBg": "#273449",
+                "overIcon": "#8ed0f7",
+                "downBg": "#111827",
+                "downIcon": "#4a9fd4"
             },
             "minus": {
-                "upBg": "#1f2937", "upIcon": "#66c2f2",
-                "overBg": "#273449", "overIcon": "#8ed0f7",
-                "downBg": "#111827", "downIcon": "#4a9fd4"
+                "upBg": "#1f2937",
+                "upIcon": "#66c2f2",
+                "overBg": "#273449",
+                "overIcon": "#8ed0f7",
+                "downBg": "#111827",
+                "downIcon": "#4a9fd4"
             },
             "close": {
-                "upBg": "#1f2937", "upIcon": "#f87171",
-                "overBg": "#3b1520", "overIcon": "#fca5a5",
-                "downBg": "#111827", "downIcon": "#dc2626"
+                "upBg": "#1f2937",
+                "upIcon": "#f87171",
+                "overBg": "#3b1520",
+                "overIcon": "#fca5a5",
+                "downBg": "#111827",
+                "downIcon": "#dc2626"
             }
         },
         "borderRadius": 5,
@@ -60,11 +78,19 @@
         "translucency": false
     },
     "title": {
-        "borderColor": { "r": 40, "g": 44, "b": 62 },
+        "borderColor": {
+            "r": 40,
+            "g": 44,
+            "b": 62
+        },
         "borderWidth": 1,
         "textX": 16,
         "textY": 20,
-        "textColor": { "r": 102, "g": 194, "b": 242 },
+        "textColor": {
+            "r": 102,
+            "g": 194,
+            "b": 242
+        },
         "textContent": "Parity Terminal",
         "textBold": false,
         "bgCenter": "/title/background_center.svg",
@@ -73,23 +99,45 @@
         "bgTranslucent": false,
         "titleEnabled": true,
         "focusBtn": {
-            "enabled": true, "x": 90, "y": 5,
-            "up": "/title/focus_up.svg", "over": "/title/focus_over.svg", "down": "/title/focus_down.svg"
+            "enabled": true,
+            "x": 90,
+            "y": 5,
+            "up": "/title/focus_up.svg",
+            "over": "/title/focus_over.svg",
+            "down": "/title/focus_down.svg",
+            "anchor": "left"
         },
         "configBtn": {
-            "enabled": true, "x": 60, "y": 5,
-            "up": "/title/config_up.svg", "over": "/title/config_over.svg", "down": "/title/config_down.svg"
+            "enabled": true,
+            "x": 60,
+            "y": 5,
+            "up": "/title/config_up.svg",
+            "over": "/title/config_over.svg",
+            "down": "/title/config_down.svg"
         },
         "quitBtn": {
-            "enabled": true, "x": 30, "y": 5,
-            "up": "/title/quit_up.svg", "over": "/title/quit_over.svg", "down": "/title/quit_down.svg"
-        }
+            "enabled": true,
+            "x": 30,
+            "y": 5,
+            "up": "/title/quit_up.svg",
+            "over": "/title/quit_over.svg",
+            "down": "/title/quit_down.svg"
+        },
+        "centered": true
     },
     "tabs": {
         "tabsX": 38,
         "tabsY": 2,
-        "selectedColor": { "r": 59, "g": 66, "b": 82 },
-        "unselectedColor": { "r": 150, "g": 150, "b": 150 },
+        "selectedColor": {
+            "r": 59,
+            "g": 66,
+            "b": 82
+        },
+        "unselectedColor": {
+            "r": 150,
+            "g": 150,
+            "b": 150
+        },
         "separatorImage": "/tabs/tab_separator.svg",
         "selectedLeft": "/tabs/tab_selected_left.svg",
         "selectedMiddle": "/tabs/tab_selected_middle.svg",
@@ -107,20 +155,39 @@
         "bgTranslucent": true,
         "tabsEnabled": true,
         "lockBtn": {
-            "enabled": true, "x": 2, "y": 9,
-            "up": "/tabs/lock.svg", "over": "/tabs/lock.svg", "down": "/tabs/lock.svg"
+            "enabled": true,
+            "x": 2,
+            "y": 9,
+            "up": "/tabs/lock.svg",
+            "over": "/tabs/lock.svg",
+            "down": "/tabs/lock.svg"
         },
         "plusBtn": {
-            "enabled": true, "x": 24, "y": 6,
-            "up": "/tabs/plus_up.svg", "over": "/tabs/plus_over.svg", "down": "/tabs/plus_down.svg"
+            "enabled": true,
+            "x": 24,
+            "y": 6,
+            "up": "/tabs/plus_up.svg",
+            "over": "/tabs/plus_over.svg",
+            "down": "/tabs/plus_down.svg",
+            "atEndOfTabs": true
         },
         "minusBtn": {
-            "enabled": true, "x": 44, "y": 6,
-            "up": "/tabs/minus_up.svg", "over": "/tabs/minus_over.svg", "down": "/tabs/minus_down.svg"
+            "enabled": true,
+            "x": 44,
+            "y": 6,
+            "up": "/tabs/minus_up.svg",
+            "over": "/tabs/minus_over.svg",
+            "down": "/tabs/minus_down.svg"
         },
         "closeBtn": {
-            "enabled": true, "x": 64, "y": 6,
-            "up": "/tabs/close_up.svg", "over": "/tabs/close_over.svg", "down": "/tabs/close_down.svg"
-        }
+            "enabled": true,
+            "x": 64,
+            "y": 6,
+            "up": "/tabs/close_up.svg",
+            "over": "/tabs/close_over.svg",
+            "down": "/tabs/close_down.svg"
+        },
+        "selectedTextBold": false,
+        "compact": true
     }
 }

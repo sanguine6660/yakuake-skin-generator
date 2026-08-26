@@ -71,6 +71,10 @@ pub struct ButtonConfig {
     pub enabled: bool,
     pub x: i32,
     pub y: i32,
+    /// Title buttons only: side from which `x` is measured (`left`/`right`).
+    pub anchor: Option<String>,
+    /// PlusButton only: follow the last tab instead of a fixed position.
+    pub at_end_of_tabs: Option<bool>,
     pub up: String,
     pub over: String,
     pub down: String,
@@ -82,6 +86,8 @@ impl Default for ButtonConfig {
             enabled: true,
             x: 0,
             y: 0,
+            anchor: None,
+            at_end_of_tabs: None,
             up: String::new(),
             over: String::new(),
             down: String::new(),
@@ -100,6 +106,7 @@ pub struct TitleConfig {
     pub text_content: String,
     #[serde(default = "default_true")]
     pub text_bold: bool,
+    pub centered: bool,
     pub bg_center: String,
     pub bg_left: String,
     pub bg_right: String,
@@ -125,6 +132,7 @@ impl Default for TitleConfig {
             },
             text_content: default_title_text(),
             text_bold: true,
+            centered: false,
             bg_center: "/title/background_center.svg".into(),
             bg_left: "/title/background_left.svg".into(),
             bg_right: "/title/background_right.svg".into(),
@@ -175,6 +183,8 @@ pub struct TabsConfig {
     pub prevent_closing_image: String,
     pub prevent_closing_image_x: i32,
     pub prevent_closing_image_y: i32,
+    pub selected_text_bold: bool,
+    pub compact: bool,
     #[serde(default = "default_true")]
     pub lock_enabled: bool,
     pub bg_center: String,
@@ -214,6 +224,8 @@ impl Default for TabsConfig {
             prevent_closing_image: "/tabs/lock.svg".into(),
             prevent_closing_image_x: 0,
             prevent_closing_image_y: 8,
+            selected_text_bold: true,
+            compact: false,
             lock_enabled: true,
             bg_center: "/tabs/background_center.svg".into(),
             bg_left: "/tabs/background_left.svg".into(),
