@@ -46,7 +46,7 @@ body:
       required: true
 
   - type: dropdown
-    id: context
+    id: environment
     attributes:
       label: Where does this happen?
       options:
@@ -81,7 +81,7 @@ body:
       description: If applicable, add screenshots to help explain the problem.
 
   - type: textarea
-    id: context
+    id: additional_context
     attributes:
       label: Additional context
       description: Any other context — console errors, skin files, configuration.

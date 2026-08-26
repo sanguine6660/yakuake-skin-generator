@@ -40,7 +40,7 @@ body:
       description: Any alternative solutions or workarounds you have thought about.
 
   - type: dropdown
-    id: context
+    id: environment
     attributes:
       label: Where would this be used?
       options:
@@ -51,7 +51,7 @@ body:
       required: true
 
   - type: textarea
-    id: context
+    id: additional_context
     attributes:
       label: Additional context
       description: Mockups, links to similar features in other tools, anything else.
