@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { adjustHexBrightness, deriveKonsoleBackground, resolveColorInput } from './colors'
+import {
+    adjustHexBrightness,
+    blendHex,
+    deriveKonsoleBackground,
+    hexToRgba,
+    resolveColorInput,
+} from './colors'
 
 describe('adjustHexBrightness', () => {
     it('lightens colors', () => {
@@ -52,5 +58,36 @@ describe('deriveKonsoleBackground', () => {
         const derived = deriveKonsoleBackground('#ffffff')
         const toValue = (hex: string) => parseInt(hex.slice(1), 16)
         expect(toValue(derived)).toBeLessThan(toValue('#ffffff'))
+    })
+})
+
+describe('hexToRgba', () => {
+    it('converts hex and named colors to rgba', () => {
+        expect(hexToRgba('#ff8800', 0.5)).toBe('rgba(255, 136, 0, 0.5)')
+        expect(hexToRgba('crimson', 1)).toBe('rgba(220, 20, 60, 1)')
+    })
+
+    it('expands 3-digit hex', () => {
+        expect(hexToRgba('#0f0', 0.25)).toBe('rgba(0, 255, 0, 0.25)')
+    })
+
+    it('clamps alpha and passes invalid input through', () => {
+        expect(hexToRgba('#000000', 5)).toBe('rgba(0, 0, 0, 1)')
+        expect(hexToRgba('#000000', -1)).toBe('rgba(0, 0, 0, 0)')
+        expect(hexToRgba('notacolor', 0.5)).toBe('notacolor')
+    })
+})
+
+describe('blendHex', () => {
+    it('blends the top color over the base by t', () => {
+        expect(blendHex('#ffffff', '#000000', 0.5)).toBe('#808080')
+        expect(blendHex('#ff0000', '#0000ff', 0)).toBe('#0000ff')
+        expect(blendHex('#ff0000', '#0000ff', 1)).toBe('#ff0000')
+    })
+
+    it('clamps t and returns null for invalid input', () => {
+        expect(blendHex('#808080', '#000000', 2)).toBe('#808080')
+        expect(blendHex('#808080', '#000000', -1)).toBe('#000000')
+        expect(blendHex('nope', '#000000', 0.5)).toBeNull()
     })
 })

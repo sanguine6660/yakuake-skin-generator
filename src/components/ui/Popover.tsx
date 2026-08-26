@@ -29,6 +29,8 @@ interface PopoverProps {
     children: ComponentChildren
     width?: number
     matchTriggerWidth?: boolean
+    /** Inline overrides applied to the popover root (e.g. themed surface colors) */
+    style?: Record<string, string | number>
 }
 
 export const Popover = ({
@@ -37,6 +39,7 @@ export const Popover = ({
     children,
     width = 256,
     matchTriggerWidth = false,
+    style,
 }: PopoverProps) => {
     const popoverRef = useRef<HTMLDivElement>(null)
     const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(
@@ -91,7 +94,7 @@ export const Popover = ({
     }, [onClose, triggerRef])
 
     const triggerRect = triggerRef.current?.getBoundingClientRect()
-    const style: Record<string, string | number> = {
+    const positionStyle: Record<string, string | number> = {
         top: position?.top ?? (triggerRect?.bottom ?? 0) + 6,
         left: position?.left ?? triggerRect?.left ?? 0,
         width: position?.width ?? (matchTriggerWidth ? (triggerRect?.width ?? width) : width),
@@ -102,7 +105,7 @@ export const Popover = ({
         <div
             ref={popoverRef}
             className="fixed z-70 overflow-hidden rounded-xl border border-[#1e293b] bg-[#121824] shadow-xl"
-            style={style}
+            style={{ ...style, ...positionStyle }}
             role="dialog"
         >
             {children}

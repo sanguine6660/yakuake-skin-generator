@@ -295,10 +295,47 @@ export const ensureContrast = (
     for (
         let i = 0;
         i < maxIterations &&
-        contrastRatio(hsvToHex(hslToHsv(tuned).h, hslToHsv(tuned).s, hslToHsv(tuned).v), backgroundHex) < target;
+        contrastRatio(
+            hsvToHex(hslToHsv(tuned).h, hslToHsv(tuned).s, hslToHsv(tuned).v),
+            backgroundHex
+        ) < target;
         i++
     ) {
         tuned = { ...tuned, l: Math.min(96, Math.max(4, tuned.l + (stepUp ? 2.5 : -2.5))) }
     }
     return tuned
+}
+
+// ---- UI theming helpers ---------------------------------------------------------
+
+interface RgbChannels {
+    r: number
+    g: number
+    b: number
+}
+
+const parseHexChannels = (color: string): RgbChannels | null => {
+    const resolved = resolveColorInput(color)
+    if (!resolved) return null
+    const num = parseInt(resolved.slice(1), 16)
+    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 }
+}
+
+/** Returns the color as a `rgba(...)` CSS string; passes unrecognized input through unchanged. */
+export const hexToRgba = (color: string, alpha: number): string => {
+    const channels = parseHexChannels(color)
+    if (!channels) return color
+    const clamped = Math.min(1, Math.max(0, alpha))
+    return `rgba(${channels.r}, ${channels.g}, ${channels.b}, ${clamped})`
+}
+
+/** Blends two opaque colors (t = share of top); returns null when either input is unparseable. */
+export const blendHex = (top: string, base: string, t: number): string | null => {
+    const a = parseHexChannels(top)
+    const b = parseHexChannels(base)
+    if (!a || !b) return null
+    const share = Math.min(1, Math.max(0, t))
+    const mix = (x: number, y: number) => Math.round(x * share + y * (1 - share))
+    const toHex = (v: number) => v.toString(16).padStart(2, '0')
+    return `#${toHex(mix(a.r, b.r))}${toHex(mix(a.g, b.g))}${toHex(mix(a.b, b.b))}`
 }
