@@ -1,6 +1,6 @@
 [package]
 name = "yakuake-skin-generator"
-version = "1.2.0"
+version = "1.2.1"
 description = "Create, customize, and install custom Yakuake terminal skins"
 authors = ["sanguine6660"]
 edition = "2021"
