@@ -139,7 +139,7 @@ describe('prepareSkinFiles', () => {
             )
         )
         expect(metadata.generator.name).toBe('Yakuake Skin Generator')
-        expect(metadata.generator.version).toBe('1.0.0')
+        expect(metadata.generator.version).toBe(__APP_VERSION__)
         expect(metadata.skin.name).toBe('My Custom Skin')
         expect(metadata.skin.author).toBe('Your Name')
         expect(metadata.skin.license).toBe('CC-BY-4.0')

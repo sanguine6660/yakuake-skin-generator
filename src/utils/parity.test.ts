@@ -105,9 +105,12 @@ describe('TS ↔ Rust golden parity', () => {
 
         const expected = JSON.parse(readFileSync(goldenPath, 'utf-8'))
         // Icon markup depends on the browser-side icon library; the Rust CLI
-        // legitimately produces none. Compare everything else strictly.
+        // legitimately produces none. The generator version follows
+        // package.json and changes independently of generator output.
         delete actual.config.icons
         delete expected.config.icons
+        delete actual.generator.version
+        delete expected.generator.version
         expect(actual).toEqual(expected)
     })
 })

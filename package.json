@@ -1,7 +1,7 @@
 {
     "name": "yakuake-skin-generator",
     "private": true,
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "module",
     "scripts": {
         "build": "tsc -b && vite build",
@@ -11,6 +11,7 @@
         "format:rust": "cargo fmt --manifest-path src-tauri/Cargo.toml",
         "lint:rust": "cargo clippy --manifest-path src-tauri/Cargo.toml",
         "preview": "vite preview",
+        "sync:version": "node scripts/sync-version.js",
         "tauri": "tauri",
         "tauri:dev": "tauri dev",
         "test": "vitest run",
