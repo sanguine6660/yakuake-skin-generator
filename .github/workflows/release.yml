@@ -113,7 +113,7 @@ jobs:
           releaseName: "Yakuake Skin Generator ${{ github.ref_name }}"
           releaseBody: "Desktop builds of the Yakuake Skin Generator. Install the skin archives or use the app to generate and install skins natively."
           releaseDraft: false
-          prerelease: true
+          prerelease: false
 
   checksums:
     needs: build
