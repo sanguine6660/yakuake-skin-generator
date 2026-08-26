@@ -66,7 +66,16 @@ the
 
 ### Desktop App
 
-Grab an installer from the
+Quick install — detects your system and installs the matching bundle from the
+latest release (no build tools required):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sanguine6660/yakuake-skin-generator/main/install-ysg.sh | bash
+```
+
+Options are passed to bash: pin a release or force the AppImage with
+`… | bash -s -- --version 1.2.0 --appimage` (see `--help`). Otherwise, grab an
+installer from the
 [latest release](https://github.com/sanguine6660/yakuake-skin-generator/releases)
 — `.deb` / `.rpm` / `.AppImage` (Linux), `.dmg` (macOS), `.msi` / `.exe`
 (Windows). Installs skins natively, no browser permissions needed.
